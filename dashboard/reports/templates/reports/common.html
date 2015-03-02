@@ -5,9 +5,14 @@
     <td>{{ report.description }}</td>
     <td>{{ report.url | format_url}}</td>
     <td user-id="{{ report.id }}">
+    <div class="span1">
         <a class="report-delete-link" href="#" data-delete-url="{{ url_for('report_rest_api.delete_report', report_id=report.id) }}">
             <i class="icon-trash"></i>
         </a>
+        <a class="report-edit-link" href="{{ url_for('custom_report.edit_report', report_id=report.id) }}">
+            <i class="icon-edit"></i>
+        </a>
+    </div>
     </td>
 </tr>
 {% endmacro %}

@@ -1,3 +1,4 @@
+from flask import abort
 from flask import Blueprint
 from flask import redirect
 from flask import render_template
@@ -61,4 +62,18 @@ def create_report():
         db_session.commit()
         return redirect(url_for('custom_report.custom_report_index'))
 
+    return render_template('reports/create_report.html', form=form)
+
+
+@custom_report.route('/reports/edit/<int:report_id>/', methods=['GET', 'POST'])
+def edit_report(report_id):
+    custom_report = CustomReport.query.get(report_id)
+    if custom_report is None:
+        abort(404)
+    form = CustomReportForm(request.form, custom_report)
+    if request.method == 'POST':
+        custom_report.name = form.name.data
+        custom_report.url = form.url.data
+        custom_report.description = form.description.data
+        return redirect(url_for('custom_report.custom_report_index'))
     return render_template('reports/create_report.html', form=form)

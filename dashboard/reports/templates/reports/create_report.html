@@ -2,17 +2,25 @@
 
 {% from 'common.html' import render_field %}
 
-{% block title %}Stackquery - Create report{% endblock title%}
+{% if request.endpoint.endswith('edit_report') %}
+    {% set title = 'Stackquery - Edit report' %}
+    {% set button_name = 'Edit' %}
+{% else %}
+    {% set title = 'Stackquery - Create report' %}
+    {% set button_name = 'Create' %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock title%}
 
 {% block java_script %}
 
 {% endblock java_script %}
 
 {% block main %}
-<form method="POST" action="{{ url_for('custom_report.create_report') }}">
+<form method="POST">
         {{ render_field(form.name) }}
         {{ render_field(form.url) }}
         {{ render_field(form.description, rows=10, cols=100) }}
-    <p><input type="submit" value="Create"></p>
+    <p><input type="submit" value="{{ button_name }}"></p>
 </form>
 {% endblock main %}

@@ -18,10 +18,19 @@
 {% endmacro %}
 
 {% macro table_report(reports) %}
+    {% set count = 0 %}
     {% for report in reports %}
     <h4 class="text-center"> {{ report[0] | filter_table_header }}</h4>
-    <table class="table table-striped table-hover">
-        {% for row in report %}
+    <table class="table table-striped table-hover" id="example_{{ count }}">
+    {% set header = report[0] | split_string %}
+        <thead>
+            <tr>
+            {% for column in header %}
+                <th> {{ column }} </td>
+            {% endfor %}
+            </tr>
+        </thead>
+        {% for row in report[1:] %}
             {% set splited_row = row |split_string %}
             <tr>
             {% for column in splited_row %}
@@ -31,5 +40,6 @@
         {% endfor %}
     </table>
     </br>
+    {% set count = count + 1 %}
     {% endfor %}
 {% endmacro %}

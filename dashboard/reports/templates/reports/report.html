@@ -15,8 +15,27 @@
         $('#basicModal').modal(options);
     })
 </script>
+
 {% endif %}
 
+{% if reports %}
+{% set count = 0 %}
+
+<script type="text/javascript">
+
+{% for report in reports %}
+
+    $(document).ready(function() {
+        $('#example_{{ count }}').dataTable();
+    });
+
+    $('#example_{{ count }}').removeClass('display').addClass('table table-striped table-bordered');
+
+    {% set count = count + 1 %}
+{% endfor %}
+
+</script>
+{% endif %}
 
 {% endblock java_script %}
 

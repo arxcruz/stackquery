@@ -1,5 +1,5 @@
 import mechanize
-
+from collections import OrderedDict
 
 def get_csv_from_url(url, username=None, password=None):
     br = mechanize.Browser()
@@ -36,3 +36,24 @@ def parse_url(url):
         tmp_url = tmp_url + '&ctype=csv'
 
     return tmp_url
+
+
+def jsonify_csv(tables):
+    return_value = []
+    for table in tables:
+        dic_to_json = dict()
+        data_rows = []
+        headers = table[0].replace('"', '').split(',')
+        for row in table[1:]:
+            columns = row.replace('"', '').split(',')
+            data_rows.append(OrderedDict(zip(headers, columns)))
+
+        dic_to_json['data'] = data_rows
+        return_value.append(dic_to_json)
+
+    return return_value
+
+
+
+
+

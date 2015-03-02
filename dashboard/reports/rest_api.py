@@ -31,3 +31,4 @@ def delete_report(report_id):
     db_session.delete(report)
     db_session.commit()
     return jsonify({'status': 'OK'})
+

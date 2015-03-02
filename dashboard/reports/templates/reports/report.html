@@ -22,7 +22,14 @@
 
 {% block main %}
 
-<div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+{% if reports %}
+
+{{ table_report(reports) }}
+
+{% endif %}
+
+{% if require_auth %}
+<div class="modal fade" id="basicModal" tabindex="0" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -55,11 +62,5 @@
         </div>
     </div>
 </div>
-
-{% if reports %}
-
-{{ table_report(reports) }}
-
 {% endif %}
-
 {% endblock main %}

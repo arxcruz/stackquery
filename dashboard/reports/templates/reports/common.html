@@ -1,6 +1,7 @@
-{% macro detail_report(report) %}
+{% macro detail_report(report, id) %}
+
 <tr>
-    <td>{{ report.id }}</td>
+    <td>{{ id }}</td>
     <td><a href="{{ url_for('custom_report.show_report', report_id=report.id) }}">{{ report.name }}</a></td>
     <td>{{ report.description }}</td>
     <td>{{ report.url | format_url}}</td>

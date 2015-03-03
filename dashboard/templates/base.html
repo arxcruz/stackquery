@@ -43,7 +43,7 @@
                             <li class="divider"></li>
                             {% set custom_reports = get_custom_reports() %}
                             {% for custom_report in custom_reports %}
-                                <li><a href="{{ url_for('custom_report.show_report', report_id=custom_report.id) }}">{{ custom_report.name }}</a></li>
+                                <li id="menu_{{ custom_report.id }}"><a href="{{ url_for('custom_report.show_report', report_id=custom_report.id) }}">{{ custom_report.name }}</a></li>
                             {% endfor %}
                         </ul>
                     </li>

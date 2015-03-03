@@ -15,7 +15,8 @@
                 type: "DELETE",
                 success: function(response) {
                     if (response.status == "OK") {
-                        delete_row.remove();
+                        delete_row.parent().remove();
+                        $("#menu_" + delete_row[0].getAttribute('user-id')).remove();
                         $("#report-success").show();
                     }
                 },
@@ -39,8 +40,10 @@
         <td>URL</td>
         <td></td>
     </tr>
+{% set count = 1 %}
 {% for report in reports %}
-    {{ detail_report(report) }}
+    {{ detail_report(report, count) }}
+    {% set count = count + 1 %}
 {% endfor %}
 </table>
 

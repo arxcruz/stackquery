@@ -7,7 +7,14 @@ from reports.custom_report import custom_report
 
 import filters
 
+import os.path
+
+
 def create_app():
+    if not os.path.isfile('dashboard.db'):
+        from database import init_db
+        init_db()
+
     app = Flask(__name__)
     app.config['DEBUG'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stackquery.db'

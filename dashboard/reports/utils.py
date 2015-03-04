@@ -1,6 +1,7 @@
 import mechanize
 from collections import OrderedDict
 
+
 def get_csv_from_url(url, username=None, password=None):
     br = mechanize.Browser()
     br.set_handle_robots(False)
@@ -52,8 +53,3 @@ def jsonify_csv(tables):
         return_value.append(dic_to_json)
 
     return return_value
-
-
-
-
-

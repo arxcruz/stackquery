@@ -11,8 +11,6 @@ from models import CustomReport
 from reports.forms import CustomReportForm
 import utils
 
-import simplejson as json
-
 custom_report = Blueprint('custom_report', __name__,
                           template_folder='templates')
 
@@ -79,21 +77,3 @@ def edit_report(report_id):
         custom_report.description = form.description.data
         return redirect(url_for('custom_report.custom_report_index'))
     return render_template('reports/create_report.html', form=form)
-
-
-@custom_report.route('/reports/debug/<int:report_id>/', methods=['GET', 'POST'])
-def debug_report(report_id):
-    custom_report = CustomReport.query.get(report_id)
-    if custom_report is None:
-        abort(404)
-
-    username = session.get('username', None)
-    password = session.get('password', None)
-
-    if username and password:
-        csv_document = utils.get_csv_from_url(custom_report.url,
-                                              username=username,
-                                              password=password)
-
-    reports = utils.parse_csv(csv_document)
-    return json.dumps(utils.jsonify_csv(reports), indent=4 * ' ')

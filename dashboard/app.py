@@ -7,7 +7,6 @@ from reports.custom_report import custom_report
 
 import filters
 
-
 def create_app():
     app = Flask(__name__)
     app.config['DEBUG'] = True
@@ -23,7 +22,8 @@ def create_app():
 
     return app
 
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
 
     app.run()

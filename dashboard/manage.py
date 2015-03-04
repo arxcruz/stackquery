@@ -10,6 +10,5 @@ if __name__ == "__main__":
         print "here"
         init_db()
 
-    app = app.create_app()
-    manager = Manager(app)
+    manager = Manager(app.app)
     manager.run()

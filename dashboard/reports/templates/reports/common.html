@@ -27,18 +27,31 @@
         <thead>
             <tr>
             {% for column in header %}
-                <th> {{ column }} </td>
+                <th> {{ column }} </th>
             {% endfor %}
+                <th>Total</th>
             </tr>
         </thead>
         {% for row in report[1:] %}
             {% set splited_row = row |split_string %}
             <tr>
             {% for column in splited_row %}
-                <td> {{ column }} </td>
+                    <td> {{ column }} </td>
             {% endfor %}
+
+            {% set row_total = splited_row | get_list_of_ints | sum() %}
+                <td> {{ row_total }} </td>
             </tr>
         {% endfor %}
+        <tfoot>
+        <tr>
+            <td>Total</td>
+            {% set total_r = report[1:] | get_total_bugzilla_report %}
+            {% for total in total_r %}
+                <td>{{ total }}</td>
+            {% endfor %}       
+        </tr>
+        </tfoot>
     </table>
     </br>
     {% set count = count + 1 %}

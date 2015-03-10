@@ -11,6 +11,11 @@ from models import CustomReport
 from reports.forms import CustomReportForm
 import utils
 
+import stackalytics
+import json
+
+import requests
+
 custom_report = Blueprint('custom_report', __name__,
                           template_folder='templates')
 
@@ -23,8 +28,6 @@ def custom_report_index():
 
 @custom_report.route('/reports/show/<int:report_id>', methods=['GET', 'POST'])
 def show_report(report_id):
-    custom_report = CustomReport.query.get(report_id)
-
     if request.method == 'POST':
         session['username'] = request.form['username']
         session['password'] = request.form['password']
@@ -33,17 +36,13 @@ def show_report(report_id):
     password = session.get('password', None)
 
     if username and password:
-        csv_document = utils.get_csv_from_url(custom_report.url,
-                                              username=username,
-                                              password=password)
+        reports = utils.get_report_by_id(report_id, username, password)
 
-        if '<!DOCTYPE html PUBLIC' in csv_document:
+        if not reports:
             session['username'] = None
             session['password'] = None
             return render_template('reports/report.html', require_auth=True,
                                    failure=True)
-
-        reports = utils.parse_csv(csv_document)
         return render_template('reports/report.html', reports=reports)
     else:
         return render_template('reports/report.html', require_auth=True)

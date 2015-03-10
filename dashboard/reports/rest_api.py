@@ -1,8 +1,11 @@
+from flask import abort
 from flask import Blueprint
 from flask import jsonify
+from flask import request
 
 from database import db_session
 from models import CustomReport
+import utils
 
 import simplejson as json
 
@@ -31,3 +34,19 @@ def delete_report(report_id):
     db_session.delete(report)
     db_session.commit()
     return jsonify({'status': 'OK'})
+
+
+@report_rest_api.route('/api/report/<int:report_id>/')
+def get_report_by_id(report_id):
+    if not request.json or not 'username' and 'password' in request.json:
+        abort(404)
+
+    username = request.json['username']
+    password = request.json['password']
+
+    reports = utils.get_report_by_id(report_id, username, password)
+
+    if reports:
+        return json.dumps(reports, indent=4)
+    else:
+        return jsonify({'Error': 'Invalid username or password'})

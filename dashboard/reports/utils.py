@@ -1,6 +1,8 @@
 import mechanize
 from collections import OrderedDict
 
+from models import CustomReport
+
 
 def get_csv_from_url(url, username=None, password=None):
     br = mechanize.Browser()
@@ -47,9 +49,24 @@ def jsonify_csv(tables):
         headers = table[0].replace('"', '').split(',')
         for row in table[1:]:
             columns = row.replace('"', '').split(',')
+            columns = [int(x) if x.isdigit() else x for x in columns]
             data_rows.append(OrderedDict(zip(headers, columns)))
 
         dic_to_json['data'] = data_rows
         return_value.append(dic_to_json)
 
     return return_value
+
+
+def get_report_by_id(report_id, username, password):
+
+    custom_report = CustomReport.query.get(report_id)
+    csv_document = get_csv_from_url(custom_report.url,
+                                    username=username,
+                                    password=password)
+    if '<!DOCTYPE html PUBLIC' in csv_document:
+        return None
+
+    reports = parse_csv(csv_document)
+    reports = jsonify_csv(reports)
+    return reports

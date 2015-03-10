@@ -42,25 +42,10 @@ def split_string(value):
 
     return return_value
 
+
 def get_list_of_ints(value):
-    return [int(x) for x in value if x.isdigit()]
-
-
-def get_total_bugzilla_report(report):
-    columns = [0] * (len(split_string(report[0]))-1)
-    total = 0
-    for row in report:
-        splited_row = split_string(row)[1:]
-        total += sum(get_list_of_ints(splited_row))
-        for i, value in enumerate(splited_row):
-            if value.isdigit():
-                columns[i] = columns[i] + int(value)
-
-    columns.append(total)
-
-    return columns
-
-
+    return [x if type(x) is int else int(x) if (type(x) is str and x.isdigit())
+            else 0 for x in value]
 
 
 def init_app(app):
@@ -70,6 +55,7 @@ def init_app(app):
     app.jinja_env.filters['split_string'] = split_string
     app.jinja_env.filters['filter_table_header'] = filter_table_header
     app.jinja_env.filters['get_list_of_ints'] = get_list_of_ints
-    app.jinja_env.filters['get_total_bugzilla_report'] = get_total_bugzilla_report
+
+    app.jinja_env.add_extension('jinja2.ext.do')
 
     app.jinja_env.globals.update(get_custom_reports=get_custom_reports)

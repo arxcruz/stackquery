@@ -82,3 +82,13 @@ def get_status_from_users(users, company, project_type,
             user_list.append(user_info['contribution'])
 
     return user_list
+
+
+def get_all_users_by_company(company):
+    MODULE = 'api/1.0/stats/engineers'
+    params = dict(company)
+    LOG.info("Using parameters: %s", params)
+    r = requests.get(STACKALYTICS_URL + MODULE, params=params)
+    LOG.info(r.url)
+    r.raise_for_status()
+    return r.json()

@@ -2,8 +2,8 @@ from flask import Flask
 
 from api.rest_api import rest_api
 from dashboard import dashboard
-from reports.rest_api import report_rest_api
-from reports.custom_report import custom_report
+from rhbzreports.rest_api import report_rest_api
+from rhbzreports.redhat_bugzilla_report import redhat_bugzilla_report
 
 import filters
 
@@ -25,7 +25,7 @@ def create_app():
     app.register_blueprint(dashboard)
     app.register_blueprint(rest_api)
     app.register_blueprint(report_rest_api)
-    app.register_blueprint(custom_report)
+    app.register_blueprint(redhat_bugzilla_report)
 
     return app
 

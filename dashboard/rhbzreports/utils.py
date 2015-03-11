@@ -1,7 +1,7 @@
 import mechanize
 from collections import OrderedDict
 
-from models import CustomReport
+from models import RedHatBugzillaReport
 
 
 def get_csv_from_url(url, username=None, password=None):
@@ -60,8 +60,8 @@ def jsonify_csv(tables):
 
 def get_report_by_id(report_id, username, password):
 
-    custom_report = CustomReport.query.get(report_id)
-    csv_document = get_csv_from_url(custom_report.url,
+    rhbz_report = RedHatBugzillaReport.query.get(report_id)
+    csv_document = get_csv_from_url(rhbz_report.url,
                                     username=username,
                                     password=password)
     if '<!DOCTYPE html PUBLIC' in csv_document:

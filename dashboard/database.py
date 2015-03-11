@@ -100,13 +100,13 @@ def init_db():
     db_session.add(team)
     db_session.commit()
 
-    report = models.CustomReport()
+    report = models.RedHatBugzillaReport()
     report.name = 'Test'
     report.description = 'Test description'
     report.url = 'http://www.redhat.com'
     db_session.add(report)
 
-    report = models.CustomReport()
+    report = models.RedHatBugzillaReport()
     report.name = 'Test'
     report.description = 'Test description'
     report.url = ('http://www.thisisaverybigurl.com/?withalotofinformation'

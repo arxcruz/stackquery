@@ -1,4 +1,4 @@
-from models import CustomReport
+from models import RedHatBugzillaReport
 
 import re
 
@@ -30,8 +30,8 @@ def format_url(value):
     return value
 
 
-def get_custom_reports():
-    return CustomReport.query.all()
+def get_redhat_bugzilla_reports():
+    return RedHatBugzillaReport.query.all()
 
 
 def split_string(value):
@@ -58,4 +58,5 @@ def init_app(app):
 
     app.jinja_env.add_extension('jinja2.ext.do')
 
-    app.jinja_env.globals.update(get_custom_reports=get_custom_reports)
+    app.jinja_env.globals.update(
+        get_redhat_bugzilla_reports=get_redhat_bugzilla_reports)

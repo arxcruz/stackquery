@@ -61,9 +61,9 @@ class User(Base, DictSerializable):
     user_id = Column('user_id', String(20))
 
 
-class CustomReport(Base, DictSerializable):
+class RedHatBugzillaReport(Base, DictSerializable):
     '''Custom report representation in database'''
-    __tablename__ = 'custom_report'
+    __tablename__ = 'redhat_bugzilla_report'
     id = Column(Integer, primary_key=True)
     created = Column(DateTime, default=datetime.now)
     modified = Column(DateTime, default=datetime.now, onupdate=datetime.now)

@@ -10,106 +10,107 @@ Base = declarative_base()
 Base.query = db_session.query_property()
 
 
-def init_db():
-    import models
-
+def init_db(fill_table=False):
     # Creating tables
     Base.metadata.create_all(bind=engine)
 
-    # Populating Release table
-    release = models.Release()
-    release.name = 'All'
-    db_session.add(release)
+    if fill_table:
+        import models
 
-    release = models.Release()
-    release.name = 'Kilo'
-    db_session.add(release)
+        # Populating Release table
+        release = models.Release()
+        release.name = 'All'
+        db_session.add(release)
 
-    release = models.Release()
-    release.name = 'Juno'
-    db_session.add(release)
+        release = models.Release()
+        release.name = 'Kilo'
+        db_session.add(release)
 
-    release = models.Release()
-    release.name = 'Icehouse'
-    db_session.add(release)
+        release = models.Release()
+        release.name = 'Juno'
+        db_session.add(release)
 
-    release = models.Release()
-    release.name = 'Havana'
-    db_session.add(release)
+        release = models.Release()
+        release.name = 'Icehouse'
+        db_session.add(release)
 
-    release = models.Release()
-    release.name = 'Grizzly'
-    db_session.add(release)
+        release = models.Release()
+        release.name = 'Havana'
+        db_session.add(release)
 
-    release = models.Release()
-    release.name = 'Folsom'
-    db_session.add(release)
+        release = models.Release()
+        release.name = 'Grizzly'
+        db_session.add(release)
 
-    release = models.Release()
-    release.name = 'Essex'
-    db_session.add(release)
+        release = models.Release()
+        release.name = 'Folsom'
+        db_session.add(release)
 
-    release = models.Release()
-    release.name = 'Diablo'
-    db_session.add(release)
+        release = models.Release()
+        release.name = 'Essex'
+        db_session.add(release)
 
-    release = models.Release()
-    release.name = 'Cactus'
-    db_session.add(release)
+        release = models.Release()
+        release.name = 'Diablo'
+        db_session.add(release)
 
-    release = models.Release()
-    release.name = 'Bexar'
-    db_session.add(release)
+        release = models.Release()
+        release.name = 'Cactus'
+        db_session.add(release)
 
-    release = models.Release()
-    release.name = 'Austin'
-    db_session.add(release)
-    db_session.commit()
+        release = models.Release()
+        release.name = 'Bexar'
+        db_session.add(release)
 
-    # Populating User table
-    user1 = models.User()
-    user1.name = 'Arx Cruz'
-    user1.email = 'arxcruz@test.com'
-    user1.user_id = 'arxcruz'
-    db_session.add(user1)
+        release = models.Release()
+        release.name = 'Austin'
+        db_session.add(release)
+        db_session.commit()
 
-    user2 = models.User()
-    user2.name = 'David Kranz'
-    user2.email = 'david@test.com'
-    user2.user_id = 'david-kranz'
-    db_session.add(user2)
+        # Populating User table
+        user1 = models.User()
+        user1.name = 'Arx Cruz'
+        user1.email = 'arxcruz@test.com'
+        user1.user_id = 'arxcruz'
+        db_session.add(user1)
 
-    user3 = models.User()
-    user3.name = 'Arx Cruz Delete'
-    user3.email = 'arxcruz@test.com'
-    user3.user_id = 'arxcruz'
-    db_session.add(user3)
-    db_session.commit()
+        user2 = models.User()
+        user2.name = 'David Kranz'
+        user2.email = 'david@test.com'
+        user2.user_id = 'david-kranz'
+        db_session.add(user2)
 
-    # Populating team
-    team = models.Team()
-    team.name = 'Demo team 1'
-    team.users.append(user1)
-    team.users.append(user2)
-    db_session.add(team)
+        user3 = models.User()
+        user3.name = 'Arx Cruz Delete'
+        user3.email = 'arxcruz@test.com'
+        user3.user_id = 'arxcruz'
+        db_session.add(user3)
+        db_session.commit()
 
-    team = models.Team()
-    team.name = 'Demo team 2'
-    team.users.append(user1)
-    team.users.append(user2)
-    db_session.add(team)
-    db_session.commit()
+        # Populating team
+        team = models.Team()
+        team.name = 'Demo team 1'
+        team.users.append(user1)
+        team.users.append(user2)
+        db_session.add(team)
 
-    report = models.RedHatBugzillaReport()
-    report.name = 'Test'
-    report.description = 'Test description'
-    report.url = 'http://www.redhat.com'
-    db_session.add(report)
+        team = models.Team()
+        team.name = 'Demo team 2'
+        team.users.append(user1)
+        team.users.append(user2)
+        db_session.add(team)
+        db_session.commit()
 
-    report = models.RedHatBugzillaReport()
-    report.name = 'Test'
-    report.description = 'Test description'
-    report.url = ('http://www.thisisaverybigurl.com/?withalotofinformation'
-                  'topassthroughblablablaaasfasfdasfdasfasfdasdfasdfasdfasdf')
-    db_session.add(report)
-    db_session.commit()
+        report = models.RedHatBugzillaReport()
+        report.name = 'Test'
+        report.description = 'Test description'
+        report.url = 'http://www.redhat.com'
+        db_session.add(report)
+
+        report = models.RedHatBugzillaReport()
+        report.name = 'Test'
+        report.description = 'Test description'
+        report.url = ('http://www.thisisaverybigurl.com/?withalotofinformation'
+                      'topassthroughblablablaaasfasfdasfdasfasfdasdfasdfasdfasdf')
+        db_session.add(report)
+        db_session.commit()

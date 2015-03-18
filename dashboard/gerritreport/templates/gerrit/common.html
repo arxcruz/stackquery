@@ -1,0 +1,22 @@
+{% macro table_report(releases) %}
+<table class="table table-striped table-hover" id="example_{{ count }}">
+    <thead>
+        <tr>
+            <th>User</th>
+        {% for version in releases['_versions'] %}
+            <th>{{ version.capitalize() }}</th>
+        {% endfor %}
+        </tr>
+    </thead>
+    {% for user in releases.keys() %}
+    <tr>
+        {% if user != '_versions' %}
+            <td>{{ user }}</td>
+            {% for version in releases['_versions'] %}
+                <td>{{ releases[user]['releases'].get(version, 0) }}</td>
+            {% endfor %}
+        {% endif %}
+    </tr>
+    {% endfor %}
+
+{% endmacro %}

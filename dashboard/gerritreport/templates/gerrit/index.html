@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% from 'gerrit/common.html' import table_report %}
+
+{% block title %}Stackquery - Gerrit report{% endblock title%}
+
+{% block java_script %}
+
+{% endblock java_script %}
+
+{% block main %}
+
+<form method="POST">
+<div class="row">
+        <div class="span3">
+            <label for="filter">Filter:</label>
+            <input name="filter" id="filter" class="form-control">
+        </div>
+        <div class="span3">
+            <label for="team">Team:</label>
+            <select class="form-control" name="team" id="team">
+            </select>
+        </div>
+        <div class="span4">
+            <br>
+            <button type="submit" class="btn btn-primary">Go</button>
+        </div>   
+</div>
+</form>
+
+{% if error %}
+<div class="row" align="center">
+    <h3>{{ error }}</h3>
+</div>
+{% endif %}
+
+{% if releases %}
+    {{ table_report(releases) }}
+{% endif %}
+{% if seconds and not error %}
+<div>
+{{ seconds }} seconds
+</div>
+{% endif %}
+{% endblock main %}

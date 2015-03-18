@@ -38,6 +38,8 @@
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="{{ url_for('dashboard.dashboard_index')}}">Default report</a></li>
                             <li class="divider"></li>
+                            <li><a href="{{ url_for('gerrit_report.gerrit_report_index') }}">Gerrit Review</a></li>
+                            <li class="divider"></li>
                             <li><a href="{{ url_for('redhat_bugzilla_report.create_report') }}">Create Red Hat Bugzilla report</a></li>
                             <li><a href="{{ url_for('redhat_bugzilla_report.redhat_bugzilla_report_index') }}">List all Red Hat Bugzilla reports</a></li>
                             <li class="divider"></li>

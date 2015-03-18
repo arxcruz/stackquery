@@ -71,3 +71,17 @@ class RedHatBugzillaReport(Base, DictSerializable):
     url = Column('url', Text)
     require_authentication = Column(Boolean, default=False)
     description = Column('description', Text)
+
+
+class GerritReview(Base, DictSerializable):
+    __tablename__ = 'gerrit_review'
+    id = Column(Integer, primary_key=True)
+    commit_id = Column('commit', String(40))
+    version = Column('version', String(30))
+    project = Column('project', String(200))
+    sortkey = Column('sortkey', String(50))
+    created = Column(DateTime, default=datetime.now)
+    owner = Column('owner', String(30))
+    user_id = Column(Integer, ForeignKey(User.id))
+    user = relationship('User')
+

@@ -41,7 +41,7 @@ def get_changes_by_filter(search_filter, size=300, sort_key=None):
 
 
 def insert_review_if_needed(review, version=None):
-    commit = review['current_revision']
+    commit = review.get('current_revision', None)
     project = review['project']
     user_id = review['owner'].get('username', None)
     email = review['owner'].get('email', None)

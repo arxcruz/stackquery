@@ -61,6 +61,13 @@ class User(Base, DictSerializable):
     user_id = Column('user_id', String(20))
 
 
+class Project(Base, DictSerializable):
+    '''List of projects from openstack'''
+    __tablename__ = 'projects'
+    id = Column(Integer, primary_key=True)
+    name = Column('name', String(200))
+
+
 class RedHatBugzillaReport(Base, DictSerializable):
     '''Custom report representation in database'''
     __tablename__ = 'redhat_bugzilla_report'

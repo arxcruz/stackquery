@@ -17,21 +17,13 @@ GERRIT_URL = 'https://review.openstack.org/%s&o=' \
 
 def get_changes_by_filter(search_filter, size=300, sort_key=None):
 
-    results = []
     gerrit_url = GERRIT_URL % ('changes/?q=' + search_filter, size)
 
     if sort_key:
         gerrit_url = gerrit_url + '&N=%s' % sort_key
 
     gerrit_url = gerrit_url.replace(' ', '+')
-    ret_val = requests.get(gerrit_url)
-
-    ret_val.raise_for_status()
-    text = ret_val.text
-    # For some reason, the REST api are bringing the characteres
-    # )]}' in the beginning which make ret_val.json() fails
-    text = text.replace(')]}\'', '')
-    result = json.loads(text)
+    result = _gerrit_rest_api_call(gerrit_url)
 
     if result[-1].get('_more_changes', None):
         result += get_changes_by_filter(search_filter, size,
@@ -184,3 +176,15 @@ def get_report_by_filter(search_filter):
     releases['_versions'] = sorted(version_table)
 
     return releases
+
+
+def _gerrit_rest_api_call(uri):
+    ret_val = requests.get(uri)
+    ret_val.raise_for_status()
+    text = ret_val.text
+    text = text.replace(')]}\'', '')
+    return json.loads(text)
+
+
+def get_all_projects():
+    return _gerrit_rest_api_call('https://review.openstack.org/projects/')

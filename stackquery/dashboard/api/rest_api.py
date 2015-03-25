@@ -1,10 +1,10 @@
 from flask import Blueprint
 from flask import jsonify
 
-from database import db_session
-from models import Release
-from models import Team
-from models import User
+from stackquery.db.database import db_session
+from stackquery.db.models import Release
+from stackquery.db.models import Team
+from stackquery.db.models import User
 
 import simplejson as json
 

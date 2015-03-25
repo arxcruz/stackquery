@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask import render_template
 from flask import request
 
-from common import gerrit
+from stackquery.common import gerrit
 
 import datetime
 

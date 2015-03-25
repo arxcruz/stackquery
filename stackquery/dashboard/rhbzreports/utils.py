@@ -1,7 +1,7 @@
 import mechanize
 from collections import OrderedDict
 
-from models import RedHatBugzillaReport
+from stackquery.db.models import RedHatBugzillaReport
 
 
 def get_csv_from_url(url, username=None, password=None):

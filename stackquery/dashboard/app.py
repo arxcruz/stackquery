@@ -3,7 +3,7 @@ import os.path
 from flask import Flask
 from oslo.config import cfg
 
-from api.rest_api import rest_api
+from stackquery.dashboard.api.rest_api import rest_api
 import config
 from dashboard import dashboard
 from gerritreport.gerrit_reports import gerrit_report

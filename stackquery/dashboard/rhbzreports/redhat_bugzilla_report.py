@@ -6,9 +6,9 @@ from flask import request
 from flask import session
 from flask import url_for
 
-from database import db_session
-from models import RedHatBugzillaReport
-from rhbzreports.forms import RedHatBugzillaReportForm
+from stackquery.db.database import db_session
+from stackquery.db.models import RedHatBugzillaReport
+from forms import RedHatBugzillaReportForm
 import utils
 
 redhat_bugzilla_report = Blueprint('redhat_bugzilla_report', __name__,

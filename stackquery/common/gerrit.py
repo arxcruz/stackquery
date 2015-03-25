@@ -5,11 +5,11 @@ import datetime
 
 from oslo.config import cfg
 
-from database import db_session
-from models import User
-from models import GerritReview
-import utils
-import vcs
+from stackquery.db.database import db_session
+from stackquery.db.models import User
+from stackquery.db.models import GerritReview
+import stackquery.common.utils
+import stackquery.common.vcs
 
 GERRIT_URL = 'https://review.openstack.org/%s&o=' \
     'CURRENT_REVISION&o=DETAILED_ACCOUNTS&n=%d'

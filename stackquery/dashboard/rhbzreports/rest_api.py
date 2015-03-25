@@ -3,9 +3,9 @@ from flask import Blueprint
 from flask import jsonify
 from flask import request
 
-from database import db_session
-from models import RedHatBugzillaReport
-import rhbzreports.utils as utils
+from stackquery.db.database import db_session
+from stackquery.db.models import RedHatBugzillaReport
+import utils as utils
 
 import simplejson as json
 

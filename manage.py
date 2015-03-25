@@ -1,5 +1,6 @@
 from flask.ext.script import Manager
-import app
+
+import stackquery.dashboard.app as app
 
 
 if __name__ == "__main__":

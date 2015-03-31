@@ -5,12 +5,13 @@ from flask import render_template
 from flask import request
 from flask import url_for
 
-from database import db_session
-from models import Team
-from models import User
-from forms import UserForm
-from forms import TeamForm
-import stackalytics
+from stackquery.dashboard import stackalytics
+from stackquery.dashboard.forms import UserForm
+from stackquery.dashboard.forms import TeamForm
+from stackquery.db.session import db_session
+from stackquery.db.models import Team
+from stackquery.db.models import User
+
 
 dashboard = Blueprint('dashboard', __name__)
 

@@ -6,7 +6,7 @@ from sqlalchemy import DateTime, Integer, String, Table, Text
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.orm import relationship
 
-from database import Base
+from stackquery.db.session import Base
 
 
 class DictSerializable(object):
@@ -66,6 +66,7 @@ class Project(Base, DictSerializable):
     __tablename__ = 'projects'
     id = Column(Integer, primary_key=True)
     name = Column('name', String(200))
+    git_url = Column('git_url', String(400))
 
 
 class RedHatBugzillaReport(Base, DictSerializable):
@@ -80,15 +81,25 @@ class RedHatBugzillaReport(Base, DictSerializable):
     description = Column('description', Text)
 
 
+class GerritReviewFile(Base, DictSerializable):
+    __tablename__ = 'gerrit_review_file'
+    id = Column(Integer, primary_key=True)
+    filename = Column('project', String(500))
+    gerrit_review_id = Column(Integer, ForeignKey('gerrit_review.id'))
+
+
 class GerritReview(Base, DictSerializable):
     __tablename__ = 'gerrit_review'
     id = Column(Integer, primary_key=True)
-    commit_id = Column('commit', String(40))
+    commit_id = Column('commit_id', String(40))
+    change_id = Column('change_id', String(40))
     version = Column('version', String(30))
     project = Column('project', String(200))
     sortkey = Column('sortkey', String(50))
+    status = Column('status', String(20))
     created = Column(DateTime, default=datetime.now)
-    owner = Column('owner', String(30))
+    modified = Column(DateTime, default=datetime.now, onupdate=datetime.now)
     user_id = Column(Integer, ForeignKey(User.id))
     user = relationship('User')
-
+    files = relationship('GerritReviewFile', backref='gerrit_review',
+                         lazy='dynamic')

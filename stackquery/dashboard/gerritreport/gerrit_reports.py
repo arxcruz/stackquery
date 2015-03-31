@@ -14,16 +14,19 @@ gerrit_report = Blueprint('gerrit_report', __name__,
 @gerrit_report.route('/', methods=['GET', 'POST'])
 def gerrit_report_index():
     if request.method == 'POST':
-        search_filter = request.form.get('filter')
+        filters = request.form.get('filter')
+        filters += ' status:MERGED'
+        search_filter = gerrit.get_filters(filters)
         error = None
         before = datetime.datetime.now()
         try:
-            releases = gerrit.get_report_by_filter(search_filter)
+            releases = gerrit.get_all_reviews_from_database(
+                filters=search_filter)
         except Exception as e:
             error = 'Invalid query: %s' % e.message
             releases = None
         after = datetime.datetime.now()
-        seconds = abs(after-before).seconds
+        seconds = abs(after - before).seconds
         return render_template('gerrit/index.html',
                                releases=releases, seconds=seconds,
                                error=error)

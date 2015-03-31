@@ -22,5 +22,12 @@ def get_repos_by_module(filename, module):
     uri = 'git://git.openstack.org/%s.git' % module
     return {
         'uri': uri, 'module': _module,
-        'releases': [{'release_name': 'Kilo', 'tag_to': 'HEAD'}]
-        }
+        'releases': [{'release_name': 'Kilo', 'tag_to': 'HEAD'}]}
+
+
+def make_range(start, stop, step):
+    last_full = stop - ((stop - start) % step)
+    for i in range(start, last_full, step):
+        yield range(i, i + step)
+    if stop > last_full:
+        yield range(last_full, stop)

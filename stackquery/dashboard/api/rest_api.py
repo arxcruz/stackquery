@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask import jsonify
 
-from stackquery.db.database import db_session
+from stackquery.db.session import db_session
 from stackquery.db.models import Release
 from stackquery.db.models import Team
 from stackquery.db.models import User

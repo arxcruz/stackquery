@@ -1,18 +1,87 @@
 import json
 import requests
 
-import datetime
-
 from oslo.config import cfg
 
-from stackquery.db.database import db_session
+from stackquery.common import utils
+from stackquery.common import vcs
 from stackquery.db.models import User
 from stackquery.db.models import GerritReview
-import stackquery.common.utils
-import stackquery.common.vcs
+from stackquery.db.models import GerritReviewFile
+from stackquery.db.session import db_session
+from stackquery.db import utils as db_utils
+
+import re
+
+from datetime import datetime
+import logging
+
+LOG = logging.getLogger(__name__)
 
 GERRIT_URL = 'https://review.openstack.org/%s&o=' \
-    'CURRENT_REVISION&o=DETAILED_ACCOUNTS&n=%d'
+    'CURRENT_REVISION&o=DETAILED_ACCOUNTS&o=CURRENT_FILES&n=%d'
+
+
+def _gerrit_rest_api_call(uri):
+    ret_val = requests.get(uri)
+    ret_val.raise_for_status()
+    text = ret_val.text
+    text = text.replace(')]}\'', '')
+    return json.loads(text)
+
+
+def get_filters(search_filter):
+    return_filter = {}
+    valid_filters = ['owner', 'project', 'status', 'file']
+    filters = search_filter.split(' ')
+    for _filter in filters:
+        value = _filter.split(':')
+        if type(value) == list:
+            if value[0] in valid_filters:
+                return_filter[value[0]] = value[1]
+
+    return return_filter
+
+
+def calculate_reviews(gerrit_reviews, filters=None):
+    reviews = {user.user_id: {'releases': {}} for user in db_utils.get_users()}
+    reviews['_versions'] = []
+    if gerrit_reviews:
+        for gerrit_review in gerrit_reviews:
+            match = False
+            user = gerrit_review.user.user_id if gerrit_review.user else None
+            if user:
+                if filters and 'file' in filters:
+                    for f in gerrit_review.files:
+                        if re.match(filters['file'], f.filename):
+                            match = True
+                            continue
+                if filters and 'file' in filters and not match:
+                    continue
+                if reviews[user]['releases'].get(gerrit_review.version, None):
+                    reviews[user]['releases'][gerrit_review.version] += 1
+                else:
+                    reviews[user]['releases'][gerrit_review.version] = 1
+                if gerrit_review.version not in reviews['_versions']:
+                    reviews['_versions'].append(gerrit_review.version)
+    return reviews
+
+
+def reviews_to_dict(gerrit_reviews):
+    if gerrit_reviews:
+        return [{'project': review.project,
+                 'current_revision': review.commit_id,
+                 'owner': {'username': review.user.user_id if review.user else
+                           None},
+                 'date_time': review.created,
+                 '_sortkey': review.sortkey,
+                 'in_database': True
+                 } for review in gerrit_reviews]
+    return []
+
+
+def get_all_gerrit_projects():
+    return _gerrit_rest_api_call('https://review.openstack.org/projects/')
 
 
 def get_changes_by_filter(search_filter, size=300, sort_key=None):
@@ -32,159 +101,125 @@ def get_changes_by_filter(search_filter, size=300, sort_key=None):
     return result
 
 
-def insert_review_if_needed(review, version=None):
-    commit = review.get('current_revision', None)
-    project = review['project']
+def insert_gerrit_review(review):
+    LOG.debug('Inserting review %s on database' % review['change_id'])
+    user = None
     user_id = review['owner'].get('username', None)
     email = review['owner'].get('email', None)
-
-    user = None
     if user_id:
+        LOG.debug('Looking for user with user id %s in database' % user_id)
         user = User.query.filter_by(user_id=user_id).first()
     elif email:
+        LOG.debug('Looking for user with email %s in database' % email)
         user = User.query.filter_by(email=email).first()
 
-    gerrit_review = GerritReview.query.filter_by(commit_id=commit,
-                                                 project=project).first()
-    if not gerrit_review:
-        gerrit_review = GerritReview()
-        gerrit_review.user = user
-        gerrit_review.commit_id = commit
-        gerrit_review.project = project
-        gerrit_review.version = version
-        gerrit_review.sortkey = review['_sortkey']
-        gerrit_review.owner = user.user_id if user else None
-        db_session.add(gerrit_review)
-        db_session.commit()
+    LOG.debug('User in database: %s' % user)
+    current_revision = review.get('current_revision', None)
 
+    gerrit_review = GerritReview()
+    gerrit_review.commit_id = review.get('current_revision', None)
+    gerrit_review.change_id = review.get('change_id', None)
+    gerrit_review.version = review.get('version', None)
+    gerrit_review.user = user
+    gerrit_review.user_id = user.id if user else None
+    gerrit_review.project = review.get('project', None)
+    gerrit_review.status = review.get('status')
 
-def _get_all_reviews_from_database(filters):
-    return GerritReview.query.filter_by(**filters).order_by(
-        GerritReview.created.desc()).all()
+    # We only add the files when it's merged, so it's more easy to
+    # track down and don't overload the database
+    if review.get('status', None) == 'MERGED':
+        if review.get('revisions', None) and current_revision:
+            if review['revisions'].get(current_revision):
+                files = review['revisions'][current_revision].get('files')
+                for f in files.keys():
+                    gerrit_file = GerritReviewFile()
+                    gerrit_file.filename = f
+                    gerrit_review.files.append(gerrit_file)
 
-
-def _reviews_to_dict(gerrit_reviews):
-    if gerrit_reviews:
-        return [{'project': review.project,
-                 'current_revision': review.commit_id,
-                 'owner': {'username': review.user.user_id if review.user else
-                           review.owner},
-                 'date_time': review.created,
-                 '_sortkey': review.sortkey,
-                 'in_database': True
-                 } for review in gerrit_reviews]
-    return []
+    db_session.add(gerrit_review)
+    db_session.commit()
 
 
 def get_all_reviews_from_database(filters):
-    gerrit_reviews = _get_all_reviews_from_database(filters)
-    return _reviews_to_dict(gerrit_reviews)
+    files = None
+    # This is ugly, but I don't think a better solution for now
+    if 'file' in filters:
+        files = {'file': filters['file']}
+        del filters['file']
+    gerrit_reviews = db_utils.get_gerrit_reviews(filter=filters)
+    return calculate_reviews(gerrit_reviews, files)
 
 
-def get_filters(search_filter):
-    return_filter = {}
-    valid_filters = ['owner', 'project']
-    filters = search_filter.split(' ')
-    for _filter in filters:
-        value = _filter.split(':')
-        if type(value) == list:
-            if value[0] in valid_filters:
-                return_filter[value[0]] = value[1]
-
-    return return_filter
+def load_change_id(project):
+    changes = db_utils.get_gerrit_reviews()
+    return {change.change_id: (change.modified, change.status)
+            for change in changes}
 
 
-def _check_users_and_update_database(users):
-    for user in users:
-        modified = user.modified
-        now = datetime.datetime.now()
-        if abs(modified - now).days >= 0:
-            gerrit_results = get_changes_by_filter('owner:' + user.user_id + '+status:merged')
-            for result in gerrit_results:
-                db_results = _get_all_reviews_from_database({
-                    'project': result['project'],
-                    'commit_id': result['current_revision']
-                    })
-                for db_result in db_results:
-                    if not db_result.user:
-                        db_result.user = user
-                        db_result.owner = user.user_id
-    db_session.commit()
+def update_gerrit_review(gerrit_review):
+    review = db_utils.get_gerrit_reviews(
+        filter={'change_id': gerrit_review['change_id']}, first=True)
 
-def get_report_by_filter(search_filter):
+    if review:
+        db_session.commit()
 
-    users = User.query.all()
-    _check_users_and_update_database(users)
-    filters = get_filters(search_filter)
-    if 'file:' in search_filter:
-        gerrit_results = []
-    else:
-        gerrit_results = get_all_reviews_from_database(filters)
+        current_revision = gerrit_review.get('current_revision', None)
+        if gerrit_review.get('status', None) == 'MERGED':
+            if gerrit_review.get('revisions', None) and current_revision:
+                if gerrit_review['revisions'].get(current_revision):
+                    files = gerrit_review['revisions'][current_revision].get(
+                        'files')
+                    files_in_database = [f.filename for f in review.files]
+                    files_in_gerrit = files.keys() if files else []
+                    files_to_delete = list(set(files_in_database) - set(
+                        files_in_gerrit))
+                    for f in review.files:
+                        if f.filename in files_to_delete:
+                            review.files.remove(f)
 
+                    for f in files.keys():
+                        if f not in files_in_database:
+                            gerrit_file = GerritReviewFile()
+                            gerrit_file.filename = f
+                            review.files.append(gerrit_file)
+        LOG.debug(
+            'Review found in database. Change id: %s and commit id %s' %
+            (review.change_id, review.commit_id))
 
-    sort_key = None
+        review.commit_id = gerrit_review.get('current_revision', None)
 
-    if len(gerrit_results) > 0:
-        last_created = gerrit_results[0]['date_time']
-        now = datetime.datetime.now()
-        if abs(last_created - now).days >= 0:
-            sort_key = gerrit_results[1]['_sortkey']
+        user_id = gerrit_review['owner'].get('username', None)
+        email = gerrit_review['owner'].get('email', None)
 
-    list_users = [user.user_id for user in users]
-    list_emails = [user.email for user in users]
-
-    gerrit_results += get_changes_by_filter(search_filter,
-                                            sort_key=sort_key)
-    tmp = get_changes_by_filter(search_filter,
-                                sort_key=sort_key)
-
-    list_changes = []
-    releases = {}
-
-    for result in gerrit_results:
-        username = result['owner'].get('username', '')
-        email = result['owner'].get('email')
-        if not result.get('in_database', None):
-            insert_review_if_needed(result)
-        if username in list_users or email in list_emails:
-            list_changes.append(result)
-            releases[username if username != '' else email] = {
-                'releases': {}
-            }
-
-    projects = {}
-    version_table = []
-    for change in list_changes:
-        filename = cfg.CONF.data_json
-        if not projects.get(change['project'], None):
-            repos = utils.get_repos_by_module(filename, change['project'])
-            repo_git = vcs.get_vcs(repos, cfg.CONF.sources_root)
-            commit_index = repo_git.fetch()
-            projects[change['project']] = commit_index
-
-        commit_id = change['current_revision']
-        user_id = change['owner'].get('username') or change['owner']['email']
-        version = projects[change['project']].get(commit_id, None)
-
-        if version:
-            if not releases[user_id]['releases'].get(version, None):
-                releases[user_id]['releases'][version] = 0
-            releases[user_id]['releases'][version] += 1
-            if version not in version_table:
-                version_table.append(version)
-
-    releases['_versions'] = sorted(version_table)
-
-    return releases
+        user = (db_utils.get_users(filter={'user_id': user_id}, first=True) or
+                db_utils.get_users(filter={'email': email}, first=True))
+        review.user = user
+        review.user_id = user.id if user else None
+        review.status = gerrit_review['status']
+        db_session.commit()
 
 
-def _gerrit_rest_api_call(uri):
-    ret_val = requests.get(uri)
-    ret_val.raise_for_status()
-    text = ret_val.text
-    text = text.replace(')]}\'', '')
-    return json.loads(text)
+def process_reviews(project, last_run=datetime.now()):
+    change_ids = load_change_id(project)
 
+    LOG.debug('Fetching all review for project %s upstream' % project)
+    gerrit_results = get_changes_by_filter('project:' + project)
 
-def get_all_projects():
-    return _gerrit_rest_api_call('https://review.openstack.org/projects/')
+    filename = cfg.CONF.data_json
+    LOG.debug('Fetching the commits')
+    repos = utils.get_repos_by_module(filename, project)
+    repo_git = vcs.get_vcs(repos, cfg.CONF.sources_root)
+    commit_index = repo_git.fetch()
+
+    for gerrit_result in gerrit_results:
+        if gerrit_result['change_id'] in change_ids:
+            # We need to check if we need to update
+            last_modified, status = change_ids[gerrit_result['change_id']]
+            update_gerrit_review(gerrit_result)
+        else:
+            if gerrit_result.get('current_revision', None) in commit_index:
+                version = commit_index.get(
+                    gerrit_result.get('current_revision', None), None)
+                if version:
+                    gerrit_result['version'] = version
+            insert_gerrit_review(gerrit_result)

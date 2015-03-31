@@ -1,9 +1,7 @@
 from flask.ext.script import Manager
 
-import stackquery.dashboard.app as app
-
+from stackquery.dashboard import app
 
 if __name__ == "__main__":
-
-    manager = Manager(app.app)
+    manager = Manager(app.create_app())
     manager.run()

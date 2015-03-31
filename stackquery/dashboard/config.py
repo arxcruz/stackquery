@@ -17,6 +17,10 @@ OPTS = [
                help='SSH key for gerrit review system access'),
     cfg.StrOpt('ssh-username', default='dashboard',
                help='SSH username for gerrit review system access'),
-    cfg.StrOpt('data-json', default='/home/acruz/Projetos/pessoais/stackquery-dashboard/etc/default_data.json',
+    cfg.StrOpt('data-json',
+               default='/home/acruz/Projetos/pessoais/stackquery/'
+               'etc/default_data.json',
                help='Default file containing json data'),
+    cfg.StrOpt('database', default='sqlite:///dashboard.db',
+               help='Default sqlite database'),
 ]

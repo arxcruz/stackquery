@@ -6,7 +6,7 @@ from flask import request
 from flask import session
 from flask import url_for
 
-from stackquery.db.database import db_session
+from stackquery.db.session import db_session
 from stackquery.db.models import RedHatBugzillaReport
 from forms import RedHatBugzillaReportForm
 import utils

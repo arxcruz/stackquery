@@ -17,11 +17,13 @@ from __future__ import absolute_import, print_function
 import sys
 import setuptools
 import pip.req
+import uuid
 from setuptools.command.test import test as TestCommand
 
-import dashboard
+import stackquery.dashboard
 
-install_reqs = pip.req.parse_requirements('requirements.txt')
+install_reqs = pip.req.parse_requirements('requirements.txt',
+                                          session=uuid.uuid1())
 
 
 class Tox(TestCommand):
@@ -38,12 +40,12 @@ class Tox(TestCommand):
 
 
 setuptools.setup(
-    name='stackquery-dashboard',
-    version=dashboard.__version__,
+    name='stackquery',
+    version=stackquery.dashboard.__version__,
     author='Arx Cruz',
     author_email='acruz@redhat.com',
-    url='https://github.com/arxcruz/stackquery-dashboard',
-    packages=['dashboard'],
+    url='https://github.com/arxcruz/stackquery',
+    packages=['stackquery'],
     license='Apache License, Version 2.0',
     description='Web UI for return statistics from stackalytics.com',
     include_package_data=True,

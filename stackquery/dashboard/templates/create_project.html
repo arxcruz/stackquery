@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% from 'common.html' import render_field %}
+
+{% block title %}Stackquery - Create Project{% endblock title%}
+
+{% block java_script %}
+
+{% endblock java_script %}
+
+{% block main %}
+<form method="POST" action="{{ url_for('dashboard.dashboard_create_project') }}">
+        {{ render_field(form.name) }}
+        {{ render_field(form.git_url) }}
+    <p><input type="submit" value="Create"></p>
+</form>
+{% endblock main %}

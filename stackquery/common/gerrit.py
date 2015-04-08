@@ -43,14 +43,18 @@ def get_filters(search_filter):
     return return_filter
 
 
-def calculate_reviews(gerrit_reviews, filters=None):
-    reviews = {user.user_id: {'releases': {}} for user in db_utils.get_users()}
+def calculate_reviews(gerrit_reviews, team_id, filters=None):
+    users = db_utils.get_users_by_team(team_id)
+    reviews = {user.user_id: {'releases': {}}
+               for user in users}
+    print reviews
+    print db_utils.get_users_by_team(team_id)
     reviews['_versions'] = []
     if gerrit_reviews:
         for gerrit_review in gerrit_reviews:
             match = False
             user = gerrit_review.user.user_id if gerrit_review.user else None
-            if user:
+            if user and user in reviews.keys():
                 if filters and 'file' in filters:
                     for f in gerrit_review.files:
                         if re.match(filters['file'], f.filename):
@@ -62,8 +66,9 @@ def calculate_reviews(gerrit_reviews, filters=None):
                     reviews[user]['releases'][gerrit_review.version] += 1
                 else:
                     reviews[user]['releases'][gerrit_review.version] = 1
-                if gerrit_review.version not in reviews['_versions']:
+                if gerrit_review.version and gerrit_review.version not in reviews['_versions']:
                     reviews['_versions'].append(gerrit_review.version)
+    reviews['_versions'].sort()
     return reviews
 
 
@@ -140,14 +145,14 @@ def insert_gerrit_review(review):
     db_session.commit()
 
 
-def get_all_reviews_from_database(filters):
+def get_all_reviews_from_database(filters, team_id):
     files = None
     # This is ugly, but I don't think a better solution for now
     if 'file' in filters:
         files = {'file': filters['file']}
         del filters['file']
     gerrit_reviews = db_utils.get_gerrit_reviews(filter=filters)
-    return calculate_reviews(gerrit_reviews, files)
+    return calculate_reviews(gerrit_reviews, team_id, files)
 
 
 def load_change_id(project):
@@ -212,14 +217,10 @@ def process_reviews(project, last_run=datetime.now()):
     commit_index = repo_git.fetch()
 
     for gerrit_result in gerrit_results:
+        version = commit_index.get(
+            gerrit_result.get('current_revision', None), 'unknow')
+        gerrit_result['version'] = version
         if gerrit_result['change_id'] in change_ids:
-            # We need to check if we need to update
-            last_modified, status = change_ids[gerrit_result['change_id']]
             update_gerrit_review(gerrit_result)
         else:
-            if gerrit_result.get('current_revision', None) in commit_index:
-                version = commit_index.get(
-                    gerrit_result.get('current_revision', None), None)
-                if version:
-                    gerrit_result['version'] = version
             insert_gerrit_review(gerrit_result)

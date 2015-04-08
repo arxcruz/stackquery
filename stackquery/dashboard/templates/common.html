@@ -117,6 +117,19 @@
 </div>
 {% endmacro %}
 
+{% macro detail_stackalytics_user(user) %}
+<tr>
+    <td><input type="checkbox" name="checkbox" class="checkbox1"></td>
+    <td>{{ user['name'] }}</td>
+    <td>{{ user['id'] }}</td>
+    <td user-id="{{ user['id'] }}">
+        <a class="add-user-link" href="#" add-user-url="{{ url_for('rest_api.insert_user') }}">
+            <i class="icon-plus"></i>
+        </a>
+    </td>
+</tr>
+{% endmacro %}
+
 {% macro detail_user(user) %}
 <tr>
     <td>{{ user.name }}</td>
@@ -124,6 +137,21 @@
     <td>{{ user.email }}</td>
     <td user-id="{{ user.id }}">
         <a class="user-delete-link" href="#" data-delete-url="{{ url_for('rest_api.delete_user', user_id=user.id) }}">
+            <i class="icon-trash"></i>
+        </a>
+        <a class="user-edit-link" href="{{ url_for('dashboard.dashboard_edit_user', user_id=user.id) }}">
+            <i class="icon-pencil"></i>
+        </a>
+    </td>
+</tr>
+{% endmacro %}
+
+{% macro detail_project(project) %}
+<tr>
+    <td>{{ project.name }}</td>
+    <td>{{ project.git_url }}</td>
+    <td user-id="{{ project.id }}">
+        <a class="user-delete-link" href="#" data-delete-url="{{ url_for('rest_api.delete_project', project_id=project.id) }}">
             <i class="icon-trash"></i>
         </a>
     </td>

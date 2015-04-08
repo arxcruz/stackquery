@@ -16,21 +16,30 @@
 				success: function(response) {
 					if (response.status == "OK") {
 						delete_row.remove();
-						$("#user-success").show();
+						$("#user-success").fadeTo(1000, 500).slideUp(500, function() {
+                            $("#user-success").alert("close");
+                        });
 					}
 				},
 				error: function(response) {
-					$("#user-failure").show();
+					$("#user-failure").fadeTo(1000, 500).slideUp(500, function() {
+                        $("#user-failure").alert("close");
+                    });
 				}
 			})
 		})
 	});
-
 </script>
 {% endblock java_script %}
-
 {% block main %}
-
+<div class="alert alert-success fade in" id="user-success" style="display:none;">
+    <button type="button" class="close" onclick="$(this).parent().hide();">×</button>
+    User deleted successfully
+</div>
+<div class="alert alert-error fade in" id="user-failure" style="display:none;">
+    <button type="button" class="close" onclick="$(this).parent().hide();">×</button>
+    An error occurred
+</div>
 <table class="table table-striped">
 	<tr>
         <td>Name</td>
@@ -42,13 +51,4 @@
 	{{ detail_user(user) }}
 {% endfor %}
 </table>
-
-<div class="alert alert-success fade in" id="user-success" style="display:none;">
-    <button type="button" class="close" onclick="$(this).parent().hide();">×</button>
-    User deleted successfully
-</div>
-<div class="alert alert-error fade in" id="user-failure" style="display:none;">
-    <button type="button" class="close" onclick="$(this).parent().hide();">×</button>
-    An error occurred
-</div>
 {% endblock main %}

@@ -19,12 +19,13 @@ def gerrit_report_index():
         search_filter = gerrit.get_filters(filters)
         error = None
         before = datetime.datetime.now()
-        try:
-            releases = gerrit.get_all_reviews_from_database(
-                filters=search_filter)
-        except Exception as e:
-            error = 'Invalid query: %s' % e.message
-            releases = None
+        #try:
+        team = request.form.get('team')
+        releases = gerrit.get_all_reviews_from_database(
+            search_filter, team)
+        #except Exception as e:
+        #    error = 'Invalid query: %s' % e.message
+        #    releases = None
         after = datetime.datetime.now()
         seconds = abs(after - before).seconds
         return render_template('gerrit/index.html',

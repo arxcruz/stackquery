@@ -2,17 +2,25 @@
 
 {% from 'common.html' import render_field %}
 
-{% block title %}Stackquery - Create user{% endblock title%}
+{% if request.endpoint.endswith('edit_user') %}
+    {% set title = 'Stackquery - Edit user' %}
+    {% set button_name = 'Update' %}
+{% else %}
+    {% set title = 'Stackquery - Create user' %}
+    {% set button_name = 'Create' %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock title%}
 
 {% block java_script %}
 
 {% endblock java_script %}
 
 {% block main %}
-<form method="POST" action="{{ url_for('dashboard.dashboard_create_user') }}">
+<form method="POST">
     	{{ render_field(form.name) }}
     	{{ render_field(form.user_id) }}
     	{{ render_field(form.email) }}
- 	<p><input type="submit" value="Create"></p>
+ 	<p><input type="submit" value="{{ button_name }}"></p>
 </form>
 {% endblock main %}

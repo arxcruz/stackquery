@@ -5,7 +5,29 @@
 {% block title %}Stackquery - Gerrit report{% endblock title%}
 
 {% block java_script %}
+<script type="text/javascript">
+    function loadComboBox(select, url, data, json_key, json_value) {
+      $.ajax({
+         type: "GET",
+         url: url,
+         data: data,
+         dataType: "json",
+         success: function(json){
+            var options = "";
+            $.each(json, function(key, value){
+                $(select).append($("<option>", {
+                    value: value[json_key].toString().toLowerCase(),
+                    text: value[json_value]
+                }));
+            });
+         }
+      });
+   }
 
+$(document).ready(function(){
+    $("#team").load(loadComboBox("#team", "{{ url_for('rest_api.get_teams') }}", {}, 'id', 'name'));
+});
+</script>
 {% endblock java_script %}
 
 {% block main %}

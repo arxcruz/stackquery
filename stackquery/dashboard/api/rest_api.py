@@ -1,10 +1,14 @@
+from flask import abort
 from flask import Blueprint
 from flask import jsonify
+from flask import request
 
 from stackquery.db.session import db_session
 from stackquery.db.models import Release
 from stackquery.db.models import Team
 from stackquery.db.models import User
+from stackquery.db.models import Project
+from stackquery.db import utils as db_utils
 
 import simplejson as json
 
@@ -29,7 +33,7 @@ def get_teams():
 
 @rest_api.route('/api/users/')
 def get_users():
-    users = User.query.all()
+    users = User.query.order_by(User.name.asc()).all()
     return json.dumps(list(users), default=date_handler)
 
 
@@ -37,11 +41,26 @@ def get_users():
 def delete_user(user_id):
     user = User.query.get(user_id)
     if user is None:
-        request = jsonify({'status': 'Not Found'})
-        request.status = 404
-        return request
+        requests = jsonify({'status': 'Not Found'})
+        requests.status = 404
+        return requests
 
     db_session.delete(user)
+    db_session.commit()
+    return jsonify({'status': 'OK'})
+
+
+@rest_api.route('/api/users/create/', methods=['POST'])
+def insert_user():
+    content = request.get_json(force=True)
+    if (not content or 'name' not in content or 'user_id'
+            not in content):
+        abort(400)
+
+    user = User()
+    user.name = content.get('name')
+    user.user_id = content.get('user_id')
+    db_session.add(user)
     db_session.commit()
     return jsonify({'status': 'OK'})
 
@@ -50,9 +69,9 @@ def delete_user(user_id):
 def delete_team(team_id):
     team = Team.query.get(team_id)
     if team is None:
-        request = jsonify({'status': 'Not Found'})
-        request.status = 404
-        return request
+        requests = jsonify({'status': 'Not Found'})
+        requests.status = 404
+        return requests
 
     db_session.delete(team)
     db_session.commit()
@@ -65,9 +84,9 @@ def delete_user_from_team(team_id, user_id):
     team = Team.query.get(team_id)
     user = User.query.get(user_id)
     if team is None or user is None:
-        request = jsonify({'status': 'Not Found'})
-        request.status = 404
-        return request
+        requests = jsonify({'status': 'Not Found'})
+        requests.status = 404
+        return requests
 
     team.users.remove(user)
     db_session.commit()
@@ -78,8 +97,42 @@ def delete_user_from_team(team_id, user_id):
 def get_users_from_team(team_id):
     team = Team.query.get(team_id)
     if team is None:
-        request = jsonify({'status': 'Not Found'})
-        request.status = 404
-        return request
+        requests = jsonify({'status': 'Not Found'})
+        requests.status = 404
+        return requests
 
     return json.dumps(list(team.users), default=date_handler)
+
+
+@rest_api.route('/api/teams/<int:team_id>/projects/')
+def get_projects_from_team(team_id):
+    team = Team.query.get(team_id)
+    if team is None:
+        requests = jsonify({'status': 'Not Found'})
+        requests.status = 404
+        return requests
+
+    return json.dumps(list(team.projects), default=date_handler)
+
+
+@rest_api.route('/api/projects/')
+def get_projects():
+    projects = db_utils.get_projects()
+    if projects is None:
+        requests = jsonify({'status': 'Not Found'})
+        requests.status = 404
+        return requests
+
+    return json.dumps(list(projects), default=date_handler)
+
+
+@rest_api.route('/api/projects/<int:project_id>/delete', methods=['DELETE'])
+def delete_project(project_id):
+    project = Project.query.get(project_id)
+    if project is None:
+        requests = jsonify({'status': 'Not Found'})
+        requests.status = 404
+        return requests
+    db_session.delete(project)
+    db_session.commit()
+    return jsonify({'status': 'OK'})

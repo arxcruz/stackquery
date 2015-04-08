@@ -38,22 +38,41 @@
 
 
 $(document).ready(function(){
+    // Users
     $("#available-users").load(loadOptions("#available-users", "{{ url_for('rest_api.get_users') }}" ));
-    $("#add").click(function() {
+    $("#add-user").click(function() {
 		return !$("#available-users option:selected").appendTo("#selected-users");
 	});
 
-	$("#remove").click(function() {
+	$("#remove-user").click(function() {
 		return !$("#selected-users option:selected").appendTo("#available-users");
 	});
 
-	$("#add-all").click(function() {
+	$("#add-all-users").click(function() {
 		return !$("#available-users option").prop("selected", true).appendTo("#selected-users");
 	});
 
-	$("#remove-all").click(function() {
+	$("#remove-all-users").click(function() {
 		return !$("#selected-users option").prop("selected", true).appendTo("#available-users");
 	});
+
+    // Projects 
+    $("#available-projects").load(loadOptions("#available-projects", "{{ url_for('rest_api.get_projects') }}" ));
+    $("#add-project").click(function() {
+        return !$("#available-projects option:selected").appendTo("#selected-projects");
+    });
+
+    $("#remove-project").click(function() {
+        return !$("#selected-projects option:selected").appendTo("#available-projects");
+    });
+
+    $("#add-all-projects").click(function() {
+        return !$("#available-projects option").prop("selected", true).appendTo("#selected-projects");
+    });
+
+    $("#remove-all-projects").click(function() {
+        return !$("#selected-projects option").prop("selected", true).appendTo("#available-projects");
+    });
 
 	{% if request.endpoint.endswith('edit_team') %}
 	$.ajax({
@@ -68,6 +87,18 @@ $(document).ready(function(){
 			})
 		}
 	});
+    $.ajax({
+        type: "GET",
+        url: "{{ url_for('rest_api.get_projects_from_team', team_id=team_id) }}",
+        data: {},
+        dataType: "json",
+        success: function(json) {
+            $.each(json, function(key, value) {
+                console.log(value);
+                !$("#available-projects option[value='" + value['id'] + "']").appendTo("#selected-projects");
+            })
+        }
+    });
 	{% endif %}
 });
 
@@ -91,16 +122,16 @@ $(document).ready(function(){
     	</div>
     	<div class="span2">
     		<div class="top5">
-    		<button class="btn btn-primary btn-block" id="add">Add</button>
+    		<button class="btn btn-primary btn-block" id="add-user">Add</button>
     		</div>
     		<div class="top5">
-    		<button class="btn btn-primary btn-block" id="add-all">Add all</button>
+    		<button class="btn btn-primary btn-block" id="add-all-users">Add all</button>
     		</div>
     		<div class="top5">
-    		<button class="btn btn-primary btn-block" id="remove">Remove</button>
+    		<button class="btn btn-primary btn-block" id="remove-user">Remove</button>
     		</div>
     		<div class="top5">
-    		<button class="btn btn-primary btn-block" id="remove-all">Remove all</button>
+    		<button class="btn btn-primary btn-block" id="remove-all-users">Remove all</button>
     		</div>
     	</div>
     	<div class="span2">
@@ -108,6 +139,33 @@ $(document).ready(function(){
         	<select id="selected-users" size="10" name="selected-users" multiple class="form-control">
         	</select>
     	</div>
+    </div>
+    <div class="row"></div>
+    <div class="row">
+        <div class="span3">
+            <label for="release">Projects available:</label>
+            <select id="available-projects" size="20" name="available-projects" multiple class="form-control">
+            </select>
+        </div>
+        <div class="span2">
+            <div class="top5">
+            <button class="btn btn-primary btn-block" id="add-project">Add</button>
+            </div>
+            <div class="top5">
+            <button class="btn btn-primary btn-block" id="add-all-projects">Add all</button>
+            </div>
+            <div class="top5">
+            <button class="btn btn-primary btn-block" id="remove-project">Remove</button>
+            </div>
+            <div class="top5">
+            <button class="btn btn-primary btn-block" id="remove-all-projects">Remove all</button>
+            </div>
+        </div>
+        <div class="span2">
+            <label for="release">Projects selected:</label>
+            <select id="selected-projects" size="20" name="selected-projects" multiple class="form-control">
+            </select>
+        </div>
     </div>
     <div class="row">
         <div class="span4">

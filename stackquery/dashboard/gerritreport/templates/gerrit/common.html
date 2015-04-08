@@ -12,7 +12,7 @@
     <tr>
         {% if user != '_versions' %}
             <td>{{ user }}</td>
-            {% for version in releases['_versions'] %}
+            {% for version in releases['_versions'] | sort %}
                 <td>{{ releases[user]['releases'].get(version, 0) }}</td>
             {% endfor %}
         {% endif %}

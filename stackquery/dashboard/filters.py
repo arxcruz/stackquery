@@ -1,4 +1,4 @@
-from models import RedHatBugzillaReport
+from stackquery.db.models import RedHatBugzillaReport
 
 import re
 

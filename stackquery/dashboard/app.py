@@ -38,6 +38,8 @@ def create_app(init_database=False):
     app.config['DEBUG'] = cfg.CONF.debug
     return app
 
+app = create_app()
+
 if __name__ == '__main__':
     app = create_app()
     app.run(cfg.CONF.listen_host, cfg.CONF.listen_port)

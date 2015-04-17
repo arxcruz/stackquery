@@ -1,14 +1,12 @@
 import json
 import requests
 
-from oslo.config import cfg
-
 from stackquery.common import utils
 from stackquery.common import vcs
 from stackquery.db.models import User
 from stackquery.db.models import GerritReview
 from stackquery.db.models import GerritReviewFile
-from stackquery.db.session import db_session
+from stackquery.db.database import db_session
 from stackquery.db import utils as db_utils
 
 import re
@@ -210,7 +208,9 @@ def process_reviews(project, last_run=datetime.now()):
     LOG.debug('Fetching all review for project %s upstream' % project)
     gerrit_results = get_changes_by_filter('project:' + project)
 
-    filename = cfg.CONF.data_json
+    from stackquery.dashboard.app import app
+    
+    filename = app.config['DATA_JSON']
     LOG.debug('Fetching the commits')
     repos = utils.get_repos_by_module(filename, project)
     repo_git = vcs.get_vcs(repos, cfg.CONF.sources_root)

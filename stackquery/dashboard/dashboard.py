@@ -3,17 +3,24 @@ from flask import Blueprint
 from flask import redirect
 from flask import render_template
 from flask import request
+from flask import session
 from flask import url_for
 
+from stackquery.common import gerrit
+from stackquery.common import utils
 from stackquery.dashboard import stackalytics
 from stackquery.dashboard.forms import ProjectForm
+from stackquery.dashboard.forms import RedHatBugzillaReportForm
 from stackquery.dashboard.forms import UserForm
 from stackquery.dashboard.forms import TeamForm
-from stackquery.db.session import db_session
+from stackquery.db.database import db_session
+from stackquery.db.models import Project
+from stackquery.db.models import RedHatBugzillaReport
 from stackquery.db.models import Team
 from stackquery.db.models import User
-from stackquery.db.models import Project
 from stackquery.db import utils as db_utils
+
+import datetime
 
 
 dashboard = Blueprint('dashboard', __name__)
@@ -187,3 +194,93 @@ def dashboard_create_project():
         db_session.commit()
         return redirect(url_for('dashboard.dashboard_projects'))
     return render_template('create_project.html', form=form)
+
+# Gerrit report
+
+
+@dashboard.route('/gerrit/', methods=['GET', 'POST'])
+def gerrit_report_index():
+    if request.method == 'POST':
+        filters = request.form.get('filter')
+        filters += ' status:MERGED'
+        search_filter = gerrit.get_filters(filters)
+        error = None
+        before = datetime.datetime.now()
+        #try:
+        team = request.form.get('team')
+        releases = gerrit.get_all_reviews_from_database(
+            search_filter, team)
+        #except Exception as e:
+        #    error = 'Invalid query: %s' % e.message
+        #    releases = None
+        after = datetime.datetime.now()
+        seconds = abs(after - before).seconds
+        return render_template('gerrit/index.html',
+                               releases=releases, seconds=seconds,
+                               error=error)
+
+    return render_template('gerrit/index.html')
+
+# Bugzilla reports
+
+
+@dashboard.route('/rhbzreports/')
+def redhat_bugzilla_report_index():
+    reports = RedHatBugzillaReport.query.all()
+    return render_template('bzreports/index.html', reports=reports)
+
+
+@dashboard.route('/rhbzreports/show/<int:report_id>',
+                              methods=['GET', 'POST'])
+def redhat_bugzilla_report_show(report_id):
+    if request.method == 'POST':
+        session['username'] = request.form['username']
+        session['password'] = request.form['password']
+
+    username = session.get('username', None)
+    password = session.get('password', None)
+
+    if username and password:
+        reports = utils.get_report_by_id(report_id, username, password)
+
+        if not reports:
+            session['username'] = None
+            session['password'] = None
+            return render_template('bzreports/report.html', require_auth=True,
+                                   failure=True)
+        return render_template('bzreports/report.html', reports=reports)
+    else:
+        return render_template('bzreports/report.html', require_auth=True)
+
+
+@dashboard.route('/rhbzreports/create/', methods=['GET', 'POST'])
+def redhat_bugzilla_report_create():
+    form = RedHatBugzillaReportForm(request.form)
+    if request.method == 'POST' and form.validate():
+        rhbz_report = RedHatBugzillaReport()
+        rhbz_report.name = form.name.data
+        rhbz_report.url = utils.parse_url(form.url.data)
+        rhbz_report.description = form.description.data
+
+        db_session.add(rhbz_report)
+        db_session.commit()
+        return redirect(url_for(
+            'dashboard.redhat_bugzilla_report_index'))
+
+    return render_template('bzreports/create_report.html', form=form)
+
+
+@dashboard.route('/rhbzreports/edit/<int:report_id>/',
+                              methods=['GET', 'POST'])
+def redhat_bugzilla_report_edit(report_id):
+    rhbz_report = RedHatBugzillaReport.query.get(report_id)
+    if rhbz_report is None:
+        abort(404)
+    form = RedHatBugzillaReportForm(request.form, rhbz_report)
+    if request.method == 'POST':
+        rhbz_report.name = form.name.data
+        rhbz_report.url = form.url.data
+        rhbz_report.description = form.description.data
+        return redirect(url_for(
+            'dashboard.redhat_bugzilla_report_index'))
+    return render_template('bzreports/create_report.html', form=form)

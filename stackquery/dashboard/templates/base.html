@@ -38,14 +38,14 @@
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="{{ url_for('dashboard.dashboard_index')}}">Default report</a></li>
                             <li class="divider"></li>
-                            <li><a href="{{ url_for('gerrit_report.gerrit_report_index') }}">Gerrit Review</a></li>
+                            <li><a href="{{ url_for('dashboard.gerrit_report_index') }}">Gerrit Review</a></li>
                             <li class="divider"></li>
-                            <li><a href="{{ url_for('redhat_bugzilla_report.create_report') }}">Create Red Hat Bugzilla report</a></li>
-                            <li><a href="{{ url_for('redhat_bugzilla_report.redhat_bugzilla_report_index') }}">List all Red Hat Bugzilla reports</a></li>
+                            <li><a href="{{ url_for('dashboard.redhat_bugzilla_report_create') }}">Create Red Hat Bugzilla report</a></li>
+                            <li><a href="{{ url_for('dashboard.redhat_bugzilla_report_index') }}">List all Red Hat Bugzilla reports</a></li>
                             <li class="divider"></li>
                             {% set redhat_bugzilla_reports = get_redhat_bugzilla_reports() %}
                             {% for rh_bz_report in redhat_bugzilla_reports %}
-                                <li id="menu_{{ rh_bz_report.id }}"><a href="{{ url_for('redhat_bugzilla_report.show_report', report_id=rh_bz_report.id) }}">{{ rh_bz_report.name }}</a></li>
+                                <li id="menu_{{ rh_bz_report.id }}"><a href="{{ url_for('dashboard.redhat_bugzilla_report_show', report_id=rh_bz_report.id) }}">{{ rh_bz_report.name }}</a></li>
                             {% endfor %}
                         </ul>
                     </li>

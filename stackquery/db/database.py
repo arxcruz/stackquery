@@ -1,23 +1,25 @@
-from oslo.config import cfg
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker, backref, relation
+from sqlalchemy.ext.declarative import declarative_base
 
-import logging
+from stackquery.dashboard import app
 
-LOG = logging.getLogger(__name__)
+engine = create_engine(app.config['DATABASE_URI'],
+                       convert_unicode=True)
 
-from stackquery.common import gerrit
-from stackquery.common import utils
-from stackquery.db.models import Project
-from stackquery.db.models import RedHatBugzillaReport
-from stackquery.db.models import Release
-from stackquery.db.models import Team
-from stackquery.db.models import User
-from stackquery.db.session import Base
-from stackquery.db.session import db_session
-from stackquery.db.session import engine
+db_session = scoped_session(sessionmaker(autocommit=False,
+                                         autoflush=False,
+                                         bind=engine))
 
 
 def init_db(fill_table=False):
     # Creating tables
+    from stackquery.db.models import Project
+    from stackquery.db.models import RedHatBugzillaReport
+    from stackquery.db.models import Release
+    from stackquery.db.models import Team
+    from stackquery.db.models import User
+
     Base.metadata.create_all(bind=engine)
 
     if fill_table:
@@ -128,11 +130,9 @@ def _populate_release_table():
 
 def _populate_project_table():
 
-    filename = cfg.CONF.data_json
-
+    filename = app.config['DATA_JSON']
     openstack_projects = gerrit.get_all_gerrit_projects()
     for openstack_project in openstack_projects.keys():
-        LOG.debug('Creating project: %s' % openstack_project)
         project = Project()
         project.name = openstack_project
         repos = utils.get_repos_by_module(filename, openstack_project)
@@ -140,3 +140,6 @@ def _populate_project_table():
         db_session.add(project)
 
     db_session.commit()
+
+Base = declarative_base(name='Base')
+Base.query = db_session.query_property()

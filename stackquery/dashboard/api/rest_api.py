@@ -3,11 +3,12 @@ from flask import Blueprint
 from flask import jsonify
 from flask import request
 
-from stackquery.db.session import db_session
+from stackquery.db.database import db_session
+from stackquery.db.models import Project
+from stackquery.db.models import RedHatBugzillaReport
 from stackquery.db.models import Release
 from stackquery.db.models import Team
 from stackquery.db.models import User
-from stackquery.db.models import Project
 from stackquery.db import utils as db_utils
 
 import simplejson as json
@@ -136,3 +137,41 @@ def delete_project(project_id):
     db_session.delete(project)
     db_session.commit()
     return jsonify({'status': 'OK'})
+
+# Bugzilla reports
+
+
+@rest_api.route('/api/bzreports')
+def get_reports():
+    releases = RedHatBugzillaReport.query.all()
+    return json.dumps(list(releases), default=date_handler)
+
+
+@rest_api.route('/api/bzreports/<int:report_id>/delete',
+                       methods=['DELETE'])
+def delete_report(report_id):
+    report = RedHatBugzillaReport.query.get(report_id)
+    if report is None:
+        request = jsonify({'status': 'Not Found'})
+        request.status = 404
+        return request
+
+    db_session.delete(report)
+    db_session.commit()
+    return jsonify({'status': 'OK'})
+
+
+@rest_api.route('/api/bzreports/<int:report_id>/')
+def get_report_by_id(report_id):
+    if not request.json or not 'username' and 'password' in request.json:
+        abort(404)
+
+    username = request.json['username']
+    password = request.json['password']
+
+    reports = utils.get_report_by_id(report_id, username, password)
+
+    if reports:
+        return json.dumps(reports, indent=4)
+    else:
+        return jsonify({'Error': 'Invalid username or password'})

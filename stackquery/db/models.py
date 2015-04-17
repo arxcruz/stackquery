@@ -3,18 +3,12 @@ from datetime import datetime
 
 from sqlalchemy import Boolean, Column
 from sqlalchemy import DateTime, Integer, String, Table, Text
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.orm import relationship
 
-from stackquery.db.session import Base
+from stackquery.db.database import Base
 
-
-class DictSerializable(object):
-    def _asdict(self):
-        result = OrderedDict()
-        for key in self.__mapper__.c.keys():
-            result[key] = getattr(self, key)
-        return result
 
 user_team_association = Table('user_team_association', Base.metadata,
                               Column('user_id', Integer,
@@ -27,6 +21,14 @@ project_team_association = Table('project_team_association', Base.metadata,
                                         ForeignKey('projects.id')),
                                  Column('team_id', Integer,
                                         ForeignKey('team.id')))
+
+
+class DictSerializable(object):
+    def _asdict(self):
+        result = OrderedDict()
+        for key in self.__mapper__.c.keys():
+            result[key] = getattr(self, key)
+        return result
 
 
 class Team(Base, DictSerializable):

@@ -6,29 +6,27 @@ from flask import request
 from flask import session
 from flask import url_for
 
-from stackquery.common import gerrit
-from stackquery.common import utils
-from stackquery.dashboard import stackalytics
-from stackquery.dashboard.forms import ProjectForm
-from stackquery.dashboard.forms import RedHatBugzillaReportForm
-from stackquery.dashboard.forms import UserForm
-from stackquery.dashboard.forms import TeamForm
-from stackquery.db.database import db_session
-from stackquery.db.models import Project
-from stackquery.db.models import RedHatBugzillaReport
-from stackquery.db.models import Team
-from stackquery.db.models import User
-from stackquery.db import utils as db_utils
+from stackquery.database import db_session
+from stackquery.libs import stackalytics
+from stackquery.models.project import Project
+from stackquery.models.report import RedHatBugzillaReport
+from stackquery.models.team import Team
+from stackquery.models.user import User
+from stackquery.forms.project import ProjectForm
+from stackquery.forms.report import RedHatBugzillaReportForm
+from stackquery.forms.team import TeamForm
+from stackquery.forms.user import UserForm
+
+from stackquery.libs import utils
 
 import datetime
 
-
-dashboard = Blueprint('dashboard', __name__)
+mod = Blueprint('dashboard', __name__)
 
 # Index
 
 
-@dashboard.route('/', methods=['GET', 'POST'])
+@mod.route('/', methods=['GET', 'POST'])
 def dashboard_index():
     if request.method == 'POST':
         release = request.form.get('release')
@@ -50,13 +48,13 @@ def dashboard_index():
 # Teams
 
 
-@dashboard.route('/teams/')
+@mod.route('/teams/')
 def dashboard_teams():
     teams = Team.query.all()
     return render_template('list_teams.html', teams=teams)
 
 
-@dashboard.route('/teams/<int:team_id>/edit/', methods=['GET', 'POST'])
+@mod.route('/teams/<int:team_id>/edit/', methods=['GET', 'POST'])
 def dashboard_edit_team(team_id):
     team = Team.query.get(team_id)
     if team is None:
@@ -96,7 +94,7 @@ def dashboard_edit_team(team_id):
     return render_template('create_team.html', form=form, team_id=team_id)
 
 
-@dashboard.route('/teams/create/', methods=['GET', 'POST'])
+@mod.route('/teams/create/', methods=['GET', 'POST'])
 def dashboard_create_team():
     form = TeamForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -119,13 +117,13 @@ def dashboard_create_team():
 # Users
 
 
-@dashboard.route('/users/', methods=['GET'])
+@mod.route('/users/', methods=['GET'])
 def dashboard_users():
     users = User.query.order_by(User.name.asc()).all()
     return render_template('list_users.html', users=users)
 
 
-@dashboard.route('/users/<int:user_id>/edit/', methods=['GET', 'POST'])
+@mod.route('/users/<int:user_id>/edit/', methods=['GET', 'POST'])
 def dashboard_edit_user(user_id):
     user = User.query.get(user_id)
     if user is None:
@@ -140,7 +138,7 @@ def dashboard_edit_user(user_id):
     return render_template('create_user.html', form=form)
 
 
-@dashboard.route('/users/create/', methods=['GET', 'POST'])
+@mod.route('/users/create/', methods=['GET', 'POST'])
 def dashboard_create_user():
     form = UserForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -154,7 +152,7 @@ def dashboard_create_user():
     return render_template('create_user.html', form=form)
 
 
-@dashboard.route('/users/export/', methods=['GET', 'POST'])
+@mod.route('/users/export/', methods=['GET', 'POST'])
 def dashboard_export_users():
     users = None
     error = False
@@ -168,7 +166,7 @@ def dashboard_export_users():
                 if str(user['id'].strip()) in user_ids:
                     users.remove(user)
 
-        except Exception as e:
+        except Exception:
             error = True
 
     return render_template('export_users.html', users=users, error=error)
@@ -177,13 +175,13 @@ def dashboard_export_users():
 # Projects
 
 
-@dashboard.route('/projects/')
+@mod.route('/projects/')
 def dashboard_projects():
-    projects = db_utils.get_projects()
+    projects = Project.query.order_by(Project.name).all()
     return render_template('list_projects.html', projects=projects)
 
 
-@dashboard.route('/projects/create/', methods=['GET', 'POST'])
+@mod.route('/projects/create/', methods=['GET', 'POST'])
 def dashboard_create_project():
     form = ProjectForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -198,21 +196,22 @@ def dashboard_create_project():
 # Gerrit report
 
 
-@dashboard.route('/gerrit/', methods=['GET', 'POST'])
+@mod.route('/gerrit/', methods=['GET', 'POST'])
 def gerrit_report_index():
     if request.method == 'POST':
+        from stackquery.libs import gerrit
         filters = request.form.get('filter')
         filters += ' status:MERGED'
         search_filter = gerrit.get_filters(filters)
         error = None
         before = datetime.datetime.now()
-        #try:
-        team = request.form.get('team')
-        releases = gerrit.get_all_reviews_from_database(
-            search_filter, team)
-        #except Exception as e:
-        #    error = 'Invalid query: %s' % e.message
-        #    releases = None
+        try:
+            team = request.form.get('team')
+            releases = gerrit.get_all_reviews_from_database(
+                search_filter, team)
+        except Exception as e:
+            error = 'Invalid query: %s' % e.message
+            releases = None
         after = datetime.datetime.now()
         seconds = abs(after - before).seconds
         return render_template('gerrit/index.html',
@@ -224,14 +223,14 @@ def gerrit_report_index():
 # Bugzilla reports
 
 
-@dashboard.route('/rhbzreports/')
+@mod.route('/rhbzreports/')
 def redhat_bugzilla_report_index():
     reports = RedHatBugzillaReport.query.all()
     return render_template('bzreports/index.html', reports=reports)
 
 
-@dashboard.route('/rhbzreports/show/<int:report_id>',
-                              methods=['GET', 'POST'])
+@mod.route('/rhbzreports/show/<int:report_id>',
+                 methods=['GET', 'POST'])
 def redhat_bugzilla_report_show(report_id):
     if request.method == 'POST':
         session['username'] = request.form['username']
@@ -253,7 +252,7 @@ def redhat_bugzilla_report_show(report_id):
         return render_template('bzreports/report.html', require_auth=True)
 
 
-@dashboard.route('/rhbzreports/create/', methods=['GET', 'POST'])
+@mod.route('/rhbzreports/create/', methods=['GET', 'POST'])
 def redhat_bugzilla_report_create():
     form = RedHatBugzillaReportForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -270,8 +269,8 @@ def redhat_bugzilla_report_create():
     return render_template('bzreports/create_report.html', form=form)
 
 
-@dashboard.route('/rhbzreports/edit/<int:report_id>/',
-                              methods=['GET', 'POST'])
+@mod.route('/rhbzreports/edit/<int:report_id>/',
+                 methods=['GET', 'POST'])
 def redhat_bugzilla_report_edit(report_id):
     rhbz_report = RedHatBugzillaReport.query.get(report_id)
     if rhbz_report is None:

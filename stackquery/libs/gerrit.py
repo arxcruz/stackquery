@@ -1,13 +1,13 @@
 import json
 import requests
 
-from stackquery.common import utils
-from stackquery.common import vcs
-from stackquery.db.models import User
-from stackquery.db.models import GerritReview
-from stackquery.db.models import GerritReviewFile
-from stackquery.db.database import db_session
-from stackquery.db import utils as db_utils
+from stackquery.database import db_session
+from stackquery.models.gerritreview import GerritReview
+from stackquery.models.gerritreviewfile import GerritReviewFile
+from stackquery.models.user import User
+
+from stackquery.libs import utils
+from stackquery.libs import vcs
 
 import re
 
@@ -42,11 +42,9 @@ def get_filters(search_filter):
 
 
 def calculate_reviews(gerrit_reviews, team_id, filters=None):
-    users = db_utils.get_users_by_team(team_id)
+    users = utils.get_users_by_team(team_id)
     reviews = {user.user_id: {'releases': {}}
                for user in users}
-    print reviews
-    print db_utils.get_users_by_team(team_id)
     reviews['_versions'] = []
     if gerrit_reviews:
         for gerrit_review in gerrit_reviews:
@@ -64,7 +62,8 @@ def calculate_reviews(gerrit_reviews, team_id, filters=None):
                     reviews[user]['releases'][gerrit_review.version] += 1
                 else:
                     reviews[user]['releases'][gerrit_review.version] = 1
-                if gerrit_review.version and gerrit_review.version not in reviews['_versions']:
+                if (gerrit_review.version and gerrit_review.version
+                        not in reviews['_versions']):
                     reviews['_versions'].append(gerrit_review.version)
     reviews['_versions'].sort()
     return reviews
@@ -149,18 +148,18 @@ def get_all_reviews_from_database(filters, team_id):
     if 'file' in filters:
         files = {'file': filters['file']}
         del filters['file']
-    gerrit_reviews = db_utils.get_gerrit_reviews(filter=filters)
+    gerrit_reviews = utils.get_gerrit_reviews(filter=filters)
     return calculate_reviews(gerrit_reviews, team_id, files)
 
 
 def load_change_id(project):
-    changes = db_utils.get_gerrit_reviews()
+    changes = utils.get_gerrit_reviews()
     return {change.change_id: (change.modified, change.status)
             for change in changes}
 
 
 def update_gerrit_review(gerrit_review):
-    review = db_utils.get_gerrit_reviews(
+    review = utils.get_gerrit_reviews(
         filter={'change_id': gerrit_review['change_id']}, first=True)
 
     if review:
@@ -194,8 +193,8 @@ def update_gerrit_review(gerrit_review):
         user_id = gerrit_review['owner'].get('username', None)
         email = gerrit_review['owner'].get('email', None)
 
-        user = (db_utils.get_users(filter={'user_id': user_id}, first=True) or
-                db_utils.get_users(filter={'email': email}, first=True))
+        user = (utils.get_users(filter={'user_id': user_id}, first=True) or
+                utils.get_users(filter={'email': email}, first=True))
         review.user = user
         review.user_id = user.id if user else None
         review.status = gerrit_review['status']
@@ -208,12 +207,12 @@ def process_reviews(project, last_run=datetime.now()):
     LOG.debug('Fetching all review for project %s upstream' % project)
     gerrit_results = get_changes_by_filter('project:' + project)
 
-    from stackquery.dashboard.app import app
-    
+    from stackquery import app
+
     filename = app.config['DATA_JSON']
     LOG.debug('Fetching the commits')
     repos = utils.get_repos_by_module(filename, project)
-    repo_git = vcs.get_vcs(repos, cfg.CONF.sources_root)
+    repo_git = vcs.get_vcs(repos, app.config['SOURCE_ROOT'])
     commit_index = repo_git.fetch()
 
     for gerrit_result in gerrit_results:

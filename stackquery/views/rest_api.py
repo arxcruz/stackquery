@@ -3,42 +3,43 @@ from flask import Blueprint
 from flask import jsonify
 from flask import request
 
-from stackquery.db.database import db_session
-from stackquery.db.models import Project
-from stackquery.db.models import RedHatBugzillaReport
-from stackquery.db.models import Release
-from stackquery.db.models import Team
-from stackquery.db.models import User
-from stackquery.db import utils as db_utils
+from stackquery.database import db_session
+from stackquery.models.project import Project
+from stackquery.models.report import RedHatBugzillaReport
+from stackquery.models.release import Release
+from stackquery.models.team import Team
+from stackquery.models.user import User
+
+from stackquery.libs import utils
 
 import simplejson as json
 
-rest_api = Blueprint('rest_api', __name__)
+mod = Blueprint('rest_api', __name__)
 
 
 def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
 
-@rest_api.route('/api/releases/')
+@mod.route('/api/releases/')
 def get_releases():
     releases = Release.query.all()
     return json.dumps(list(releases), default=date_handler)
 
 
-@rest_api.route('/api/teams/')
+@mod.route('/api/teams/')
 def get_teams():
     teams = Team.query.all()
     return json.dumps(list(teams), default=date_handler)
 
 
-@rest_api.route('/api/users/')
+@mod.route('/api/users/')
 def get_users():
     users = User.query.order_by(User.name.asc()).all()
     return json.dumps(list(users), default=date_handler)
 
 
-@rest_api.route('/api/users/<int:user_id>/delete/', methods=['DELETE'])
+@mod.route('/api/users/<int:user_id>/delete/', methods=['DELETE'])
 def delete_user(user_id):
     user = User.query.get(user_id)
     if user is None:
@@ -51,7 +52,7 @@ def delete_user(user_id):
     return jsonify({'status': 'OK'})
 
 
-@rest_api.route('/api/users/create/', methods=['POST'])
+@mod.route('/api/users/create/', methods=['POST'])
 def insert_user():
     content = request.get_json(force=True)
     if (not content or 'name' not in content or 'user_id'
@@ -66,7 +67,7 @@ def insert_user():
     return jsonify({'status': 'OK'})
 
 
-@rest_api.route('/api/teams/<int:team_id>/delete', methods=['DELETE'])
+@mod.route('/api/teams/<int:team_id>/delete', methods=['DELETE'])
 def delete_team(team_id):
     team = Team.query.get(team_id)
     if team is None:
@@ -79,7 +80,7 @@ def delete_team(team_id):
     return jsonify({'status': 'OK'})
 
 
-@rest_api.route('/api/teams/<int:team_id>/<int:user_id>/delete',
+@mod.route('/api/teams/<int:team_id>/<int:user_id>/delete',
                 methods=['DELETE'])
 def delete_user_from_team(team_id, user_id):
     team = Team.query.get(team_id)
@@ -94,7 +95,7 @@ def delete_user_from_team(team_id, user_id):
     return jsonify({'status': 'OK'})
 
 
-@rest_api.route('/api/teams/<int:team_id>/users/')
+@mod.route('/api/teams/<int:team_id>/users/')
 def get_users_from_team(team_id):
     team = Team.query.get(team_id)
     if team is None:
@@ -105,7 +106,7 @@ def get_users_from_team(team_id):
     return json.dumps(list(team.users), default=date_handler)
 
 
-@rest_api.route('/api/teams/<int:team_id>/projects/')
+@mod.route('/api/teams/<int:team_id>/projects/')
 def get_projects_from_team(team_id):
     team = Team.query.get(team_id)
     if team is None:
@@ -116,9 +117,9 @@ def get_projects_from_team(team_id):
     return json.dumps(list(team.projects), default=date_handler)
 
 
-@rest_api.route('/api/projects/')
+@mod.route('/api/projects/')
 def get_projects():
-    projects = db_utils.get_projects()
+    projects = utils.get_projects()
     if projects is None:
         requests = jsonify({'status': 'Not Found'})
         requests.status = 404
@@ -127,7 +128,7 @@ def get_projects():
     return json.dumps(list(projects), default=date_handler)
 
 
-@rest_api.route('/api/projects/<int:project_id>/delete', methods=['DELETE'])
+@mod.route('/api/projects/<int:project_id>/delete', methods=['DELETE'])
 def delete_project(project_id):
     project = Project.query.get(project_id)
     if project is None:
@@ -141,14 +142,14 @@ def delete_project(project_id):
 # Bugzilla reports
 
 
-@rest_api.route('/api/bzreports')
+@mod.route('/api/bzreports')
 def get_reports():
     releases = RedHatBugzillaReport.query.all()
     return json.dumps(list(releases), default=date_handler)
 
 
-@rest_api.route('/api/bzreports/<int:report_id>/delete',
-                       methods=['DELETE'])
+@mod.route('/api/bzreports/<int:report_id>/delete',
+                methods=['DELETE'])
 def delete_report(report_id):
     report = RedHatBugzillaReport.query.get(report_id)
     if report is None:
@@ -161,7 +162,7 @@ def delete_report(report_id):
     return jsonify({'status': 'OK'})
 
 
-@rest_api.route('/api/bzreports/<int:report_id>/')
+@mod.route('/api/bzreports/<int:report_id>/')
 def get_report_by_id(report_id):
     if not request.json or not 'username' and 'password' in request.json:
         abort(404)

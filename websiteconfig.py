@@ -12,4 +12,6 @@ SECRET_KEY = 'herpaderp'
 
 DATA_JSON = '%s' % os.path.join(_basedir, 'etc/default_data.json')
 
+SOURCE_ROOT = '%s' % os.path.join(_basedir, 'local')
+
 del os

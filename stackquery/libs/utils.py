@@ -3,6 +3,43 @@ import os
 import mechanize
 from collections import OrderedDict
 
+from stackquery.models.gerritreview import GerritReview
+from stackquery.models.project import Project
+from stackquery.models.team import Team
+from stackquery.models.user import User
+
+
+def get_users(filter=None, first=False):
+    if not filter:
+        return User.query.all()
+    if first:
+        return User.query.filter_by(**filter).first()
+    return User.query.filter_by(**filter).all()
+
+
+def get_users_by_team(team_id):
+    team = Team.query.get(int(team_id))
+    if team:
+        return team.users
+    return []
+
+
+def get_gerrit_reviews(filter=None, first=False):
+    if not filter:
+        return GerritReview.query.all()
+    if first:
+        return GerritReview.query.filter_by(**filter).order_by(
+            GerritReview.created.desc()).first()
+    return GerritReview.query.filter_by(**filter).filter(
+        GerritReview.user is not None).order_by(
+        GerritReview.created.desc()).all()
+
+
+def get_projects(filter=None):
+    if not filter:
+        return Project.query.order_by(Project.name).all()
+    return Project.query.filter_by(**filter).order_by(
+        Project.name).all()
 
 def get_repos(filename):
     if os.path.exists(filename):
@@ -90,7 +127,7 @@ def jsonify_csv(tables):
 
 
 def get_report_by_id(report_id, username, password):
-    from stackquery.db.models import RedHatBugzillaReport
+    from stackquery.models.report import RedHatBugzillaReport
 
     rhbz_report = RedHatBugzillaReport.query.get(report_id)
     csv_document = get_csv_from_url(rhbz_report.url,

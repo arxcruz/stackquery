@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, backref, relation
+from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-from stackquery.dashboard import app
+from stackquery import app
 
 engine = create_engine(app.config['DATABASE_URI'],
                        convert_unicode=True)
@@ -14,11 +14,9 @@ db_session = scoped_session(sessionmaker(autocommit=False,
 
 def init_db(fill_table=False):
     # Creating tables
-    from stackquery.db.models import Project
-    from stackquery.db.models import RedHatBugzillaReport
-    from stackquery.db.models import Release
-    from stackquery.db.models import Team
-    from stackquery.db.models import User
+    from stackquery.models.report import RedHatBugzillaReport
+    from stackquery.models.team import Team
+    from stackquery.models.user import User
 
     Base.metadata.create_all(bind=engine)
 
@@ -77,6 +75,8 @@ def init_db(fill_table=False):
 
 def _populate_release_table():
         # Populating Release table
+        from stackquery.models.release import Release
+
         release = Release()
         release.name = 'All'
         db_session.add(release)
@@ -129,6 +129,9 @@ def _populate_release_table():
 
 
 def _populate_project_table():
+    from stackquery.common import utils
+    from stackquery.common import gerrit
+    from stackquery.models.project import Project
 
     filename = app.config['DATA_JSON']
     openstack_projects = gerrit.get_all_gerrit_projects()

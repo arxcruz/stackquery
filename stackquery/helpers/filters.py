@@ -1,4 +1,5 @@
-from stackquery.db.models import RedHatBugzillaReport
+from stackquery.models.report import RedHatBugzillaReport
+from stackquery import app
 
 import re
 
@@ -48,15 +49,13 @@ def get_list_of_ints(value):
             else 0 for x in value]
 
 
-def init_app(app):
-    """Initialize a Flask application with custom filters."""
-    app.jinja_env.filters['format_mark'] = format_mark
-    app.jinja_env.filters['format_url'] = format_url
-    app.jinja_env.filters['split_string'] = split_string
-    app.jinja_env.filters['filter_table_header'] = filter_table_header
-    app.jinja_env.filters['get_list_of_ints'] = get_list_of_ints
+app.jinja_env.filters['format_mark'] = format_mark
+app.jinja_env.filters['format_url'] = format_url
+app.jinja_env.filters['split_string'] = split_string
+app.jinja_env.filters['filter_table_header'] = filter_table_header
+app.jinja_env.filters['get_list_of_ints'] = get_list_of_ints
 
-    app.jinja_env.add_extension('jinja2.ext.do')
+app.jinja_env.add_extension('jinja2.ext.do')
 
-    app.jinja_env.globals.update(
-        get_redhat_bugzilla_reports=get_redhat_bugzilla_reports)
+app.jinja_env.globals.update(
+    get_redhat_bugzilla_reports=get_redhat_bugzilla_reports)

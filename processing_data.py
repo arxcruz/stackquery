@@ -1,4 +1,4 @@
-from stackquery.common import gerrit
+import stackquery.libs.gerrit as gerrit
 
 
 def main():

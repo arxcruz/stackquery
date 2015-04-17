@@ -1,3 +1,3 @@
-from stackquery.dashboard import app
+from stackquery import app
 
 app.run(host='0.0.0.0', debug=False)

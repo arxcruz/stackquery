@@ -129,8 +129,8 @@ def _populate_release_table():
 
 
 def _populate_project_table():
-    from stackquery.common import utils
-    from stackquery.common import gerrit
+    from stackquery.libs import utils
+    from stackquery.libs import gerrit
     from stackquery.models.project import Project
 
     filename = app.config['DATA_JSON']

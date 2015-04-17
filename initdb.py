@@ -1,3 +1,3 @@
-from stackquery.db.database import init_db
+from stackquery.database import init_db
 
-init_db()
+init_db(True)

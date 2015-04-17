@@ -1,8 +1,9 @@
 import stackquery.libs.gerrit as gerrit
+import stackquery.libs.utils as utils
 
 
 def main():
-    projects = ['openstack/nova', 'stackforge/rally', 'openstack/tempest']
+    projects = utils.get_projects_being_used()
     for project in projects:
         gerrit.process_reviews(project)
 

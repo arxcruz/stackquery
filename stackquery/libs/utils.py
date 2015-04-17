@@ -24,6 +24,17 @@ def get_users_by_team(team_id):
     return []
 
 
+def get_projects_being_used():
+    projects_used = []
+    teams = Team.query.all()
+    for team in teams:
+        for project in team.projects:
+            if project.name not in projects_used:
+                projects_used.append(project.name)
+
+    return projects_used
+
+
 def get_gerrit_reviews(filter=None, first=False):
     if not filter:
         return GerritReview.query.all()

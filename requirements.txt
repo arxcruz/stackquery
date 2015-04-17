@@ -6,7 +6,6 @@ Flask-SQLAlchemy
 Flask-WTF
 mechanize
 odict>=1.5
-oslo.config>=1.4.0
 prettytable>=0.7.2
 PyYAML
 requests>=2.4

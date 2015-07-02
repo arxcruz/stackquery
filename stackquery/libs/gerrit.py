@@ -189,6 +189,7 @@ def update_gerrit_review(gerrit_review):
             (review.change_id, review.commit_id))
 
         review.commit_id = gerrit_review.get('current_revision', None)
+        review.version = gerrit_review.get('version')
 
         user_id = gerrit_review['owner'].get('username', None)
         email = gerrit_review['owner'].get('email', None)

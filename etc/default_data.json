@@ -13556,7 +13556,7 @@
         {
             "releases": [
                 {
-                    "tag_to": "2fbb9d154d154deee13ba1875669d06a5dffc324-eol",
+                    "tag_to": "2fbb9d154d154deee13ba1875669d06a5dffc324",
                     "release_name": "Havana"
                 },
                 {
@@ -13565,7 +13565,6 @@
                     "tag_from": "2fbb9d154d154deee13ba1875669d06a5dffc324"
                 },
                 {
-                    "branch": "stable/juno",
                     "tag_to": "4c930bd8adaaefba7a4f9d66bdf66ecfd33b3ae2",
                     "release_name": "Juno",
                     "tag_from": "e746fc2c27b000faac899943de046a839d5ff798"

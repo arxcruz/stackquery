@@ -13552,7 +13552,7 @@
                     "tag_from": "2015.1.0"
                 }
             ]
-        }
+        },
         {
             "releases": [
                 {
@@ -13584,7 +13584,7 @@
             "uri": "git://git.openstack.org/openstack/tempest.git",
             "module": "tempest",
             "organization": "openstack"
-        },
+        }
     ],
     "project_sources": [
         {

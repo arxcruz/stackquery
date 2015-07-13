@@ -8,7 +8,7 @@ from datetime import datetime
 
 class Release(Base, DictSerializable):
     '''Release database representation'''
-    __tablename__ = 'release'
+    __tablename__ = 'releases'
     id = Column(Integer, primary_key=True)
     created = Column(DateTime, default=datetime.now)
     modified = Column(DateTime, default=datetime.now, onupdate=datetime.now)

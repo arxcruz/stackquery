@@ -68,22 +68,26 @@ def dashboard_edit_team(team_id):
         projects_in = request.form.getlist('selected-projects')
         projects_out = request.form.getlist('available-projects')
 
-        users = User.query.filter(User.id.in_(users_in)).all()
+        users = User.query.filter(
+            User.id.in_(users_in)).all() if users_in else []
         for user in users:
             if user not in team.users:
                 team.users.append(user)
 
-        users = User.query.filter(User.id.in_(users_out)).all()
+        users = User.query.filter(
+            User.id.in_(users_out)).all() if users_out else []
         for user in users:
             if user in team.users:
                 team.users.remove(user)
 
-        projects = Project.query.filter(Project.id.in_(projects_in)).all()
+        projects = Project.query.filter(
+            Project.id.in_(projects_in)).all() if projects_in else []
         for project in projects:
             if project not in team.projects:
                 team.projects.append(project)
 
-        projects = Project.query.filter(Project.id.in_(projects_out)).all()
+        projects = Project.query.filter(
+            Project.id.in_(projects_out)).all() if projects_out else []
         for project in projects:
             if project in team.projects:
                 team.projects.remove(project)

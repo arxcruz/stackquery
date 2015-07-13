@@ -52,6 +52,7 @@ def get_projects(filter=None):
     return Project.query.filter_by(**filter).order_by(
         Project.name).all()
 
+
 def get_repos(filename):
     if os.path.exists(filename):
         repos = json.load(open(filename))

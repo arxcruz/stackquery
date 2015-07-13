@@ -3,8 +3,6 @@ from stackquery.models import DictSerializable
 
 from sqlalchemy import Column, Integer, String
 
-from datetime import datetime
-
 
 class Project(Base, DictSerializable):
     '''List of projects from openstack'''

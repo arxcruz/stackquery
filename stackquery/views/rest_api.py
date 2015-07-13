@@ -81,7 +81,7 @@ def delete_team(team_id):
 
 
 @mod.route('/api/teams/<int:team_id>/<int:user_id>/delete',
-                methods=['DELETE'])
+           methods=['DELETE'])
 def delete_user_from_team(team_id, user_id):
     team = Team.query.get(team_id)
     user = User.query.get(user_id)
@@ -149,7 +149,7 @@ def get_reports():
 
 
 @mod.route('/api/bzreports/<int:report_id>/delete',
-                methods=['DELETE'])
+           methods=['DELETE'])
 def delete_report(report_id):
     report = RedHatBugzillaReport.query.get(report_id)
     if report is None:

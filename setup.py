@@ -20,7 +20,7 @@ import pip.req
 import uuid
 from setuptools.command.test import test as TestCommand
 
-import stackquery.dashboard
+import stackquery
 
 install_reqs = pip.req.parse_requirements('requirements.txt',
                                           session=uuid.uuid1())
@@ -41,7 +41,7 @@ class Tox(TestCommand):
 
 setuptools.setup(
     name='stackquery',
-    version=stackquery.dashboard.__version__,
+    version=stackquery.__version__,
     author='Arx Cruz',
     author_email='acruz@redhat.com',
     url='https://github.com/arxcruz/stackquery',

@@ -21,3 +21,5 @@ app.register_blueprint(dashboard.mod)
 app.register_blueprint(rest_api.mod)
 
 from stackquery.helpers import filters
+
+filters.setup_filters()

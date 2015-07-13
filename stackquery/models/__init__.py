@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+
 class DictSerializable(object):
     def _asdict(self):
         result = OrderedDict()

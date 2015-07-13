@@ -230,7 +230,7 @@ def redhat_bugzilla_report_index():
 
 
 @mod.route('/rhbzreports/show/<int:report_id>',
-                 methods=['GET', 'POST'])
+           methods=['GET', 'POST'])
 def redhat_bugzilla_report_show(report_id):
     if request.method == 'POST':
         session['username'] = request.form['username']
@@ -270,7 +270,7 @@ def redhat_bugzilla_report_create():
 
 
 @mod.route('/rhbzreports/edit/<int:report_id>/',
-                 methods=['GET', 'POST'])
+           methods=['GET', 'POST'])
 def redhat_bugzilla_report_edit(report_id):
     rhbz_report = RedHatBugzillaReport.query.get(report_id)
     if rhbz_report is None:

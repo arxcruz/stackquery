@@ -3,6 +3,7 @@
 import re
 import fileinput
 
+
 def this_line_is_useless(line):
     useless_es = [
         'BEGIN TRANSACTION',
@@ -14,6 +15,7 @@ def this_line_is_useless(line):
     for useless in useless_es:
         if re.search(useless, line):
             return True
+
 
 def has_primary_key(line):
     return bool(re.search(r'PRIMARY KEY', line))
@@ -34,7 +36,8 @@ for line in fileinput.input():
     m = re.search('CREATE TABLE "?([a-zA-Z_]*)"?(.*)', line)
     if m:
         name, sub = m.groups()
-        line = "DROP TABLE IF EXISTS %(name)s;\nCREATE TABLE IF NOT EXISTS `%(name)s`%(sub)s\n"
+        line = ("DROP TABLE IF EXISTS %(name)s;\n"
+                "CREATE TABLE IF NOT EXISTS `%(name)s`%(sub)s\n")
         line = line % dict(name=name, sub=sub)
     else:
         m = re.search('INSERT INTO "([a-zA-Z_]*)"(.*)', line)
@@ -52,7 +55,8 @@ for line in fileinput.input():
     if searching_for_end:
         if re.search(r"integer(?:\s+\w+)*\s*PRIMARY KEY(?:\s+\w+)*\s*,", line):
             line = line.replace("PRIMARY KEY", "PRIMARY KEY AUTO_INCREMENT")
-        # replace " and ' with ` because mysql doesn't like quotes in CREATE commands
+        # replace " and ' with ` because mysql doesn't like
+        # quotes in CREATE commands
         if line.find('DEFAULT') == -1:
             line = line.replace(r'"', r'`').replace(r"'", r'`')
         else:

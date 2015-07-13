@@ -2,8 +2,7 @@ from stackquery.database import Base
 from stackquery.models import DictSerializable
 
 
-from sqlalchemy import Boolean, Column
-from sqlalchemy import DateTime, Integer, String, Table, Text
+from sqlalchemy import Column, DateTime, Integer, String, Table
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.orm import relationship
 

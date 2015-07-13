@@ -1,6 +1,7 @@
 from stackquery.database import Base
 from stackquery.models import DictSerializable
 from stackquery.models.user import User
+from stackquery.models.gerritreviewfile import GerritReviewFile
 
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import relationship

@@ -2,7 +2,7 @@
 
 {% from 'common.html' import render_field %}
 
-{% if request.endpoint.endswith('edit_team') %}
+{% if request.endpoint.endswith('edit') %}
 	{% set title = 'Stackquery - Edit team' %}
 	{% set button_name = 'Update' %}
 {% else %}
@@ -74,7 +74,7 @@ $(document).ready(function(){
         return !$("#selected-projects option").prop("selected", true).appendTo("#available-projects");
     });
 
-	{% if request.endpoint.endswith('edit_team') %}
+	{% if request.endpoint.endswith('edit') %}
 	$.ajax({
 		type: "GET",
 		url: "{{ url_for('rest_api.get_users_from_team', team_id=team_id) }}",

@@ -18,28 +18,72 @@
 	.top5 { margin-top:15px; }
 </style>
 
-<script type="text/javascript">
-    function loadOptions(select, url) {
-      $.ajax({
-         type: "GET",
-         url: url,
-         data: {},
-         dataType: "json",
-         success: function(json) {
-            $.each(json, function(key, value) {
-                $(select).append($("<option>", {
-                    value: value['id'],
-                    text: value['name']
-                }));
-            });
-         }
-      });
-   }
+    <script type="text/javascript">
+        function load_users(select, url) {
+          $.ajax({
+             type: "GET",
+             url: url,
+             data: {},
+             dataType: "json",
+             success: function(json) {
+                $.each(json, function(key, value) {
+                    $(select).append($("<option>", {
+                        value: value['id'],
+                        text: value['name']
+                    }));
+                });
+                {% if request.endpoint.endswith('edit_team') %}
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url_for('rest_api.get_users_from_team', team_id=team_id) }}",
+                    data: {},
+                    dataType: "json",
+                    success: function(json) {
+                        $.each(json, function(key, value) {
+                            console.log(value);
+                            !$("#available-users option[value='" + value['id'] + "']").appendTo("#selected-users");
+                        })
+                    }
+                });
+                {% endif %}
+             }
+          });
+       }
 
+       function load_projects(select, url) {
+          $.ajax({
+             type: "GET",
+             url: url,
+             data: {},
+             dataType: "json",
+             success: function(json) {
+                $.each(json, function(key, value) {
+                    $(select).append($("<option>", {
+                        value: value['id'],
+                        text: value['name']
+                    }));
+                });
+                {% if request.endpoint.endswith('edit_team') %}
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url_for('rest_api.get_projects_from_team', team_id=team_id) }}",
+                    data: {},
+                    dataType: "json",
+                    success: function(json) {
+                        $.each(json, function(key, value) {
+                            console.log(value);
+                            !$("#available-projects option[value='" + value['id'] + "']").appendTo("#selected-projects");
+                        })
+                    }
+                });
+                {% endif %}
+             }
+          });
+       }
 
 $(document).ready(function(){
     // Users
-    $("#available-users").load(loadOptions("#available-users", "{{ url_for('rest_api.get_users') }}" ));
+    $("#available-users").load(load_users("#available-users", "{{ url_for('rest_api.get_users') }}" ));
     $("#add-user").click(function() {
 		return !$("#available-users option:selected").appendTo("#selected-users");
 	});
@@ -57,7 +101,7 @@ $(document).ready(function(){
 	});
 
     // Projects 
-    $("#available-projects").load(loadOptions("#available-projects", "{{ url_for('rest_api.get_projects') }}" ));
+    $("#available-projects").load(load_projects("#available-projects", "{{ url_for('rest_api.get_projects') }}" ));
     $("#add-project").click(function() {
         return !$("#available-projects option:selected").appendTo("#selected-projects");
     });
@@ -73,33 +117,6 @@ $(document).ready(function(){
     $("#remove-all-projects").click(function() {
         return !$("#selected-projects option").prop("selected", true).appendTo("#available-projects");
     });
-
-	{% if request.endpoint.endswith('edit_team') %}
-	$.ajax({
-		type: "GET",
-		url: "{{ url_for('rest_api.get_users_from_team', team_id=team_id) }}",
-		data: {},
-		dataType: "json",
-		success: function(json) {
-			$.each(json, function(key, value) {
-				console.log(value);
-				!$("#available-users option[value='" + value['id'] + "']").appendTo("#selected-users");
-			})
-		}
-	});
-    $.ajax({
-        type: "GET",
-        url: "{{ url_for('rest_api.get_projects_from_team', team_id=team_id) }}",
-        data: {},
-        dataType: "json",
-        success: function(json) {
-            $.each(json, function(key, value) {
-                console.log(value);
-                !$("#available-projects option[value='" + value['id'] + "']").appendTo("#selected-projects");
-            })
-        }
-    });
-	{% endif %}
 });
 
 </script>

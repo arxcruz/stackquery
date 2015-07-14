@@ -1,90 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<title>{% block title %}{% endblock title %}</title>
-	<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}"/>
-	<link href="http://netdna.bootstrapcdn.com/bootswatch/2.3.2/united/bootstrap.min.css" rel="stylesheet">
-	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet">
-	<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-	<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <head>
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}"/>
+    <link href="http://netdna.bootstrapcdn.com/bootswatch/2.3.2/united/bootstrap.min.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet">
     <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css">  
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
     <!-- DataTables -->
-    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.js"></script>
-    <script src="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/2/dataTables.bootstrap.js"></script>
-
-	{# Link any other .css or .js found in app static folder. #}
-	<style>
-		{# Add simple CSS style tweaks here. #}
-		body { padding-top: 70px; }
-	</style>
-	<script>
-		$(function() {
-			{# Add page-load JavaScript here. #}
-		});
-	</script>
-		{% block java_script %}{% endblock %}
-
-	{% block extra_head %}{% endblock extra_head %}
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <style>
+    body { padding-top: 70px; }
+    </style>
+    {% block java_script %}{% endblock %}
+    {% block extra_head %}{% endblock extra_head %}
 </head>
 <body>
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
-				<ul class="nav navbar-nav">
-					<li><a class="navbar-brand">Stackquery</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ url_for('dashboard.dashboard_index')}}">Default report</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('dashboard.gerrit_report_index') }}">Gerrit Review</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('dashboard.redhat_bugzilla_report_create') }}">Create Red Hat Bugzilla report</a></li>
-                            <li><a href="{{ url_for('dashboard.redhat_bugzilla_report_index') }}">List all Red Hat Bugzilla reports</a></li>
-                            <li class="divider"></li>
-                            {% set redhat_bugzilla_reports = get_redhat_bugzilla_reports() %}
-                            {% for rh_bz_report in redhat_bugzilla_reports %}
-                                <li id="menu_{{ rh_bz_report.id }}"><a href="{{ url_for('dashboard.redhat_bugzilla_report_show', report_id=rh_bz_report.id) }}">{{ rh_bz_report.name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Teams<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-        					<li><a href="{{ url_for('dashboard.dashboard_teams') }}">List</a></li>
-        					<li class="divider"></li>         					
-       						<li><a href="{{ url_for('dashboard.dashboard_create_team') }}">Create new Team</a></li>
-      					</ul>
-      				</li>
-      				<li class="dropdown">
-      					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Users<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-        					<li><a href="{{ url_for('dashboard.dashboard_users') }}">List</a></li>
-        					<li class="divider"></li>
-       						<li><a href="{{ url_for('dashboard.dashboard_create_user') }}">Create new User</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{{ url_for('dashboard.dashboard_export_users') }}">Export from stackalytics</a></li>
-      					</ul>
-      				</li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Projects<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ url_for('dashboard.dashboard_projects') }}">List</a></li>
-                            <li class="divider"></li>                           
-                            <li><a href="{{ url_for('dashboard.dashboard_create_project') }}">Create new Project</a></li>
-                        </ul>
-                    </li>
-   				</ul>
-			</div>
-		</div>
-	</nav>
-
-	<div id="main">
-		
-		<div class="content container">
-			{% block main %}{% endblock main %}
-		</div>
-	</div>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <ul class="nav navbar-nav">
+                <li><a class="navbar-brand">Stackquery</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ url_for('dashboard.dashboard_index')}}">Default report</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{{ url_for('dashboard.gerrit_report_index') }}">Gerrit Review</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{{ url_for('dashboard.redhat_bugzilla_report_create') }}">Create Red Hat Bugzilla report</a></li>
+                        <li><a href="{{ url_for('dashboard.redhat_bugzilla_report_index') }}">List all Red Hat Bugzilla reports</a></li>
+                        <li class="divider"></li>
+                        {% set redhat_bugzilla_reports = get_redhat_bugzilla_reports() %}
+                        {% for rh_bz_report in redhat_bugzilla_reports %}
+                            <li id="menu_{{ rh_bz_report.id }}"><a href="{{ url_for('dashboard.redhat_bugzilla_report_show', report_id=rh_bz_report.id) }}">{{ rh_bz_report.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Teams<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ url_for('dashboard.dashboard_teams') }}">List</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{{ url_for('dashboard.dashboard_create_team') }}">Create new Team</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Users<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ url_for('dashboard.dashboard_users') }}">List</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{{ url_for('dashboard.dashboard_create_user') }}">Create new User</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{{ url_for('dashboard.dashboard_export_users') }}">Export from stackalytics</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Projects<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ url_for('dashboard.dashboard_projects') }}">List</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{{ url_for('dashboard.dashboard_create_project') }}">Create new Project</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div id="main">
+    <div class="content container">
+    {% block main %}{% endblock main %}
+</div>
+</div>
 </body>
 </html>

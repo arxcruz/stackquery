@@ -1,172 +1,172 @@
 {% macro list_users(users, metric, release) %}
 {% if metric %}
-
     {% set drafted_blueprint_count = users|sum(attribute='drafted_blueprint_count') %}
     {% set completed_blueprint_count = users|sum(attribute='completed_blueprint_count') %}
     {% set filed_bug_count = users|sum(attribute='filed_bug_count') %}
     {% set resolved_bug_count = users|sum(attribute='resolved_bug_count') %}
     {% set total = [drafted_blueprint_count, completed_blueprint_count, filed_bug_count, resolved_bug_count] |sum() %}
-
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <td>Metric</td>
-            <td>Release {{ release }}</td>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Drafted blueprints</td>
-            <td>{{ drafted_blueprint_count }}</td>
-        </tr>
-        <tr>
-            <td>Completed blueprints</td>
-            <td>{{ completed_blueprint_count }}</td>
-        </tr>
-        <tr>
-            <td>Bugs filled</td>
-            <td>{{ filed_bug_count }}</td>
-        </tr>
-        <tr>
-            <td>Bugs resolved</td>
-            <td>{{ resolved_bug_count }}</td>
-        </tr>
-        <tr class="warning">
-            <td>Total</td>
-            <td>{{ total }}</td>
-        </tr>
-    </tbody>
-</table>
-    {% else %}
-<div class="row">
-    <h4>Results for release {{ release }}</h2>
-</div>
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <td>User</td>
-            <td>Total commits</td>
-            <td>Total LOC</td>
-            <td>Change Requests</td>
-            <td>Patch Sets</td>
-            <td>Marks</td>
-            <td>Draft Blueprints</td>
-            <td>Completed Blueprints</td>
-            <td>Filed Bugs</td>
-            <td>Resolved Bugs</td>
-            <td>Emails</td>
-        </tr>
-    </thead>
-    <tbody>
-    {% for user in users %}
-        {% set user_id = user.get('user') %}
-        {% set commit_count = user.get('commit_count') %}
-        {% set loc = user.get('loc') %}
-        {% set change_request_count = user.get('change_request_count') %}
-        {% set patch_set_count = user.get('patch_set_count') %}
-        {% set marks = user.get('marks') %}
-        {% set drafted_blueprint_count = user.get('drafted_blueprint_count') %}
-        {% set completed_blueprint_count = user.get('completed_blueprint_count') %}
-        {% set filed_bug_count = user.get('filed_bug_count') %}
-        {% set resolved_bug_count = user.get('resolved_bug_count') %}
-        {% set email_count = user.get('email_count') %}
-        <tr>
-            <td><a href="http://stackalytics.com/?user_id={{ user_id }}&amp;release=all">{{ user_id }}</a></td>
-            <td>{{ commit_count }}</td>
-            <td>{{ loc }}</td>
-            <td>{{ change_request_count }}</td>
-            <td>{{ patch_set_count }}</td>
-            <td>{{ marks | format_mark }}</td>
-            <td>{{ drafted_blueprint_count }}</td>
-            <td>{{ completed_blueprint_count }}</td>
-            <td>{{ filed_bug_count }}</td>
-            <td>{{ resolved_bug_count }}</td>
-            <td>{{ email_count }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <td>Metric</td>
+                <td>Release {{ release }}</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Drafted blueprints</td>
+                <td>{{ drafted_blueprint_count }}</td>
+            </tr>
+            <tr>
+                <td>Completed blueprints</td>
+                <td>{{ completed_blueprint_count }}</td>
+            </tr>
+            <tr>
+                <td>Bugs filled</td>
+                <td>{{ filed_bug_count }}</td>
+            </tr>
+            <tr>
+                <td>Bugs resolved</td>
+                <td>{{ resolved_bug_count }}</td>
+            </tr>
+            <tr class="warning">
+                <td>Total</td>
+                <td>{{ total }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% else %}
+    <div class="row">
+        <h4>Results for release {{ release }}</h2>
+    </div>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <td>User</td>
+                <td>Total commits</td>
+                <td>Total LOC</td>
+                <td>Change Requests</td>
+                <td>Patch Sets</td>
+                <td>Marks</td>
+                <td>Draft Blueprints</td>
+                <td>Completed Blueprints</td>
+                <td>Filed Bugs</td>
+                <td>Resolved Bugs</td>
+                <td>Emails</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                {% set user_id = user.get('user') %}
+                {% set commit_count = user.get('commit_count') %}
+                {% set loc = user.get('loc') %}
+                {% set change_request_count = user.get('change_request_count') %}
+                {% set patch_set_count = user.get('patch_set_count') %}
+                {% set marks = user.get('marks') %}
+                {% set drafted_blueprint_count = user.get('drafted_blueprint_count') %}
+                {% set completed_blueprint_count = user.get('completed_blueprint_count') %}
+                {% set filed_bug_count = user.get('filed_bug_count') %}
+                {% set resolved_bug_count = user.get('resolved_bug_count') %}
+                {% set email_count = user.get('email_count') %}
+                <tr>
+                    <td><a href="http://stackalytics.com/?user_id={{ user_id }}&amp;release=all">{{ user_id }}</a></td>
+                    <td>{{ commit_count }}</td>
+                    <td>{{ loc }}</td>
+                    <td>{{ change_request_count }}</td>
+                    <td>{{ patch_set_count }}</td>
+                    <td>{{ marks | format_mark }}</td>
+                    <td>{{ drafted_blueprint_count }}</td>
+                    <td>{{ completed_blueprint_count }}</td>
+                    <td>{{ filed_bug_count }}</td>
+                    <td>{{ resolved_bug_count }}</td>
+                    <td>{{ email_count }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endif %}
 {% endmacro %}
-
 {% macro detail_team(team) %}
 <div class="team-detail">
+<div class="row">
     <h3>{{ team.name }}</h3>
-
-    {% if team.users %}
-        {% for user in team.users %}
-            <div class="row">
-                <p class="span6">{{ user.name }}
-                    <a class="user-delete-link" href="#" data-delete-url="{{ url_for('rest_api.delete_user_from_team', team_id=team.id, user_id=user.id) }}">
-                        <i class="icon-remove"></i>
-                    </a>
-                </p>
-            </div>
-        {% endfor %}
-    {% else %}
+</div>
+{% if team.users %}
+    {% for user in team.users %}
         <div class="row">
-            <p class="span5">No users</p>
+            <p class="span6">{{ user.name }}
+                <a class="user-delete-link" href="#" data-delete-url="{{ url_for('rest_api.delete_user_from_team', team_id=team.id, user_id=user.id) }}">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </a>
+            </p>
         </div>
-    {% endif %}
-    <div class="edit-controls">
-        <i class="icon-pencil"></i><a href="{{ url_for('dashboard.dashboard_edit_team', team_id=team.id) }}">Edit</a>
-        <span class="inline-pad"></span>
-        <i class="icon-trash"></i><a class="team-delete-link" href="#" data-delete-url="{{ url_for('rest_api.delete_team', team_id=team.id) }}">Delete</a>
+    {% endfor %}
+{% else %}
+    <div class="row">
+        <p class="span5">No users</p>
     </div>
-    <hr>
+{% endif %}
+<div class="row">
+    <div class="edit-controls">
+        <span class="inline-pad"></span>
+        <a href="{{ url_for('dashboard.dashboard_edit_team', team_id=team.id) }}">
+            <span class="glyphicon glyphicon-pencil"></span> Edit
+        </a>
+        <span class="inline-pad"></span>
+        <a class="team-delete-link" href="#" data-delete-url="{{ url_for('rest_api.delete_team', team_id=team.id) }}">
+            <span class="glyphicon glyphicon-trash"></span> Delete
+        </a>
+    </div>
+</div>
+<hr>
 </div>
 {% endmacro %}
-
 {% macro detail_stackalytics_user(user) %}
 <tr>
-    <td><input type="checkbox" name="checkbox" class="checkbox1"></td>
-    <td>{{ user['name'] }}</td>
-    <td>{{ user['id'] }}</td>
-    <td user-id="{{ user['id'] }}">
-        <a class="add-user-link" href="#" add-user-url="{{ url_for('rest_api.insert_user') }}">
-            <i class="icon-plus"></i>
-        </a>
-    </td>
+<td><input type="checkbox" name="checkbox" class="checkbox1"></td>
+<td>{{ user['name'] }}</td>
+<td>{{ user['id'] }}</td>
+<td user-id="{{ user['id'] }}">
+<a class="add-user-link" href="#" add-user-url="{{ url_for('rest_api.insert_user') }}">
+    <i class="icon-plus"></i>
+</a>
+</td>
 </tr>
 {% endmacro %}
-
 {% macro detail_user(user) %}
 <tr>
-    <td>{{ user.name }}</td>
-    <td>{{ user.user_id }}</td>
-    <td>{{ user.email }}</td>
-    <td user-id="{{ user.id }}">
-        <a class="user-delete-link" href="#" data-delete-url="{{ url_for('rest_api.delete_user', user_id=user.id) }}">
-            <i class="icon-trash"></i>
-        </a>
-        <a class="user-edit-link" href="{{ url_for('dashboard.dashboard_edit_user', user_id=user.id) }}">
-            <i class="icon-pencil"></i>
-        </a>
-    </td>
+<td>{{ user.name }}</td>
+<td>{{ user.user_id }}</td>
+<td>{{ user.email }}</td>
+<td user-id="{{ user.id }}">
+<a class="user-delete-link" href="#" data-delete-url="{{ url_for('rest_api.delete_user', user_id=user.id) }}">
+<span class="glyphicon glyphicon-trash"></span>
+</a>
+<a class="user-edit-link" href="{{ url_for('dashboard.dashboard_edit_user', user_id=user.id) }}">
+<span class="glyphicon glyphicon-pencil">
+</a>
+</td>
 </tr>
 {% endmacro %}
-
 {% macro detail_project(project) %}
 <tr>
-    <td>{{ project.name }}</td>
-    <td>{{ project.git_url }}</td>
-    <td user-id="{{ project.id }}">
-        <a class="user-delete-link" href="#" data-delete-url="{{ url_for('rest_api.delete_project', project_id=project.id) }}">
-            <i class="icon-trash"></i>
-        </a>
-    </td>
+<td>{{ project.name }}</td>
+<td>{{ project.git_url }}</td>
+<td user-id="{{ project.id }}">
+<a class="user-delete-link" href="#" data-delete-url="{{ url_for('rest_api.delete_project', project_id=project.id) }}">
+<span class="glyphicon glyphicon-trash"></span>
+</a>
+</td>
 </tr>
 {% endmacro %}
-
 {% macro render_field(field) %}
 <div class="control-group{% if field.errors %} error {% endif %}">
-    {{ field.label(class="control-label") }}
-    <div class="controls">
-        {{ field(**kwargs) }}
-        {% for error in field.errors %}
-            <span class="help-inline">{{ error }}</span>
-        {% endfor %}
-    </div>
+{{ field.label(class="control-label") }}
+<div class="controls">
+{{ field(**kwargs) }}
+{% for error in field.errors %}
+<span class="help-inline">{{ error }}</span>
+{% endfor %}
 </div>
-
+</div>
 {% endmacro %}

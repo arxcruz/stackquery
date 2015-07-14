@@ -32,22 +32,19 @@ $(document).ready(function(){
 
 {% block main %}
 
-<form method="POST">
-<div class="row">
-        <div class="span3">
+<form method="POST" class="form-inline">
+        <div class="form-group">
             <label for="filter">Filter:</label>
             <input name="filter" id="filter" class="form-control">
         </div>
-        <div class="span3">
+        <div class="form-group">
             <label for="team">Team:</label>
             <select class="form-control" name="team" id="team">
             </select>
         </div>
-        <div class="span4">
-            <br>
+        <div class="form-group">
             <button type="submit" class="btn btn-primary">Go</button>
         </div>   
-</div>
 </form>
 
 {% if error %}

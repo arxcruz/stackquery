@@ -27,6 +27,6 @@
         {{ render_field(form.name, **{'data-placement': 'right', 'data-toggle': 'tooltip', 'title': 'Name of the report'}) }}
         {{ render_field(form.url, **{'data-placement': 'right', 'data-toggle': 'tooltip', 'title': 'Url of the report. It can be the CSV url, or the Report url. The system will verify and manage properly.'}) }}
         {{ render_field(form.description, **{'data-placement': 'right', 'cols': 100, 'rows': 10, 'data-toggle': 'tooltip', 'title': 'Short description of the report'}) }}
-    <p><input type="submit" value="{{ button_name }}"></p>
+    <p><br/><input type="submit" class="btn btn-primary" value="{{ button_name }}"></p>
 </form>
 {% endblock main %}

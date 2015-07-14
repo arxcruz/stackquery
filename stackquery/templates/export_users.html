@@ -84,22 +84,20 @@
     <button type="button" class="close" onclick="$(this).parent().hide();">×</button>
     An error occurred
 </div>
-<div class="row">
-<form method="POST">
+<form method="POST" class="form-inline">
     <div class="row">
-            <div class="span3">
+            <div class="form-group">
                 <label for="company">Company:</label>
                 <input name="company" id="company" class="form-control">
             </div>
-            <div class="span3">
-                <br/>
+            <div class="form-group">
                 <button type="submit" class="btn btn-primary">Go</button>
             </div>   
     </div>
 </form>
-</div>
 {% if users %}
-<div class="row">
+<div class="row top5">
+    <br/>
     <input type="submit" id="add-selected-users" name="add-selected-users" class="btn btn-primary" value="Add selected users"/>
     <br/>
 </div>

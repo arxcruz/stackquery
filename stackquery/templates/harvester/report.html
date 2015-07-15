@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Stackquery - Harvester report{% endblock title%}
+{% block java_script %}
+{% endblock java_script %}
+{% block main %}
+{% if harvester %}
+<iframe src="{{ harvester.url }}" style="position:absolute; top:55px; left:0px; bottom:0px; right:0px; width:100%; height:94%; border:none; margin:0; padding:0; z-index:-1;"/>
+{% endif %}
+{% endblock main %}

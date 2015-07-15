@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% from 'common.html' import render_field %}
+
+{% if request.endpoint.endswith('edit_report') %}
+    {% set title = 'Stackquery - Edit harvester report' %}
+    {% set button_name = 'Edit' %}
+{% else %}
+    {% set title = 'Stackquery - Create harvester report' %}
+    {% set button_name = 'Create' %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock title%}
+
+{% block java_script %}
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+
+{% endblock java_script %}
+
+{% block main %}
+<form method="POST">
+        {{ render_field(form.name, **{'data-placement': 'right', 'data-toggle': 'tooltip', 'title': 'Name of the harvester report'}) }}
+        {{ render_field(form.url, **{'data-placement': 'right', 'data-toggle': 'tooltip', 'title': 'Url of the harvester report.'}) }}
+        {{ render_field(form.description, **{'data-placement': 'right', 'cols': 100, 'rows': 10, 'data-toggle': 'tooltip', 'title': 'Short description of the harvester report'}) }}
+    <p><br/><input type="submit" class="btn btn-primary" value="{{ button_name }}"></p>
+</form>
+{% endblock main %}

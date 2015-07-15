@@ -35,7 +35,7 @@ $("#report-failure").show();
     </tr>
     {% for harvester in harvesters %}
         <tr>
-            <td>{{ id }}</td>
+            <td>{{ harvester.id }}</td>
             <td><a href="{{ url_for('dashboard.harvester_report_show', harvester_id=harvester.id) }}">{{ harvester.name }}</a></td>
             <td>{{ harvester.url | format_url}}</td>
             <td>{{ harvester.description }}</td>

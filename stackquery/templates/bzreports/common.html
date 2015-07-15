@@ -8,10 +8,10 @@
     <td user-id="{{ report.id }}">
     <div class="span1">
         <a class="report-delete-link" href="#" data-delete-url="{{ url_for('rest_api.delete_report', report_id=report.id) }}">
-            <i class="icon-trash"></i>
+            <span class="glyphicon glyphicon-trash"></span>
         </a>
         <a class="report-edit-link" href="{{ url_for('dashboard.redhat_bugzilla_report_edit', report_id=report.id) }}">
-            <i class="icon-edit"></i>
+            <span class="glyphicon glyphicon-pencil"></span>
         </a>
     </div>
     </td>

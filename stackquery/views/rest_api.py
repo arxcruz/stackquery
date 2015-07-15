@@ -4,6 +4,7 @@ from flask import jsonify
 from flask import request
 
 from stackquery.database import db_session
+from stackquery.models.harvester import Harvester
 from stackquery.models.project import Project
 from stackquery.models.report import RedHatBugzillaReport
 from stackquery.models.release import Release

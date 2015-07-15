@@ -2,12 +2,12 @@
 
 {% from 'common.html' import render_field %}
 
-{% if request.endpoint.endswith('edit_report') %}
+{% if request.endpoint.endswith('report_edit') %}
     {% set title = 'Stackquery - Edit harvester report' %}
-    {% set button_name = 'Edit' %}
+    {% set button_name = 'Edit harvester' %}
 {% else %}
     {% set title = 'Stackquery - Create harvester report' %}
-    {% set button_name = 'Create' %}
+    {% set button_name = 'Create harvester' %}
 {% endif %}
 
 {% block title %}{{ title }}{% endblock title%}

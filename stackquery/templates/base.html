@@ -14,9 +14,12 @@
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
     <!-- DataTables -->
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
+    <style>
+    body { padding-top: 70px; }
+    </style>
     {% block java_script %}{% endblock %}
 {% block extra_head %}{% endblock extra_head %}
-</head>
+</head
 <body>
 <div id="wrapper">
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -41,16 +44,6 @@
                             <li class="divider"></li>
                             <li><a href="{{ url_for('dashboard.redhat_bugzilla_report_create') }}">Create Red Hat Bugzilla report</a></li>
                             <li><a href="{{ url_for('dashboard.redhat_bugzilla_report_index') }}">List all Red Hat Bugzilla reports</a></li>
-                            <li class="divider"></li>
-                            <li class="dropdown-submenu">
-                                <a tabindex="-1" href="#">Bugzilla reports</a>
-                                <ul class="dropdown-menu">
-                                {% set redhat_bugzilla_reports = get_redhat_bugzilla_reports() %}
-                                {% for rh_bz_report in redhat_bugzilla_reports %}
-                                    <li id="menu_{{ rh_bz_report.id }}"> href="{{ url_for('dashboard.redhat_bugzilla_report_show', report_id=rh_bz_report.id) }}">{{ rh_bz_report.name }}</a></li>
-                                {% endfor %}
-                                </ul>
-                            </li>
                             <li class="divider"></li>
                             <li><a href="{{ url_for('dashboard.harvester_report_create') }}">Create harvester report</a></li>
                             <li><a href="{{ url_for('dashboard.harvester_report_index') }}">List all harvester reports</a></li>

@@ -176,3 +176,34 @@ def get_report_by_id(report_id):
         return json.dumps(reports, indent=4)
     else:
         return jsonify({'Error': 'Invalid username or password'})
+
+# Harvester reports
+
+
+@mod.route('/api/harvester')
+def get_harvester():
+    harvester = Harvester.query.all()
+    return json.dumps(list(harvester), default=date_handler)
+
+
+@mod.route('/api/harvester/<int:harvester_id>')
+def get_harvester_by_id(harvester_id):
+    harvester = Harvester.query.get(harvester_id)
+    if harvester:
+        return json.dumps(harvester, indent=4)
+    else:
+        return jsonify({'Error': 'Report not found'})
+
+
+@mod.route('/api/harvester/<int:harvester_id>/delete',
+           methods=['DELETE'])
+def delete_harvester(harvester_id):
+    harvester = Harvester.query.get(harvester_id)
+    if harvester is None:
+        request = jsonify({'status': 'Not found'})
+        request.status = 404
+        return request
+
+    db_session.delete(harvester)
+    db_session.commit()
+    return jsonify({'status': 'OK'})

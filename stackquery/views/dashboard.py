@@ -8,10 +8,12 @@ from flask import url_for
 
 from stackquery.database import db_session
 from stackquery.libs import stackalytics
+from stackquery.models.harvester import Harvester
 from stackquery.models.project import Project
 from stackquery.models.report import RedHatBugzillaReport
 from stackquery.models.team import Team
 from stackquery.models.user import User
+from stackquery.forms.harvester import HarvesterForm
 from stackquery.forms.project import ProjectForm
 from stackquery.forms.report import RedHatBugzillaReportForm
 from stackquery.forms.team import TeamForm
@@ -287,3 +289,51 @@ def redhat_bugzilla_report_edit(report_id):
         return redirect(url_for(
             'dashboard.redhat_bugzilla_report_index'))
     return render_template('bzreports/create_report.html', form=form)
+
+# Harvester reports
+
+
+@mod.route('/harvester/')
+def harvester_report_index():
+    harvesters = Harvester.query.all()
+    return render_template('harvester/index.html', harvesters=harvesters)
+
+
+@mod.route('/harvester/show/<int:harvester_id>')
+def harvester_report_show(harvester_id):
+    harvester = Harvester.query.get(harvester_id)
+    if harvester:
+        return render_template('harvester/report.html', harvester=harvester)
+    else:
+        return redirect(url_for('dashboard.harvester_report_index'))
+
+
+@mod.route('/harvester/create/', methods=['GET', 'POST'])
+def harvester_report_create():
+    form = HarvesterForm(request.form)
+    if request.method == 'POST' and form.validate():
+        harvester = Harvester()
+        harvester.name = form.name.data
+        harvester.description = form.description.data
+        harvester.url = utils.parse_url(form.url.data)
+
+        db_session.add(harvester)
+        db_session.commit()
+        return redirect(url_for('dashboard.harvester_report_index'))
+    return render_template('harvester/create_report.html', form=form)
+
+
+@mod.route('/harvester/edit/<int:harvester_id>/',
+           methods=['GET', 'POST'])
+def harvester_report_edit(harvester_id):
+    harvester = Harvester.query.get(harvester_id)
+    if harvester is None:
+        abort(404)
+
+    form = HarvesterForm(request.form, harvester)
+    if request.method == 'POST':
+        harvester.name = form.name.data
+        harvester.url = form.url.data
+        harvester.description = form.description.data
+        return redirect(url_for('dashboard.harvester_report_index'))
+    return render_template('harvester/create_report.html', form=form)

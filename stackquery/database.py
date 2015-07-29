@@ -12,65 +12,83 @@ db_session = scoped_session(sessionmaker(autocommit=False,
                                          bind=engine))
 
 
-def init_db(fill_table=False):
-    # Creating tables
-    from stackquery.models.report import RedHatBugzillaReport
-    from stackquery.models.team import Team
-    from stackquery.models.user import User
+user1 = None
+user2 = None
 
+
+def init_db(args=None):
     Base.metadata.create_all(bind=engine)
 
-    if fill_table:
-        _populate_project_table()
-        _populate_release_table()
+    if args:
+        if args.all or args.projects:
+            _populate_project_table()
+        if args.all or args.release:
+            _populate_release_table()
+        if args.all or args.user:
+            _populate_user_table()
+        if args.all or args.team:
+            _populate_team_table()
+        if args.all or args.report:
+            _populate_report_table()
 
-        # Populating User table
-        user1 = User()
-        user1.name = 'Arx Cruz'
-        user1.email = 'arxcruz@test.com'
-        user1.user_id = 'arxcruz'
-        db_session.add(user1)
 
-        user2 = User()
-        user2.name = 'David Kranz'
-        user2.email = 'david@test.com'
-        user2.user_id = 'david-kranz'
-        db_session.add(user2)
-
-        user3 = User()
-        user3.name = 'Arx Cruz Delete'
-        user3.email = 'arxcruz@test.com'
-        user3.user_id = 'arxcruz'
-        db_session.add(user3)
-        db_session.commit()
-
-        # Populating team
-        team = Team()
-        team.name = 'Demo team 1'
+def _populate_team_table():
+    from stackquery.models.team import Team
+    team = Team()
+    team.name = 'Demo team 1'
+    if user1 and user2:
         team.users.append(user1)
         team.users.append(user2)
-        db_session.add(team)
+    db_session.add(team)
 
-        team = Team()
-        team.name = 'Demo team 2'
+    team = Team()
+    team.name = 'Demo team 2'
+    if user1 and user2:
         team.users.append(user1)
         team.users.append(user2)
-        db_session.add(team)
-        db_session.commit()
 
-        report = RedHatBugzillaReport()
-        report.name = 'Test'
-        report.description = 'Test description'
-        report.url = 'http://www.redhat.com'
-        db_session.add(report)
+    db_session.add(team)
+    db_session.commit()
 
-        report = RedHatBugzillaReport()
-        report.name = 'Test'
-        report.description = 'Test description'
-        report.url = ('http://www.thisisaverybigurl.com/?withalotofinformation'
-                      'topassthroughblablablaaasfasfdasfdasfasfdasdfasdfasdfa')
-        db_session.add(report)
-        db_session.commit()
+
+def _populate_user_table():
+    from stackquery.models.user import User
+
+    user1 = User()
+    user1.name = 'Arx Cruz'
+    user1.email = 'arxcruz@test.com'
+    user1.user_id = 'arxcruz'
+    db_session.add(user1)
+
+    user2 = User()
+    user2.name = 'David Kranz'
+    user2.email = 'david@test.com'
+    user2.user_id = 'david-kranz'
+    db_session.add(user2)
+
+    user3 = User()
+    user3.name = 'Arx Cruz Delete'
+    user3.email = 'arxcruz@test.com'
+    user3.user_id = 'arxcruz'
+    db_session.add(user3)
+    db_session.commit()
+
+
+def _populate_report_table():
+    from stackquery.models.report import RedHatBugzillaReport
+    report = RedHatBugzillaReport()
+    report.name = 'Test'
+    report.description = 'Test description'
+    report.url = 'http://www.redhat.com'
+    db_session.add(report)
+
+    report = RedHatBugzillaReport()
+    report.name = 'Test'
+    report.description = 'Test description'
+    report.url = ('http://www.thisisaverybigurl.com/?withalotofinformation'
+                  'topassthroughblablablaaasfasfdasfdasfasfdasdfasdfasdfa')
+    db_session.add(report)
+    db_session.commit()
 
 
 def _populate_release_table():

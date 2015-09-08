@@ -2,25 +2,26 @@
 <html lang="en">
     <head>
     <title>{% block title %}{% endblock title %}</title>
-    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}"/>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
-    <!-- DataTables -->
-    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/jquery-1.11.3.min.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/angular.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/dirPagination.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/bootstrap.min.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/jquery.dataTables.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/app.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/users.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/stackalytics.js') }}></script>
+        <link rel="stylesheet" href={{ url_for('static', filename='css/lib/bootstrap.min.css') }} />
+        <link rel="stylesheet" href={{ url_for('static', filename='css/lib/bootstrap-theme.min.css') }} />
     <style>
     body { padding-top: 70px; }
+    .oddRow {
+        background-color: #DDDDDD;
+    }
     </style>
     {% block java_script %}{% endblock %}
-{% block extra_head %}{% endblock extra_head %}
-</head
-<body>
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+<body ng-app="stackquery">
 <div id="wrapper">
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">

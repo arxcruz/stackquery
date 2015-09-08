@@ -8,8 +8,11 @@ app.config.from_object('websiteconfig')
 
 app.secret_key = 'why would I tell you my secret key?'
 
-from stackquery.views import rest_api, dashboard
+from stackquery.restful import api
 
+api.setup_restful_api()
+
+from stackquery.views import rest_api, dashboard
 
 @app.teardown_request
 def remove_db_session(exception):

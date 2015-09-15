@@ -1,4 +1,4 @@
-angular.module('users', [])
+angular.module('users', ['ui.bootstrap'])
     .controller('userCtrl', UserCtrl)
     .controller('bulkUserCtrl', BulkUserCtrl)
     .controller('userListCtrl', UserListCtrl)
@@ -29,7 +29,7 @@ function UserCtrl($scope, userApi) {
     $scope.model = {};
     $scope.createUser = createUser;
     $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess
+    $scope.hasSuccess = hasSuccess;
 
     reset();
 
@@ -60,7 +60,7 @@ function UserCtrl($scope, userApi) {
     }
 
     function hasError() {
-        return $scope.errorMessage != '';
+        true; return $scope.errorMessage != '';
     }
 
     function hasSuccess() {
@@ -235,7 +235,7 @@ function UserListCtrl($scope, userApi) {
             })
             .finally(function() {
                 reset();
-            })
+            });
     }
 
     function hasError() {

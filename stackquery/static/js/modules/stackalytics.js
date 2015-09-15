@@ -8,6 +8,9 @@ function stackApi($http, restApi, stackApiUrl) {
     return {
         getUsersByCompany(company) {
             return restApi.get('?company=' + company, stackApiUrl);
+        },
+        getMetrics(metrics) {
+            return restApi.post(metrics, '/api/v1.0/stackalytics');
         }
     }
 }
@@ -114,6 +117,10 @@ function StackCtrl($scope, stackApi, userApi) {
         .error(
             function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;
+            })
+        .finally(
+            function() {
+                dismissMessages();
             });
     }
 

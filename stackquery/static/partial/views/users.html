@@ -1,27 +1,8 @@
-{% extends 'base.html' %}
-{% from 'common.html' import render_field %}
-{% if request.endpoint.endswith('edit_user') %}
-    {% set title = 'Stackquery - Edit user' %}
-    {% set button_name = 'Update user' %}
-{% else %}
-    {% set title = 'Stackquery - Create user' %}
-    {% set button_name = 'Create user' %}
-{% endif %}
-{% block title %}{{ title }}{% endblock title%}
-{% block java_script %}
-{% endblock java_script %}
-{% block main %}
-<div>
-    <ul class="nav nav-tabs" id="tabs">
-        <li class="active"><a href="#create" data-toggle="tab">Create user</a></li>
-        <li><a href="#export_stackalytics" data-toggle="tab">Export from stackalytics</a></li>
-        <li><a href="#export_bulk" data-toggle="tab">Export from bulk list</a></li>
-        <li><a href="#list_users" data-toggle="tab">List of users</a></li>
-    </ul>
-    <div class="row" style="margin-top: 20px;"></div>
-    <div class="tab-content clearfix">
-        <!-- Create user tab -->
-        <div class="tab-pane active" id="create" ng-controller="userCtrl">
+<tabset>
+    <!-- Create user tab -->
+    <tab heading="Create users">
+        <div class="row" style="margin-top: 20px;"></div>
+        <div ng-controller="userCtrl">
             <div ng-show="hasError()">
                 <div class="alert alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">
@@ -68,8 +49,11 @@
                 <button class="btn btn-primary" ng-click="createUser()">Create user</button>
             </form>
         </div>
-        <!-- Export users from stackalytics tab -->
-        <div class="tab-pane" id="export_stackalytics" ng-controller="stackCtrl">
+    </tab>
+    <!-- Export from stackalytics -->
+    <tab heading="Export from stackalytics">
+        <div class="row" style="margin-top: 20px;"></div>
+        <div ng-controller="stackCtrl">
             <div ng-show="hasError()">
                 <div class="alert alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">
@@ -101,14 +85,14 @@
             </div>
             <div class="row" ng-show="loading">
                 <div class="col-sm-12">
-                    <img src="{{ url_for('static', filename='images/progressring.gif') }}" />
+                    <img src="static/images/progressring.gif" />
                         Loading...
                 </div>
             </div>
             <div ng-show="users.length > 0">
                 <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-sm-6">
-                        <input type="submit" class="btn btn-primary" ng-click="addSelectedUsers()" value="Add selected users"/>
+                    <div class="col-sm-2">
+                        <input type="submit" class="btn btn-primary" style="margin-top: 25px;" ng-click="addSelectedUsers()" value="Add selected users"/>
                     </div>
                     <div class="col-sm-2">
                         <label for="search">Items per page:</label>
@@ -136,7 +120,7 @@
                     </div>
                 </div>
                 <div class="col-sm-12">
-                    <div class="row" dir-paginate="user in users | filter:searchKey | itemsPerPage: pageSize" current-page="currentPage" ng-class-odd="'oddRow'">
+                    <div class="row" dir-paginate="user in users | filter:searchKey | itemsPerPage: pageSize" pagination-id="stackUsers" current-page="currentPage" ng-class-odd="'oddRow'">
                         <div class="col-sm-1">
                             <input type="checkbox" ng-checked="selected.indexOf(user) > -1" ng-click="toggleSelection(user)" />
                         </div>
@@ -154,12 +138,15 @@
                             </div>
                         </div>
                     </div>
-                    <dir-pagination-controls boundary-links="true" template-url="{{ url_for('static', filename='dirPagination.tpl.html') }}"></dir-pagination-controls>
+                    <dir-pagination-controls boundary-links="true" pagination-id="stackUsers"></dir-pagination-controls>
                 </div>
             </div>
         </div>
-        <!-- Export bulk tab -->
-        <div class="tab-pane" id="export_bulk" ng-controller="bulkUserCtrl">
+    </tab>
+    <!-- Import from CSV -->
+    <tab heading="Export from bulk list">
+        <div class="row" style="margin-top: 20px;"></div>
+        <div ng-controller="bulkUserCtrl">
             <div ng-show="hasError()">
                 <div class="alert alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">
@@ -225,7 +212,7 @@
                     </div>
                 </div>
                 <div class="col-sm-12">
-                    <div class="row" dir-paginate="user in users | itemsPerPage: pageSize" current-page="currentPage" ng-class-odd="'oddRow'">
+                    <div class="row" dir-paginate="user in users | itemsPerPage: pageSize" pagination-id="bulkUsers" current-page="currentPage" ng-class-odd="'oddRow'">
                         <div class="col-sm-5">
                             ((user.name))
                         </div>
@@ -237,13 +224,16 @@
                         </div>
                     </div>
                     <div class="col-sm-12">
-                        <dir-pagination-controls boundary-links="true" template-url="{{ url_for('static', filename='dirPagination.tpl.html') }}"></dir-pagination-controls>
+                        <dir-pagination-controls boundary-links="true" pagination-id="bulkUsers"></dir-pagination-controls>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- List of users tab -->
-        <div class="tab-pane" id="list_users" ng-controller="userListCtrl">
+    </tab>
+    <!-- List of users -->
+    <tab heading="List of users">
+        <div class="row" style="margin-top: 20px;"></div>
+        <div ng-controller="userListCtrl">
             <div ng-show="hasError()">
                 <div class="alert alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">
@@ -297,7 +287,7 @@
                         <div class="col-sm-2">
                         </div>
                     </div>
-                    <div class="row" dir-paginate="user in users | filter:searchKey | itemsPerPage: pageSize" current-page="currentPage" ng-class-odd="'oddRow'">
+                    <div class="row" dir-paginate="user in users | filter:searchKey | itemsPerPage: pageSize" pagination-id="listUsers" current-page="currentPage" ng-class-odd="'oddRow'">
                         <div ng-show="isInReadMode(user.id)">
                             <div class="col-sm-1">
                                 ((user.id))
@@ -362,11 +352,10 @@
                         </div>
                     </div>
                     <div class="col-sm-12">
-                        <dir-pagination-controls boundary-links="true" template-url="{{ url_for('static', filename='dirPagination.tpl.html') }}"></dir-pagination-controls>
+                        <dir-pagination-controls boundary-links="true" pagination-id="listUsers"></dir-pagination-controls>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-{% endblock main %}
+    </tab>
+</tabset>

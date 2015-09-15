@@ -44,6 +44,8 @@ $(select).append($("<option>", {
                 <select class="form-control" name="project_type" id="project_type">
                     <option value="all">All</option>
                     <option value="openstack">Openstack</option>
+                    <option value="tempest">Tempest</option>
+                    <option value="rally">Rally</option>
                     <option value="stackforge">Stackforge</option>
                 </select>
             </div>
@@ -69,38 +71,3 @@ $(select).append($("<option>", {
         </div>
     {% endif %}
 {% endblock main %}
-<!--form>
-<div class="row">
-    <div class="col-md-3">
-        <div class="span3">
-            <label class="control-label" for="date_deb">Date Début</label>
-            <select name="date_deb" id="date_deb" class="form-control">
-                <option value="07/11/2012">07/11/2012</option>
-                <option value="30/09/2012">30/09/2012</option>
-            </select>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="form-group">
-            <label class="control-label" for="date_deb">Date Début</label>
-            <select name="date_deb" id="date_deb" class="form-control">
-                <option value="07/11/2012">07/11/2012</option>
-                <option value="30/09/2012">30/09/2012</option>
-            </select>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="form-group">
-            <label class="control-label" for="date_deb">Date Début</label>
-            <select name="date_deb" id="date_deb" class="form-control">
-                <option value="07/11/2012">07/11/2012</option>
-                <option value="30/09/2012">30/09/2012</option>
-            </select>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <br>
-        <button type="submit" class="btn btn-success" id="date_search">Rechercher</button>
-    </div>
-</div>
-</form-->

@@ -125,58 +125,7 @@ def dashboard_create_team():
 
 @mod.route('/users/', methods=['GET'])
 def dashboard_users():
-    users = User.query.order_by(User.name.asc()).all()
-    return render_template('list_users.html', users=users)
-
-
-@mod.route('/users/<int:user_id>/edit/', methods=['GET', 'POST'])
-def dashboard_edit_user(user_id):
-    user = User.query.get(user_id)
-    if user is None:
-        abort(404)
-    form = UserForm(request.form, user)
-    if request.method == 'POST' and form.validate():
-        user.name = form.name.data
-        user.user_id = form.user_id.data
-        user.email = form.email.data
-        db_session.commit()
-        return redirect(url_for('dashboard.dashboard_users'))
-    return render_template('create_user.html', form=form)
-
-
-@mod.route('/users/create/', methods=['GET', 'POST'])
-def dashboard_create_user():
-    form = UserForm(request.form)
-    if request.method == 'POST' and form.validate():
-        user = User()
-        user.user_id = form.user_id.data
-        user.name = form.name.data
-        user.email = form.email.data
-        db_session.add(user)
-        db_session.commit()
-        return redirect(url_for('dashboard.dashboard_users'))
-    return render_template('create_user.html', form=form)
-
-
-@mod.route('/users/export/', methods=['GET', 'POST'])
-def dashboard_export_users():
-    users = None
-    error = False
-    if request.method == 'POST':
-        try:
-            company = request.form['company']
-            users = stackalytics.get_all_users_by_company(
-                {'company': company})['stats']
-            user_ids = [str(user.user_id.strip()) for user in User.query.all()]
-            for user in users:
-                if str(user['id'].strip()) in user_ids:
-                    users.remove(user)
-
-        except Exception:
-            error = True
-
-    return render_template('export_users.html', users=users, error=error)
-
+    return render_template('users.html')
 
 # Projects
 

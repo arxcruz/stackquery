@@ -1,0 +1,168 @@
+<div ng-controller="reportMainCtrl">
+    <tabset>
+        <!-- Default report -->
+        <tab heading="Stackalytics report" active="tabs[0].active">
+            <div class="row" style="margin-top: 20px;"></div>
+            <div ng-controller="stackReportsCtrl">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label class="control-label" for="release">Release:</label>
+                            <select class="form-control" ng-model="selectedRelease" ng-options="release.name for release in releases">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label class="control-label" for="project_type">Project type:</label>
+                            <select class="form-control" ng-model="selectedProjectType">
+                                <option value="all">All</option>
+                                <option value="openstack">Openstack</option>
+                                <option value="tempest">Tempest</option>
+                                <option value="rally">Rally</option>
+                                <option value="stackforge">Stackforge</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label class="control-label" for="project_type">Type:</label>
+                            <select class="form-control" ng-model="selectedType">
+                                <option value="metric">Metrics</option>
+                                <option value="group">Group Summary</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="control-label" for="team">Team:</label>
+                            <select class="form-control" ng-model="selectedTeam" ng-options="team.name for team in teams">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2" style="margin-top: 25px;">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary" ng-click="getResults()">Go</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row" style="margin-top: 20px;"></div>
+                <div class="row" ng-show="loading">
+                    <div class="col-sm-12">
+                        <img src="/static/images/progressring.gif" />
+                            Loading...
+                    </div>
+                </div>
+                <div ng-show="results.metrics.length > 0 && selectedType == 'metric'">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <h4>Metrics</h4>
+                            </div>
+                            <div class="col-sm-4">
+                                <h4>Release: ((selectedRelease.name))</h4>
+                            </div>
+                        </div>
+                        <div class="row" ng-repeat="metric in results.metrics" ng-class-odd="'oddRow'">
+                            <div class="col-sm-8" style="margin-bottom: 15px; margin-top: 15px;">
+                                ((metric.title))
+                            </div>
+                            <div class="col-sm-4" style="margin-bottom: 15px; margin-top: 15px;">
+                                ((metric.value))
+                            </div>
+                        </div>
+                        <div class="row" style="background: #FFCC66;">
+                            <div class="col-sm-8" style="margin-bottom: 15px; margin-top: 15px;">
+                                Total
+                            </div>
+                            <div class="col-sm-4" style="margin-bottom: 15px; margin-top: 15px;">
+                                ((results.metrics | sumByKey:'value'))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="results.groups.length > 0 && selectedType == 'group'">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <h4>User</h4>
+                            </div>
+                            <div class="col-sm-1">
+                                <h4>Total commits</h4>
+                            </div>
+                            <div class="col-sm-1">
+                                <h4>Total LOC</h4>
+                            </div>
+                            <div class="col-sm-1">
+                                <h4>Change requests</h4>
+                            </div>
+                            <div class="col-sm-1">
+                                <h4>Patch sets</h4>
+                            </div>
+                            <div class="col-sm-1">
+                                <h4>Marks</h4>
+                            </div>
+                            <div class="col-sm-1">
+                                <h4>Draft blueprints</h4>
+                            </div>
+                            <div class="col-sm-1">
+                                <h4>Completed blueprints</h4>
+                            </div>
+                            <div class="col-sm-1">
+                                <h4>Filled bugs</h4>
+                            </div>
+                            <div class="col-sm-1">
+                                <h4>Resolved bugs</h4>
+                            </div>
+                            <div class="col-sm-1">
+                                <h4>Emails</h4>
+                            </div>
+                        </div>
+                        <div class="row" ng-repeat="metric in results.groups" ng-class-odd="'oddRow'">
+                            <div class="col-sm-1 div-bigger">
+                                <a href="http://stackalytics.com/?user_id=((metric.user))&release=(( selectedRelease.name.toLowerCase() ))">((metric.user))</a>
+                            </div>
+                            <div class="col-sm-1 div-bigger">
+                                ((metric.commit_count))
+                            </div>
+                            <div class="col-sm-1 div-bigger">
+                                ((metric.loc))
+                            </div>
+                            <div class="col-sm-1 div-bigger">
+                                ((metric.change_request_count))
+                            </div>
+                            <div class="col-sm-1 div-bigger">
+                                ((metric.patch_set_count))
+                            </div>
+                            <div class="col-sm-1 div-bigger">
+                                
+                            </div>
+                            <div class="col-sm-1 div-bigger">
+                                ((metric.drafted_blueprint_count))
+                            </div>
+                            <div class="col-sm-1 div-bigger">
+                                ((metric.completed_blueprint_count))
+                            </div>
+                            <div class="col-sm-1 div-bigger">
+                                ((metric.filed_bug_count))
+                            </div>
+                            <div class="col-sm-1 div-bigger">
+                                ((metric.resolved_bug_count))
+                            </div>
+                            <div class="col-sm-1 div-bigger">
+                                ((metric.email_count))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>          
+        </tab>
+        <tab heading="Red Hat Bugzilla report" active="tabs[1].active">
+    asdddddddd
+        </tab>
+        <tab heading="Havester report" active="tabs[2].active">
+    asdffffffff
+        </tab>
+    </tabset>
+</div>

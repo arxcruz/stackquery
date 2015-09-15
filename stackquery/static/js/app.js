@@ -1,7 +1,34 @@
-angular.module('stackquery', ['users', 'stackalitics'])
+angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 'teams', 'reports'])
     .config(function($interpolateProvider) {
         $interpolateProvider.startSymbol('((');
         $interpolateProvider.endSymbol('))');
+    })
+    .config(function($routeProvider) {
+        $routeProvider.when('/users', {
+            templateUrl: '/static/partial/views/users.html'
+        });
+        $routeProvider.when('/projects', {
+            templateUrl: '/static/partial/views/projects.html'
+        });
+        $routeProvider.when('/teams', {
+            templateUrl: '/static/partial/views/teams.html'
+        })
+        $routeProvider.when('/reports', {
+            templateUrl: '/static/partial/views/reports.html'
+        });
+    })
+    .filter('sumByKey', function() {
+        return function(data, key) {
+            if (typeof(data) === 'undefined' || typeof(key) === 'undefined' || data === null) {
+                return 0;
+            }
+
+            var sum = 0;
+            for (var i = data.length - 1; i >= 0; i--) {
+                sum += parseInt(data[i][key]);
+            }
+            return sum;
+        };
     })
     .factory('restApi', restApi)
     .directive('showErrors', function() {
@@ -36,7 +63,8 @@ function restApi($http) {
             method: verb,
             url: url(param, apiUrl),
             data: data
-        }
+        };
+
         return $http(req);
     }
 
@@ -59,6 +87,7 @@ function restApi($http) {
         },
         del: function del(param, apiUrl) {
             return request("DELETE", param, apiUrl);
-        }
+        },
     };
 }
+

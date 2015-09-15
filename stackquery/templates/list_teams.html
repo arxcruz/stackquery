@@ -5,47 +5,24 @@
 {% block title %}Stackquery - List teams{% endblock title%}
 
 {% block java_script %}
-<script type="text/javascript">
-	$(function() {
-		$(".team-delete-link").on("click", function() {
-			var delete_url = $(this).attr('data-delete-url');
-			$.ajax({
-				url: delete_url,
-				type: 'DELETE',
-				success: function(response) {
-					if (response.status == 'OK') {
-						window.location = "{{ url_for('dashboard.dashboard_teams') }}";
-					} else {
-						alert("Delete failed")
-					}
-				}
-			})
-		})
-	})
 
-	$(function() {
-		$(".user-delete-link").on("click", function() {
-			var delete_url = $(this).attr('data-delete-url');
-			$.ajax({
-				url: delete_url,
-				type: 'DELETE',
-				success: function(response) {
-					if (response.status == 'OK') {
-						window.location = "{{ url_for('dashboard.dashboard_teams') }}";
-					} else {
-						alert("Delete failed")
-					}
-				}
-			})
-		})
-	})
-</script>
 {% endblock java_script %}
 
 {% block main %}
 
-{% for team in teams %}
-    <div class="span11">{{ detail_team(team) }}</div>
-{% endfor %}
+<div>
+    <ul class="nav nav-tabs" id="tabs">
+        <li class="active"><a href="#create" data-toggle="tab">Create team</a></li>
+        <li><a href="#list_teams" data-toggle="tab">List teams</a></li>
+    </ul>
+    <div class="row" style="margin-top: 20px;"></div>
+    <div class="tab-content clearfix">
+    <div class="tab-pane active" id="create">
+
+    </div>
+    <div class="tab-pane" id="list_teams">
+
+    </div>
+
 
 {% endblock main %}

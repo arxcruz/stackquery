@@ -60,7 +60,7 @@ function UserCtrl($scope, userApi) {
     }
 
     function hasError() {
-        true; return $scope.errorMessage != '';
+        return $scope.errorMessage != '';
     }
 
     function hasSuccess() {

@@ -144,7 +144,7 @@ function TeamCtrl($scope, $modal, teamApi, teamApiUrl) {
 
 
     function hasError() {
-        true; return $scope.errorMessage != '';
+        return $scope.errorMessage != '';
     }
 
     function hasSuccess() {

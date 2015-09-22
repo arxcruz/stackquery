@@ -8,7 +8,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((errorMessage))</strong>
+                    <strong>{{errorMessage}}</strong>
                 </div>
             </div>
             <div ng-show="hasSuccess()">
@@ -16,7 +16,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((successMessage))</strong>
+                    <strong>{{successMessage}}</strong>
                 </div>
             </div>
             <form name="projectForm" novalidate>
@@ -50,7 +50,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((errorMessage))</strong>
+                    <strong>{{errorMessage}}</strong>
                 </div>
             </div>
             <div ng-show="hasSuccess()">
@@ -58,7 +58,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((successMessage))</strong>
+                    <strong>{{successMessage}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -98,13 +98,13 @@
                     <div class="row" dir-paginate="project in projects | filter:searchKey | itemsPerPage: pageSize" pagination-id="listProjects" current-page="currentPage" ng-class-odd="'oddRow'">
                         <div ng-show="isInReadMode(project.id)">
                             <div class="col-sm-1">
-                                ((project.id))
+                                {{project.id}}
                             </div>
                             <div class="col-sm-4">
-                                ((project.name))
+                                {{project.name}}
                             </div>
                             <div class="col-sm-5">
-                                ((project.git_url))
+                                {{project.git_url}}
                             </div>
                             <div class="col-sm-2">
                                 <div class="pull-right">
@@ -123,7 +123,7 @@
                         </div>
                         <div ng-show="isInEditMode(project.id)">
                             <div class="col-sm-1">
-                                ((project.id))
+                                {{project.id}}
                             </div>
                             <div class="col-sm-4">
                                 <input class="form-control" type="text"

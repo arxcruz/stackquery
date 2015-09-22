@@ -8,7 +8,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((errorMessage))</strong>
+                    <strong>{{errorMessage}}</strong>
                 </div>
             </div>
             <div ng-show="hasSuccess()">
@@ -16,7 +16,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((successMessage))</strong>
+                    <strong>{{successMessage}}</strong>
                 </div>
             </div>
             <form name="userForm" novalidate>
@@ -32,7 +32,7 @@
                     <div class="col-xs-3 col-md-2">
                         <div class="form-group" show-errors>
                             <label for="inputId" class="control-label">User id</label>
-                            <input type="text" class="form-control" name="user_id" placeholder="User Id" required ng-model="model.userId" title="Bla bla bla">
+                            <input type="text" class="form-control" name="user_id" placeholder="User Id" required ng-model="model.userId">
                             <div class="help-block with-errors"></div>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((errorMessage))</strong>
+                    <strong>{{errorMessage}}</strong>
                 </div>
             </div>
             <div ng-show="hasSuccess()">
@@ -67,7 +67,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((successMessage))</strong>
+                    <strong>{{successMessage}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -125,10 +125,10 @@
                             <input type="checkbox" ng-checked="selected.indexOf(user) > -1" ng-click="toggleSelection(user)" />
                         </div>
                         <div class="col-sm-5">
-                            ((user.name))
+                            {{user.name}}
                         </div>
                         <div class="col-sm-2">
-                            ((user.id))
+                            {{user.id}}
                         </div>
                         <div class="col-sm-4 button-space">
                             <div class="pull-right">
@@ -152,7 +152,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((errorMessage))</strong>
+                    <strong>{{errorMessage}}</strong>
                 </div>
             </div>
             <div ng-show="hasSuccess()">
@@ -160,7 +160,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((successMessage))</strong>
+                    <strong>{{successMessage}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -214,13 +214,13 @@
                 <div class="col-sm-12">
                     <div class="row" dir-paginate="user in users | itemsPerPage: pageSize" pagination-id="bulkUsers" current-page="currentPage" ng-class-odd="'oddRow'">
                         <div class="col-sm-5">
-                            ((user.name))
+                            {{user.name}}
                         </div>
                         <div class="col-sm-3">
-                            ((user.user_id))
+                            {{user.user_id}}
                         </div>
                         <div class="col-sm-4">
-                            ((user.email))
+                            {{user.email}}
                         </div>
                     </div>
                     <div class="col-sm-12">
@@ -239,7 +239,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((errorMessage))</strong>
+                    <strong>{{errorMessage}}</strong>
                 </div>
             </div>
             <div ng-show="hasSuccess()">
@@ -247,7 +247,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((successMessage))</strong>
+                    <strong>{{successMessage}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -265,7 +265,7 @@
             </div>
             <div class="row" ng-show="loading">
                 <div class="col-sm-12">
-                    <img src="{{ url_for('static', filename='images/progressring.gif') }}" />
+                    <img src="static/images/progressring.gif" />
                         Loading...
                 </div>
             </div>
@@ -290,16 +290,16 @@
                     <div class="row" dir-paginate="user in users | filter:searchKey | itemsPerPage: pageSize" pagination-id="listUsers" current-page="currentPage" ng-class-odd="'oddRow'">
                         <div ng-show="isInReadMode(user.id)">
                             <div class="col-sm-1">
-                                ((user.id))
+                                {{user.id}}
                             </div>
                             <div class="col-sm-2">
-                                ((user.user_id))
+                                {{user.user_id}}
                             </div>
                             <div class="col-sm-4">
-                                ((user.name))
+                                {{user.name}}
                             </div>
                             <div class="col-sm-3">
-                                ((user.email))
+                                {{user.email}}
                             </div>
                             <div class="col-sm-2">
                                 <div class="pull-right">
@@ -318,7 +318,7 @@
                         </div>
                         <div ng-show="isInEditMode(user.id)">
                             <div class="col-sm-1">
-                                ((user.id))
+                                {{user.id}}
                             </div>
                             <div class="col-sm-2">
                                 <input class="form-control" type="text"

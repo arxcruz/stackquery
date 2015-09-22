@@ -1,52 +1,211 @@
+<script type="text/ng-template" id="password.html">
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Authentication</h4>
+    </div>
+    <div class="modal-body">
+        <form name="passwordForm">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4>In order to access reports saved in Bugzilla, you need to provide your username and password. These will be stored in this session</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="form-group" show-errors>
+                        <label for="name" class="control-label">Username</label>
+                        <input type="text" class="form-control" name="name" required ng-model="model.username">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="form-group" show-errors>
+                        <label for="inputName" class="control-label">Password</label>
+                        <input type="password" class="form-control" name="password" required ng-model="model.password">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="ok()">Save</button>
+        <button type="submit" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="manage_filters.html">
+    <div class="modal-header">
+        <h3 class="modal-title">List of filters</h3>
+    </div>
+    <div class="modal-body">
+        <tabset>
+            <tab heading="Add filter">
+                <div class="row" style="margin-top: 20px;"></div>
+                <div ng-show="hasError()">
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>{{errorMessage}}</strong>
+                    </div>
+                </div>
+                <div ng-show="hasSuccess()">
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>{{successMessage}}</strong>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 20px;"></div>
+                <form name="filterForm" novalidate>
+                    <div class="row">
+                        <div class="col-xs-6 col-md-4">
+                            <div class="form-group" show-errors>
+                                <label for="name" class="control-label">Filter Name</label>
+                                <input type="text" class="form-control" name="name" required ng-model="model.name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 col-md-4">
+                            <div class="form-group" show-errors>
+                                <label for="filter" class="control-label">Filter</label>
+                                <input type="text" class="form-control" name="filter" required ng-model="model.filter_desc">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <button class="btn btn-info" ng-click="createFilter()">Create filter</button>
+                        </div>
+                    </div>
+                </form>
+            </tab>
+            <tab heading="Filters">
+                <div class="row" style="margin-top: 20px;"></div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="search">Search:</label>
+                        <input class="form-control" placeholder="Search" ng-model="searchKey"></input>
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-success" style="margin-top: 25px;" ng-click="refreshFilter()">Refresh</button>
+                    </div>
+                </div>
+                <div class="row" ng-show="loading">
+                    <div class="col-sm-12">
+                        <img src="/static/images/progressring.gif" />
+                            Loading...
+                    </div>
+                </div>
+                <div class="col-sm-12" ng-show="loadedFilters.length > 0">
+                    <div class="row" style="margin-top: 20px;"></div>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <h4>Id</h4>
+                        </div>
+                        <div class="col-sm-4">
+                            <h4>Name</h4>
+                        </div>
+                        <div class="col-sm-4">
+                            <h4>Filter</h4>
+                        </div>
+                        <div class="col-sm-2">
+                        </div>
+                    </div>
+                    <div class="row" dir-paginate="filter in loadedFilters | filter:searchKey | itemsPerPage: pageSize" pagination-id="listModalFilters" current-page="currentPage" ng-class-odd="'oddRow'">
+                        <div class="col-sm-2">
+                            {{filter.id}}
+                        </div>
+                        <div class="col-sm-4">
+                            {{filter.name}}
+                        </div>
+                        <div class="col-sm-4">
+                            {{filter.filter_desc}}
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="pull-right">
+                                <button class="btn btn-danger btn-sm pull-right"
+                                        style="margin-bottom: 5px; margin-top: 5px"
+                                        ng-click="removeFilter(filter)">
+                                        Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <dir-pagination-controls boundary-links="true" pagination-id="listModalFilters"></dir-pagination-controls>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 20px;"></div>
+            </tab>
+        </tabset>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<style type="text/css">
+    .grid {
+        height: 900px;
+    }
+</style>
 <div ng-controller="reportMainCtrl">
     <tabset>
         <!-- Default report -->
         <tab heading="Stackalytics report" active="tabs[0].active">
             <div class="row" style="margin-top: 20px;"></div>
             <div ng-controller="stackReportsCtrl">
-                <div class="row">
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label class="control-label" for="release">Release:</label>
-                            <select class="form-control" ng-model="selectedRelease" ng-options="release.name for release in releases">
-                            </select>
+                <form name="stackForm" novalidate>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group" show-errors>
+                                <label class="control-label" for="release" required>Release:</label>
+                                <select class="form-control" name="release" ng-model="selectedRelease" ng-options="release.name for release in releases">
+                                </select>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group" show-errors>
+                                <label class="control-label" for="projectType">Project type:</label>
+                                <select class="form-control" name="projectType" ng-model="selectedProjectType" required>
+                                    <option value="all">All</option>
+                                    <option value="openstack">Openstack</option>
+                                    <option value="tempest">Tempest</option>
+                                    <option value="rally">Rally</option>
+                                    <option value="stackforge">Stackforge</option>
+                                </select>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group" show-errors>
+                                <label class="control-label" for="type">Type:</label>
+                                <select class="form-control" name="type" ng-model="selectedType" required>
+                                    <option value="metric">Metrics</option>
+                                    <option value="group">Group Summary</option>
+                                </select>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group" show-errors>
+                                <label class="control-label" for="team">Team:</label>
+                                <select class="form-control" name="team" ng-model="selectedTeam" ng-options="team.name for team in teams" required>
+                                </select>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2" style="margin-top: 25px;">
+                            <button class="btn btn-primary" ng-click="getResults()">Go</button>
                         </div>
                     </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label class="control-label" for="project_type">Project type:</label>
-                            <select class="form-control" ng-model="selectedProjectType">
-                                <option value="all">All</option>
-                                <option value="openstack">Openstack</option>
-                                <option value="tempest">Tempest</option>
-                                <option value="rally">Rally</option>
-                                <option value="stackforge">Stackforge</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label class="control-label" for="project_type">Type:</label>
-                            <select class="form-control" ng-model="selectedType">
-                                <option value="metric">Metrics</option>
-                                <option value="group">Group Summary</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label class="control-label" for="team">Team:</label>
-                            <select class="form-control" ng-model="selectedTeam" ng-options="team.name for team in teams">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-2" style="margin-top: 25px;">
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary" ng-click="getResults()">Go</button>
-                        </div>
-                    </div>
-                </div>
-                
+                </form>
+                    
                 <div class="row" style="margin-top: 20px;"></div>
                 <div class="row" ng-show="loading">
                     <div class="col-sm-12">
@@ -61,15 +220,15 @@
                                 <h4>Metrics</h4>
                             </div>
                             <div class="col-sm-4">
-                                <h4>Release: ((selectedRelease.name))</h4>
+                                <h4>Release: {{selectedRelease.name}}</h4>
                             </div>
                         </div>
                         <div class="row" ng-repeat="metric in results.metrics" ng-class-odd="'oddRow'">
                             <div class="col-sm-8" style="margin-bottom: 15px; margin-top: 15px;">
-                                ((metric.title))
+                                {{metric.title}}
                             </div>
                             <div class="col-sm-4" style="margin-bottom: 15px; margin-top: 15px;">
-                                ((metric.value))
+                                {{metric.value}}
                             </div>
                         </div>
                         <div class="row" style="background: #FFCC66;">
@@ -77,7 +236,7 @@
                                 Total
                             </div>
                             <div class="col-sm-4" style="margin-bottom: 15px; margin-top: 15px;">
-                                ((results.metrics | sumByKey:'value'))
+                                {{results.metrics | sumByKey:'value'}}
                             </div>
                         </div>
                     </div>
@@ -121,48 +280,164 @@
                         </div>
                         <div class="row" ng-repeat="metric in results.groups" ng-class-odd="'oddRow'">
                             <div class="col-sm-1 div-bigger">
-                                <a href="http://stackalytics.com/?user_id=((metric.user))&release=(( selectedRelease.name.toLowerCase() ))">((metric.user))</a>
+                                <a href="http://stackalytics.com/?user_id={{metric.user}}&release={{ selectedRelease.name.toLowerCase() }}">{{metric.user}}</a>
                             </div>
                             <div class="col-sm-1 div-bigger">
-                                ((metric.commit_count))
+                                {{metric.commit_count}}
                             </div>
                             <div class="col-sm-1 div-bigger">
-                                ((metric.loc))
+                                {{metric.loc}}
                             </div>
                             <div class="col-sm-1 div-bigger">
-                                ((metric.change_request_count))
+                                {{metric.change_request_count}}
                             </div>
                             <div class="col-sm-1 div-bigger">
-                                ((metric.patch_set_count))
+                                {{metric.patch_set_count}}
                             </div>
                             <div class="col-sm-1 div-bigger">
                                 
                             </div>
                             <div class="col-sm-1 div-bigger">
-                                ((metric.drafted_blueprint_count))
+                                {{metric.drafted_blueprint_count}}
                             </div>
                             <div class="col-sm-1 div-bigger">
-                                ((metric.completed_blueprint_count))
+                                {{metric.completed_blueprint_count}}
                             </div>
                             <div class="col-sm-1 div-bigger">
-                                ((metric.filed_bug_count))
+                                {{metric.filed_bug_count}}
                             </div>
                             <div class="col-sm-1 div-bigger">
-                                ((metric.resolved_bug_count))
+                                {{metric.resolved_bug_count}}
                             </div>
                             <div class="col-sm-1 div-bigger">
-                                ((metric.email_count))
+                                {{metric.email_count}}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>          
         </tab>
-        <tab heading="Red Hat Bugzilla report" active="tabs[1].active">
-    asdddddddd
+        <tab heading="Scenario contribution" active="tabs[1].active">
+            <div class="row" style="margin-top: 20px;"></div>
+            <div ng-controller="scenarioCtrl">
+                <div class="row">
+                    <form name="scenarioForm">
+                        <div class="col-sm-3">
+                            <div class="form-group" show-errors>
+                                <label for="filter">Filter:</label>
+                                <select class="form-control" name="filter" ng-model="selectedFilter" ng-options="filter.name for filter in filters" required>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-success" style="margin-top: 25px;" ng-click="manageFilters()">+</button>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="team">Team:</label>
+                                <select class="form-control" name="team" ng-model="selectedTeam" ng-options="team.name for team in teams" required>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="form-group">
+                                <button ng-click="getResults()" class="btn btn-primary" style="margin-top: 25px;">Go</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="row" style="margin-top: 20px;"></div>
+                <div class="row" ng-show="loading">
+                    <div class="col-sm-12">
+                        <img src="/static/images/progressring.gif" />
+                            Loading...
+                    </div>
+                </div>
+                <div ng-show="results.users.length > 0">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="{{ colSize }}">
+                                <h4>User</h4>
+                            </div>
+                            <div class="{{ colSize }}">
+                                <h4>Undefined</h4>
+                            </div>
+                            <div class="{{ colSize }}" ng-repeat="header in results.headers">
+                                <h4>{{header | capitalize}}</h4>
+                            </div>
+                        </div>
+                        <div class="row" ng-repeat="row in results.users" ng-class-odd="'oddRow'">
+                            <div class="{{ colSize }} div-bigger">
+                                {{ row.name }}
+                            </div>
+                            <div class="{{ colSize }} div-bigger">
+                                {{ row.none }}
+                            </div>
+                            <div class="{{ colSize }} div-bigger" ng-repeat="header in results.headers">
+                                {{ row[header]}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </tab>
-        <tab heading="Havester report" active="tabs[2].active">
-    asdffffffff
+        <tab heading="Red Hat Bugzilla report" active="tabs[2].active">
+            <div class="row" style="margin-top: 20px;"></div>
+            <div ng-controller="bugzillaReportsCtrl">
+                <div class="row">
+                    <form name="bzForm" novalidate>
+                        <div class="col-sm-12">
+                            <div class="col-sm-8">
+                                <div class="form-group" show-errors>
+                                    <label class="control-label" for="bugzillaReports" required>Select a report:</label>
+                                    <select class="form-control" name="bugzillaReports" ng-model="selectedBugzilla" ng-options="bugzilla.name for bugzilla in bugzillaReports">
+                                    </select>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-primary" style="margin-top: 25px;" ng-click="getResults()">Go</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="row" style="margin-top: 20px;"></div>
+                <div class="row" ng-show="loading">
+                    <div class="col-sm-12">
+                        <img src="/static/images/progressring.gif" />
+                            Loading...
+                    </div>
+                </div>
+                <div class="row">
+                        <div ng-repeat="table in result.tables">
+                            <h2 class="text-center">{{table.title}}</h2>
+                            <div ui-grid="{ data: table.rows, columnDefs: table.headers }" ui-grid-pagination ui-grid-move-columns ui-grid-resize-columns class="grid"></div>
+                        </div>
+                </div>
+            </div>
+        </tab>
+        <tab heading="Havester report" active="tabs[3].active">
+            <div class="row" style="margin-top: 20px;"></div>
+            <div ng-controller="harvesterReportsCtrl">
+                <div class="row">
+                    <form name="bzForm" novalidate>
+                        <div class="col-sm-12">
+                            <div class="col-sm-8">
+                                <div class="form-group" show-errors>
+                                    <label class="control-label" for="harvesterReports" required>Select a report:</label>
+                                    <select class="form-control" name="harvesterReports" ng-model="selectedHarvester" ng-options="harvester.name for harvester in harvesterReports">
+                                    </select>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="row" style="margin-top: 20px;"></div>
+                <div class="row">
+                    <iframe ng-src="{{ trustSrc(selectedHarvester.url) }}" style="position:absolute; top:200px; left:0px; bottom:0px; right:0px; width:100%; height:90%; border:none; margin:0; padding:0; z-index:-1;"/>
+                </div>
+            </div>
         </tab>
     </tabset>
 </div>

@@ -46,13 +46,13 @@
                     </div>
                     <div class="row" dir-paginate="user in loadedUsers | filter:searchKey | itemsPerPage: usersPageSize" pagination-id="listModalUsers" current-page="usersCurrentPage" ng-class-odd="'oddRow'">
                         <div class="col-sm-2">
-                            ((user.user_id))
+                            {{user.user_id}}
                         </div>
                         <div class="col-sm-4">
-                            ((user.name))
+                            {{user.name}}
                         </div>
                         <div class="col-sm-4">
-                            ((user.email))
+                            {{user.email}}
                         </div>
                         <div class="col-sm-2">
                             <div class="pull-right">
@@ -104,10 +104,10 @@
                     </div>
                     <div class="row" dir-paginate="project in loadedProjects | filter:searchKey | itemsPerPage: projectsPageSize" pagination-id="listModalProjects" current-page="projectsCurrentPage" ng-class-odd="'oddRow'">
                         <div class="col-sm-6">
-                            ((project.name))
+                            {{project.name}}
                         </div>
                         <div class="col-sm-4">
-                            ((project.git_url))
+                            {{project.git_url}}
                         </div>
                         <div class="col-sm-2">
                             <div class="pull-right">
@@ -147,7 +147,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((errorMessage))</strong>
+                    <strong>{{errorMessage}}</strong>
                 </div>
             </div>
             <div ng-show="hasSuccess()">
@@ -155,7 +155,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((successMessage))</strong>
+                    <strong>{{successMessage}}</strong>
                 </div>
             </div>
             <form name="teamForm" novalidate>
@@ -193,10 +193,10 @@
                                 </div>
                                 <div class="row" dir-paginate="user in users | filter:searchKey | itemsPerPage: pageSize" pagination-id="listTeamUsers" current-page="currentPageUsers" ng-class-odd="'oddRow'">
                                     <div class="col-sm-5">
-                                        ((user.user_id))
+                                        {{user.user_id}}
                                     </div>
                                     <div class="col-sm-5">
-                                        ((user.name))
+                                        {{user.name}}
                                     </div>
                                     <div class="col-sm-2">
                                         <div class="pull-right">
@@ -237,10 +237,10 @@
                                 </div>
                                 <div class="row" dir-paginate="project in projects | filter:searchKey | itemsPerPage: pageSize" pagination-id="listTeamProjects" current-page="currentPageProjects" ng-class-odd="'oddRow'">
                                     <div class="col-sm-5">
-                                        ((project.name))
+                                        {{project.name}}
                                     </div>
                                     <div class="col-sm-5">
-                                        ((project.git_url))
+                                        {{project.git_url}}
                                     </div>
                                     <div class="col-sm-2">
                                         <div class="pull-right">
@@ -277,7 +277,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((errorMessage))</strong>
+                    <strong>{{errorMessage}}</strong>
                 </div>
             </div>
             <div ng-show="hasSuccess()">
@@ -285,7 +285,7 @@
                     <button type="button" class="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <strong>((successMessage))</strong>
+                    <strong>{{successMessage}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -321,10 +321,10 @@
                     </div>
                     <div class="row" dir-paginate="team in teams | filter:searchKey | itemsPerPage: pageSize" pagination-id="listTeams" current-page="currentPage" ng-class-odd="'oddRow'">
                         <div class="col-sm-1">
-                            ((team.id))
+                            {{team.id}}
                         </div>
                         <div class="col-sm-9">
-                            ((team.name))
+                            {{team.name}}
                         </div>
                         <div class="col-sm-2">
                             <div class="pull-right">

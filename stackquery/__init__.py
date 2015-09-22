@@ -12,7 +12,8 @@ from stackquery.restful import api
 
 api.setup_restful_api()
 
-from stackquery.views import rest_api, dashboard
+from stackquery.views import dashboard
+
 
 @app.teardown_request
 def remove_db_session(exception):
@@ -21,7 +22,6 @@ def remove_db_session(exception):
 from stackquery.database import db_session
 
 app.register_blueprint(dashboard.mod)
-app.register_blueprint(rest_api.mod)
 
 from stackquery.helpers import filters
 

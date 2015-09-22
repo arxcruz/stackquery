@@ -14,6 +14,7 @@ import re
 from datetime import datetime
 import logging
 
+
 LOG = logging.getLogger(__name__)
 
 GERRIT_URL = 'https://review.openstack.org/%s&o=' \
@@ -41,6 +42,29 @@ def get_filters(search_filter):
     return return_filter
 
 
+def parse_to_json(reviews):
+
+    result = {}
+
+    result['headers'] = reviews['_versions']
+
+    result['users'] = []
+    del reviews['_versions']
+    default_values = {}
+    for release in result['headers']:
+        default_values[release] = 0
+
+    for user in reviews.keys():
+        data = {'name': user}
+        data.update(default_values)
+        for release_name, release_number in (
+                reviews[user]['releases'].iteritems()):
+            data[release_name] = release_number
+        result['users'].append(data)
+
+    return result
+
+
 def calculate_reviews(gerrit_reviews, team_id, filters=None):
     users = utils.get_users_by_team(team_id)
     reviews = {user.user_id: {'releases': {}}
@@ -66,7 +90,8 @@ def calculate_reviews(gerrit_reviews, team_id, filters=None):
                         not in reviews['_versions']):
                     reviews['_versions'].append(gerrit_review.version)
     reviews['_versions'].sort()
-    return reviews
+
+    return parse_to_json(reviews)
 
 
 def reviews_to_dict(gerrit_reviews):

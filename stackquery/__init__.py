@@ -23,6 +23,4 @@ from stackquery.database import db_session
 
 app.register_blueprint(dashboard.mod)
 
-from stackquery.helpers import filters
 
-filters.setup_filters()

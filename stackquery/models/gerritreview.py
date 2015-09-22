@@ -9,6 +9,8 @@ from sqlalchemy.schema import ForeignKey
 
 from datetime import datetime
 
+rel = GerritReviewFile()
+
 
 class GerritReview(Base, DictSerializable):
     __tablename__ = 'gerrit_review'

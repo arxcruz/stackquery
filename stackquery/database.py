@@ -30,6 +30,8 @@ def init_db(args=None):
             _populate_team_table()
         if args.all or args.report:
             _populate_report_table()
+        if args.all or args.filters:
+            _populate_filters_table()
 
 
 def _populate_team_table():
@@ -159,6 +161,21 @@ def _populate_project_table():
         repos = utils.get_repos_by_module(filename, openstack_project)
         project.git_url = repos['uri']
         db_session.add(project)
+
+    db_session.commit()
+
+
+def _populate_filters_table():
+    from stackquery.models.filter import ScenarioFilter
+    filters = ScenarioFilter()
+    filters.name = 'Tempest scenario'
+    filters.filter_desc = 'file:tempest/scenario.*'
+    db_session.add(filters)
+
+    filters = ScenarioFilter()
+    filters.name = 'Rally scenario'
+    filters.filter_desc = 'file:rally/benchmark/scenarios.*'
+    db_session.add(filters)
 
     db_session.commit()
 

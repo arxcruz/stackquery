@@ -1,7 +1,7 @@
-angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 'teams', 'reports'])
+angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 'teams', 'reports', 'harvester'])
     .config(function($interpolateProvider) {
-        $interpolateProvider.startSymbol('((');
-        $interpolateProvider.endSymbol('))');
+        //$interpolateProvider.startSymbol('((');
+        //$interpolateProvider.endSymbol('))');
     })
     .config(function($routeProvider) {
         $routeProvider.when('/users', {
@@ -12,8 +12,17 @@ angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 't
         });
         $routeProvider.when('/teams', {
             templateUrl: '/static/partial/views/teams.html'
-        })
-        $routeProvider.when('/reports', {
+        });
+        $routeProvider.when('/reports/:tabId', {
+            templateUrl: '/static/partial/views/reports.html'
+        });
+        $routeProvider.when('/bugzilla', {
+            templateUrl: '/static/partial/views/bugzilla.html'
+        });
+        $routeProvider.when('/harvester', {
+            templateUrl: '/static/partial/views/harvester.html'
+        });
+        $routeProvider.otherwise({
             templateUrl: '/static/partial/views/reports.html'
         });
     })
@@ -29,6 +38,30 @@ angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 't
             }
             return sum;
         };
+    })
+    .filter('truncate', function () {
+        return function (text, length, end) {
+            if (text !== undefined) {
+                if (isNaN(length)){
+                    length = 10;
+                }
+
+                end = end || "...";
+
+                if (text.length <= length || text.length - end.length <= length) {
+                    return text;
+                } else {
+                    return String(text).substring(0, length - end.length) + end;
+                }
+            }
+        };
+    })
+    .filter('capitalize', function() {
+        return function(input, scope) {
+            if (input!=null)
+                input = input.toLowerCase();
+            return input.substring(0,1).toUpperCase()+input.substring(1);
+            }
     })
     .factory('restApi', restApi)
     .directive('showErrors', function() {

@@ -121,6 +121,27 @@ def parse_url(url):
     return tmp_url
 
 
+def jsonify_csv2(tables):
+    return_value = {'tables': []}
+    for table in tables:
+        dict_to_json = {}
+        data_rows = []
+        headers = table[0].replace('"', '').split(',')
+        headers = table[0].replace('"', '')
+        headers = headers.replace('(', '')
+        headers = headers.replace(')', '').split(',')
+        for row in table[1:]:
+            columns = row.replace('"', '').split(',')
+            columns = [int(x) if x.isdigit() else x for x in columns]
+            data_rows.append(OrderedDict(zip(headers, columns)))
+
+        dict_to_json['rows'] = data_rows
+        dict_to_json['headers'] = [{'name': x, 'field': x} for x in headers]
+        dict_to_json['title'] = headers[0]
+        return_value['tables'].append(dict_to_json)
+    return return_value
+
+
 def jsonify_csv(tables):
     return_value = []
     for table in tables:
@@ -149,5 +170,5 @@ def get_report_by_id(report_id, username, password):
         return None
 
     reports = parse_csv(csv_document)
-    reports = jsonify_csv(reports)
+    reports = jsonify_csv2(reports)
     return reports

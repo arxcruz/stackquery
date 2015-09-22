@@ -14,9 +14,6 @@ import re
 from datetime import datetime
 import logging
 
-import pudb
-
-
 LOG = logging.getLogger(__name__)
 
 GERRIT_URL = 'https://review.openstack.org/%s&o=' \
@@ -80,7 +77,7 @@ def get_reviews_by_filter(filters, users_ids):
                  "user ")
     if filters.get('file', None):
         sql_query += ", gerrit_review_file "
-    
+
     sql_query += "where "
 
     if filters.get('project', None):

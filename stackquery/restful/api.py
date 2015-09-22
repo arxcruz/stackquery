@@ -413,18 +413,27 @@ class ScenarioContributionListResource(Resource):
         from stackquery.libs import gerrit
         args = scenario_parser.parse_args()
         filters = args['filters']
-        filters += ' status:MERGED'
+        # filters += ' status:MERGED'
 
         search_filter = gerrit.get_filters(filters)
+        print search_filter
 
         try:
-            team = args['team']
-            releases = gerrit.get_all_reviews_from_database(
-                search_filter, team)
+            users = utils.get_users_by_team(args['team'])
+            users_ids = [user.id for user in users]
+
+            # releases = gerrit.get_all_reviews_from_database(
+            #    search_filter, team)
+            releases = gerrit.get_reviews_by_filter(search_filter, users_ids)
+            print releases
         except Exception:
             releases = None
 
         return releases
+
+    def get(self):
+        from stackquery.libs import gerrit
+        return gerrit.get_reviews_by_filter(None, [6, 19, 10, 24])
 
 # Scenario filter
 

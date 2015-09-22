@@ -180,6 +180,7 @@ function ScenarioCtrl($scope, $modal, teamApi, scenarioApi, filterApi) {
     loadFilters();
 
     function getResults() {
+        
         var scenario = {
             filters: $scope.selectedFilter.filter_desc,
             team: $scope.selectedTeam.id

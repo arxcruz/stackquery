@@ -14,6 +14,8 @@ import re
 from datetime import datetime
 import logging
 
+import pudb
+
 
 LOG = logging.getLogger(__name__)
 
@@ -31,7 +33,7 @@ def _gerrit_rest_api_call(uri):
 
 def get_filters(search_filter):
     return_filter = {}
-    valid_filters = ['owner', 'project', 'status', 'file']
+    valid_filters = ['project', 'status', 'file']
     filters = search_filter.split(' ')
     for _filter in filters:
         value = _filter.split(':')
@@ -62,6 +64,69 @@ def parse_to_json(reviews):
             data[release_name] = release_number
         result['users'].append(data)
 
+    return result
+
+
+def get_reviews_by_filter(filters, users_ids):
+    from sqlalchemy.sql import text
+
+    values = ", ".join(map(str, users_ids))
+
+    sql_query = ("select "
+                 "user.user_id, "
+                 "gerrit_review.version, "
+                 "count(distinct gerrit_review.change_id) from "
+                 "gerrit_review, "
+                 "user ")
+    if filters.get('file', None):
+        sql_query += ", gerrit_review_file "
+    
+    sql_query += "where "
+
+    if filters.get('project', None):
+        sql_query += ("gerrit_review.project = '" + filters['project'] +
+                      "' and ")
+
+    sql_query += ("gerrit_review.user_id = user.id "
+                  "and gerrit_review.user_id in ( " + values + " ) "
+                  "and gerrit_review.status = '" +
+                  filters.get('status', 'MERGED') + "' ")
+
+    if filters.get('file', None):
+        sql_query += ("and gerrit_review_file.project REGEXP '" +
+                      filters['file'] + "' ")
+
+    sql_query += ("group by gerrit_review.version, gerrit_review.user_id "
+                  "order by gerrit_review.user_id, gerrit_review.version")
+
+    print sql_query
+    s = text(sql_query)
+
+    db_result = db_session.execute(s).fetchall()
+    result = {}
+    result['headers'] = []
+    result['users'] = []
+
+    default_values = {}
+    for row in db_result:
+        if row[1] not in result['headers']:
+            result['headers'].append(row[1])
+            default_values[row[1]] = 0
+
+    users = {}
+    for row in db_result:
+        if row[0] not in users.keys():
+            users[row[0]] = {}
+            users[row[0]].update(default_values)
+        users[row[0]][row[1]] += row[2]
+
+    for user in users:
+        row = {'name': user}
+        for key in users[user]:
+            print key
+            row[key] = users[user][key]
+
+        result['users'].append(row)
     return result
 
 

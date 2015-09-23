@@ -359,9 +359,6 @@
                             <div class="{{ colSize }}">
                                 <h4>User</h4>
                             </div>
-                            <div class="{{ colSize }}">
-                                <h4>Undefined</h4>
-                            </div>
                             <div class="{{ colSize }}" ng-repeat="header in results.headers">
                                 <h4>{{header | capitalize}}</h4>
                             </div>
@@ -369,9 +366,6 @@
                         <div class="row" ng-repeat="row in results.users" ng-class-odd="'oddRow'">
                             <div class="{{ colSize }} div-bigger">
                                 {{ row.name }}
-                            </div>
-                            <div class="{{ colSize }} div-bigger">
-                                {{ row.none }}
                             </div>
                             <div class="{{ colSize }} div-bigger" ng-repeat="header in results.headers">
                                 {{ row[header]}}

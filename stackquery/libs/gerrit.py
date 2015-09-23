@@ -84,6 +84,9 @@ def get_reviews_by_filter(filters, users_ids):
         sql_query += ("gerrit_review.project = '" + filters['project'] +
                       "' and ")
 
+    if filters.get('file', None):
+        sql_query += ("gerrit_review_file.gerrit_review_id = "
+                      "gerrit_review.id and ")
     sql_query += ("gerrit_review.user_id = user.id "
                   "and gerrit_review.user_id in ( " + values + " ) "
                   "and gerrit_review.status = '" +

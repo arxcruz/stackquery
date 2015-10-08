@@ -133,7 +133,7 @@ function BugzillaReportsCtrl($scope, $cookies, $modal, bugzillaApi) {
 
     function getResults() {
         // TODO: Find a better way to manage authentication
-        if(!$scope.selectedBugzilla.require_authentication && !$cookies.get('username') && !$cookies.get('password')) {
+        if(!$cookies.get('username') && !$cookies.get('password')) {
             // Load username and login popup
             var modalInstance = $modal.open({
                 animation: true,

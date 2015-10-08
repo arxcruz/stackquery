@@ -147,6 +147,11 @@
         <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
     </div>
 </script>
+<style type="text/css">
+    .grid {
+        height: 300px;
+    }
+</style>
 <div ng-controller="reportMainCtrl">
     <tabset>
         <!-- Default report -->
@@ -396,11 +401,13 @@
                             Loading...
                     </div>
                 </div>
-                <div class="row">
-                        <div ng-repeat="table in result.tables">
+                <div class="row" ng-repeat="table in result.tables">
+                    <div class="col-sm-12">
+                        
                             <h2 class="text-center">{{table.title}}</h2>
-                            <div ui-grid="{ data: table.rows, columnDefs: table.headers }" ui-grid-pagination ui-grid-move-columns ui-grid-resize-columns class="grid"></div>
+                            <div ui-grid="{ data: table.rows, columnDefs: table.headers, paginationPageSizes: [25, 50, 75, 100], paginationPageSize: 25}" ui-grid-pagination ui-grid-resize-columns class="grid">
                         </div>
+                    </div>
                 </div>
             </div>
         </tab>

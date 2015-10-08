@@ -1,4 +1,4 @@
-angular.module('reports', ['ui.bootstrap', 'releases', 'ngCookies', 'ui.grid', 'ui.grid.pagination', 'ui.grid.resizeColumns', 'filters'])
+angular.module('reports', ['ui.bootstrap', 'releases', 'ngCookies', 'ui.grid', 'ui.grid.pagination', 'filters'])
     .controller('reportMainCtrl', ReportMainCtrl)
     .controller('stackReportsCtrl', StackReportsCtrl)
     .controller('bugzillaReportsCtrl', BugzillaReportsCtrl)
@@ -148,20 +148,25 @@ function BugzillaReportsCtrl($scope, $cookies, $modal, bugzillaApi) {
                 $cookies.put('username', result.username, {'expires': expireDate});
                 $cookies.put('password', result.password, {'expires': expireDate});
             });
+            loadReport();
         } else {
-            $scope.loading = true;
-            
-            bugzillaApi.getRHBugzillaReport({report: $scope.selectedBugzilla})
-                .success(function(data) {
-                    $scope.result = data;
-                })
-                .error(function(errorInfo, status) {
-                    $scope.result = null;
-                })
-                .finally(function() {
-                    $scope.loading = false;
-                });
+            loadReport();
         }
+    }
+
+    function loadReport() {
+        $scope.loading = true;
+            
+        bugzillaApi.getRHBugzillaReport({report: $scope.selectedBugzilla})
+            .success(function(data) {
+                $scope.result = data;
+            })
+            .error(function(errorInfo, status) {
+                $scope.result = null;
+            })
+            .finally(function() {
+                $scope.loading = false;
+            });
     }
 }
 

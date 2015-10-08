@@ -342,7 +342,7 @@ class RHBugzillaListResource(Resource):
         report.name = args['name']
         report.url = tmp_url
         report.require_authentication = True
-        report.description = args['description']
+        report.description = args['description'] or ''
 
         db_session.add(report)
         db_session.commit()
@@ -381,7 +381,7 @@ class RHBugzillaResource(Resource):
 
         report.name = args['name']
         report.url = tmp_url
-        report.description = args['description']
+        report.description = args['description'] or ''
         db_session.commit()
         return report, 201
 

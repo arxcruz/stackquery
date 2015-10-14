@@ -113,7 +113,7 @@
                     <div class="row" dir-paginate="report in bugzillaReports | filter:searchKey | itemsPerPage: pageSize" pagination-id="listBugzillaReports" current-page="currentPage" ng-class-odd="'oddRow'">
                         <div ng-show="isInReadMode(report.id)">
                             <div class="col-sm-1">
-                                {{report.id}}
+                                {{$index}}
                             </div>
                             <div class="col-sm-2">
                                 {{report.name}}
@@ -141,7 +141,7 @@
                         </div>
                         <div ng-show="isInEditMode(report.id)">
                             <div class="col-sm-1">
-                                {{report.id}}
+                                {{$index}}
                             </div>
                             <div class="col-sm-2">
                                 <input class="form-control" type="text"

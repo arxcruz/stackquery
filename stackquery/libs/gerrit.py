@@ -1,17 +1,17 @@
 import json
 import requests
 
+from sqlalchemy.sql import text
+
 from stackquery.database import db_session
 from stackquery.models.gerritreview import GerritReview
 from stackquery.models.gerritreviewfile import GerritReviewFile
 from stackquery.models.user import User
-
 from stackquery.libs import utils
 from stackquery.libs import vcs
 
 import re
 
-from datetime import datetime
 import logging
 
 LOG = logging.getLogger(__name__)
@@ -65,7 +65,6 @@ def parse_to_json(reviews):
 
 
 def get_reviews_by_filter(filters, users_ids):
-    from sqlalchemy.sql import text
 
     values = ", ".join(map(str, users_ids))
 
@@ -99,7 +98,6 @@ def get_reviews_by_filter(filters, users_ids):
     sql_query += ("group by gerrit_review.version, gerrit_review.user_id "
                   "order by gerrit_review.user_id, gerrit_review.version")
 
-    print sql_query
     s = text(sql_query)
 
     db_result = db_session.execute(s).fetchall()
@@ -123,9 +121,7 @@ def get_reviews_by_filter(filters, users_ids):
     for user in users:
         row = {'name': user}
         for key in users[user]:
-            print key
             row[key] = users[user][key]
-
         result['users'].append(row)
     return result
 
@@ -177,6 +173,7 @@ def get_all_gerrit_projects():
 
 
 def get_changes_by_filter(search_filter, size=300, sort_key=None):
+    LOG.debug('Getting the %s changes' % size)
 
     gerrit_url = GERRIT_URL % ('changes/?q=' + search_filter, size)
 
@@ -187,14 +184,17 @@ def get_changes_by_filter(search_filter, size=300, sort_key=None):
     result = _gerrit_rest_api_call(gerrit_url)
 
     if result[-1].get('_more_changes', None):
-        result += get_changes_by_filter(search_filter, size,
-                                        result[-1]['_sortkey'])
+        _sortkey = result[-1]['_sortkey']
+    else:
+        _sortkey = None
+        LOG.debug('There is no more changes, this is the last iteration')
 
-    return result
+    return _sortkey or None, result
 
 
 def insert_gerrit_review(review):
     LOG.debug('Inserting review %s on database' % review['change_id'])
+
     user = None
     user_id = review['owner'].get('username', None)
     email = review['owner'].get('email', None)
@@ -220,6 +220,7 @@ def insert_gerrit_review(review):
     # We only add the files when it's merged, so it's more easy to
     # track down and don't overload the database
     if review.get('status', None) == 'MERGED':
+        LOG.debug('Change is merged, inserting the changed files in database')
         if review.get('revisions', None) and current_revision:
             if review['revisions'].get(current_revision):
                 files = review['revisions'][current_revision].get('files')
@@ -230,6 +231,7 @@ def insert_gerrit_review(review):
 
     db_session.add(gerrit_review)
     db_session.commit()
+    LOG.debug('Change %s inserted successfully' % review['change_id'])
 
 
 def get_all_reviews_from_database(filters, team_id):
@@ -248,15 +250,30 @@ def load_change_id(project):
             for change in changes}
 
 
+def load_change_id_from_project_change(project, changes):
+    values = ", ".join('\'' + str(c) + '\'' for c in changes)
+    sql_query = ('select change_id from gerrit_review '
+                 'where project = \'%s\' and change_id in (%s)'
+                 % (project, values))
+    select = text(sql_query)
+
+    db_result = db_session.execute(select).fetchall()
+    return list(zip(*db_result)[0]) if len(db_result) > 0 else []
+
+
 def update_gerrit_review(gerrit_review):
+    LOG.debug('Updating review %s' % gerrit_review['change_id'])
     review = utils.get_gerrit_reviews(
         filter={'change_id': gerrit_review['change_id']}, first=True)
 
     if review:
-        db_session.commit()
-
+        LOG.debug(
+            'Review found in database. Change id: %s and commit id %s' %
+            (review.change_id, review.commit_id))
         current_revision = gerrit_review.get('current_revision', None)
         if gerrit_review.get('status', None) == 'MERGED':
+            LOG.debug('Review %s was merged, inserting modified files '
+                      'in database' % gerrit_review['change_id'])
             if gerrit_review.get('revisions', None) and current_revision:
                 if gerrit_review['revisions'].get(current_revision):
                     files = gerrit_review['revisions'][current_revision].get(
@@ -274,11 +291,8 @@ def update_gerrit_review(gerrit_review):
                             gerrit_file = GerritReviewFile()
                             gerrit_file.filename = f
                             review.files.append(gerrit_file)
-        LOG.debug(
-            'Review found in database. Change id: %s and commit id %s' %
-            (review.change_id, review.commit_id))
 
-        review.commit_id = gerrit_review.get('current_revision', None)
+        review.commit_id = current_revision
         review.version = gerrit_review.get('version')
 
         user_id = gerrit_review['owner'].get('username', None)
@@ -292,25 +306,56 @@ def update_gerrit_review(gerrit_review):
         db_session.commit()
 
 
-def process_reviews(project, last_run=datetime.now()):
-    change_ids = load_change_id(project)
+def process_reviews(project):
+    LOG.debug('Processing changes for project %s' % project)
+    sort_key, gerrit_results = get_changes_by_filter('project:' + project)
 
-    LOG.debug('Fetching all review for project %s upstream' % project)
-    gerrit_results = get_changes_by_filter('project:' + project)
+    change_ids = [gerrit_result['change_id'] for
+                  gerrit_result in gerrit_results]
+
+    change_results = load_change_id_from_project_change(project,
+                                                        change_ids)
 
     from stackquery import app
 
     filename = app.config['DATA_JSON']
-    LOG.debug('Fetching the commits')
     repos = utils.get_repos_by_module(filename, project)
     repo_git = vcs.get_vcs(repos, app.config['SOURCE_ROOT'])
     commit_index = repo_git.fetch()
 
-    for gerrit_result in gerrit_results:
-        version = commit_index.get(
-            gerrit_result.get('current_revision', None), 'unknow')
-        gerrit_result['version'] = version
-        if gerrit_result['change_id'] in change_ids:
-            update_gerrit_review(gerrit_result)
-        else:
+    while sort_key or gerrit_results:
+        LOG.debug('Calculating results to insert')
+        to_insert = [gerrit for gerrit in gerrit_results if
+                     gerrit_result['change_id'] not in change_results]
+        LOG.debug('Number of insertions: %s' % len(to_insert))
+        LOG.debug('Calculating results to update')
+        to_update = [gerrit for gerrit in gerrit_results if
+                     gerrit_result['change_id'] in change_results]
+        LOG.debug('Number of updades: %s' % len(to_update))
+
+        LOG.debug('Inserting reviews if exist')
+        for gerrit_result in to_insert:
+            version = commit_index.get(
+                gerrit_result.get('current_revision', None), 'unknow')
+            gerrit_result['version'] = version
             insert_gerrit_review(gerrit_result)
+
+        LOG.debug('Updating reviews if exist')
+        for gerrit_result in to_update:
+            version = commit_index.get(
+                gerrit_result.get('current_revision', None), 'unknow')
+            gerrit_result['version'] = version
+            update_gerrit_review(gerrit_result)
+
+        LOG.debug('Looking for more changes')
+        if not sort_key and not gerrit_results[-1].get('_more_changes', None):
+            LOG.debug('No more changes for project %s' % project)
+            break
+
+        sort_key, gerrit_results = get_changes_by_filter('project:' + project,
+                                                         sort_key=sort_key)
+        change_ids = [gerrit_result['change_id'] for
+                      gerrit_result in gerrit_results]
+        change_results = load_change_id_from_project_change(project,
+                                                            change_ids)
+    LOG.debug('Ending processing project %s' % project)

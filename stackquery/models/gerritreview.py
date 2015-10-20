@@ -15,8 +15,8 @@ rel = GerritReviewFile()
 class GerritReview(Base, DictSerializable):
     __tablename__ = 'gerrit_review'
     id = Column(Integer, primary_key=True)
-    commit_id = Column('commit_id', String(40))
-    change_id = Column('change_id', String(40))
+    commit_id = Column('commit_id', String(100))
+    change_id = Column('change_id', String(100))
     version = Column('version', String(30))
     project = Column('project', String(200))
     sortkey = Column('sortkey', String(50))

@@ -8,6 +8,10 @@ from stackquery.models.project import Project
 from stackquery.models.team import Team
 from stackquery.models.user import User
 
+import logging
+
+LOG = logging.getLogger(__name__)
+
 
 def get_users(filter=None, first=False):
     if not filter:
@@ -61,16 +65,19 @@ def get_repos(filename):
 
 
 def get_repos_by_module(filename, module):
+    LOG.debug('Getting repo by module %s and filename %s' % (filename, module))
     repos = get_repos(filename)
     _module = module
     if '/' in _module:
         _module = _module.split('/')[-1]
     for repo in repos:
         if _module in repo['module']:
+            LOG.debug('Repo founded %s' % repo)
             return repo
 
     # Let's give a try and check if we will be able to download from git
     uri = 'git://git.openstack.org/%s.git' % module
+    LOG.debug('Repo not found, using %s' % uri)
     return {
         'uri': uri, 'module': _module,
         'releases': [{'release_name': 'Kilo', 'tag_to': 'HEAD'}]}

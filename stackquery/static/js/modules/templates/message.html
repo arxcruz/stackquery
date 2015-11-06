@@ -1,0 +1,16 @@
+<div ng-show="hasError()">
+    <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>{{errorMessage}}</strong>
+    </div>
+</div>
+<div ng-show="hasSuccess()">
+    <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>{{successMessage}}</strong>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 'teams', 'reports', 'harvester'])
+angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 'teams', 'reports', 'harvester', 'stackqueryDirectives'])
     .config(function($interpolateProvider) {
         //$interpolateProvider.startSymbol('((');
         //$interpolateProvider.endSymbol('))');

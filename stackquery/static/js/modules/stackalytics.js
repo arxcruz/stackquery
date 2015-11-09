@@ -29,8 +29,6 @@ function StackCtrl($scope, stackApi, userApi) {
     $scope.getUsers = getUsers;
     $scope.toggleSelection = toggleSelection;
     $scope.search = search;
-    $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess;
     $scope.selectAll = selectAll;
     $scope.addUser = addUser;
     $scope.addSelectedUsers = addSelectedUsers;
@@ -63,14 +61,6 @@ function StackCtrl($scope, stackApi, userApi) {
 
     function search() {
         getUsers($scope.company);
-    }
-
-    function hasError() {
-        return $scope.errorMessage != '';
-    }
-
-    function hasSuccess() {
-        return $scope.successMessage != '';
     }
 
     function selectAll() {
@@ -118,17 +108,5 @@ function StackCtrl($scope, stackApi, userApi) {
             function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;
             })
-        .finally(
-            function() {
-                dismissMessages();
-            });
-    }
-
-    function dismissMessages() {
-        setTimeout(function() {
-            $scope.successMessage = '';
-            $scope.errorMessage = '';
-            $scope.$apply();
-        }, 4000);
-    }    
+    }   
 }

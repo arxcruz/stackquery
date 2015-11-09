@@ -22,5 +22,3 @@ def remove_db_session(exception):
 from stackquery.database import db_session
 
 app.register_blueprint(dashboard.mod)
-
-

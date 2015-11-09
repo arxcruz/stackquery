@@ -267,17 +267,7 @@ function RedHatBugzillaReportCtrl($scope, bugzillaApi) {
     $scope.errorMessage = '';
     $scope.successMessage = '';
 
-    $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess;
     $scope.createBugzillaReport = createBugzillaReport;
-
-    function hasError() {
-        return $scope.errorMessage != '';
-    }
-
-    function hasSuccess() {
-        return $scope.successMessage != '';
-    }
 
     function createBugzillaReport() {
         $scope.$broadcast('show-errors-check-validity');
@@ -290,19 +280,10 @@ function RedHatBugzillaReportCtrl($scope, bugzillaApi) {
             .success(function(data) {
                 $scope.model = {}
                 $scope.successMessage = 'Report added successfully';
-                dismissMessages();
             })
             .error(function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;
             })
-    }
-
-    function dismissMessages() {
-        setTimeout(function() {
-            $scope.successMessage = '';
-            $scope.errorMessage = '';
-            $scope.$apply();
-        }, 4000);
     }
 }
 
@@ -316,8 +297,6 @@ function RedHatBugzillaReportListCtrl($scope, bugzillaApi) {
     $scope.errorMessage = '';
     $scope.successMessage = '';
 
-    $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess;
     $scope.refresh = refresh;
     $scope.isInReadMode = isInReadMode;
     $scope.isInEditMode = isInEditMode;
@@ -327,14 +306,6 @@ function RedHatBugzillaReportListCtrl($scope, bugzillaApi) {
     $scope.removeReport = removeReport;
 
     refresh();
-
-    function hasError() {
-        return $scope.errorMessage != '';
-    }
-
-    function hasSuccess() {
-        return $scope.successMessage != '';
-    }
 
     function refresh() {
         $scope.loading = true;
@@ -368,7 +339,6 @@ function RedHatBugzillaReportListCtrl($scope, bugzillaApi) {
         bugzillaApi.updateBugzilla(report)
             .success(function(data) {
                 $scope.successMessage = 'Report: ' + report.name + ' updated successfully';
-                dismissMessages();
             })
             .error(function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;
@@ -392,7 +362,6 @@ function RedHatBugzillaReportListCtrl($scope, bugzillaApi) {
                 }
                 $scope.bugzillaReports.splice(idx, 1);
                 $scope.successMessage = 'Report ' + report.name + ' deleted successfully';
-                dismissMessages();
             })
             .error(function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;
@@ -400,13 +369,5 @@ function RedHatBugzillaReportListCtrl($scope, bugzillaApi) {
             .finally(function() {
                 reset();
             });
-    }
-
-    function dismissMessages() {
-        setTimeout(function() {
-            $scope.successMessage = '';
-            $scope.errorMessage = '';
-            $scope.$apply();
-        }, 4000);
     }
 }

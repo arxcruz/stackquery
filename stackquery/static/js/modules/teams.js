@@ -30,20 +30,10 @@ function TeamListCtrl($scope, $modal, teamApi, teamApiUrl) {
     $scope.pageSize = 10;
 
     $scope.refresh = refresh;
-    $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess;
     $scope.editTeam = editTeam;
     $scope.removeTeam = removeTeam;
 
     refresh();
-
-    function hasError() {
-        return $scope.errorMessage != '';
-    }
-
-    function hasSuccess() {
-        return $scope.successMessage != '';
-    }
 
     function editTeam(team) {
         $scope.projects = team.projects;
@@ -94,7 +84,6 @@ function TeamListCtrl($scope, $modal, teamApi, teamApiUrl) {
                 }
                 $scope.teams.splice(idx, 1);
                 $scope.successMessage = 'Team ' + team.name + ' deleted successfully';
-                dismissMessages();
             })
             .error(function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;
@@ -116,14 +105,6 @@ function TeamListCtrl($scope, $modal, teamApi, teamApiUrl) {
                 $scope.loading = false;
             });
     }
-
-    function dismissMessages() {
-        setTimeout(function() {
-            $scope.successMessage = '';
-            $scope.errorMessage = '';
-            $scope.$apply();
-        }, 4000);
-    }
 }
 
 function TeamCtrl($scope, $modal, teamApi, teamApiUrl) {
@@ -135,21 +116,10 @@ function TeamCtrl($scope, $modal, teamApi, teamApiUrl) {
     $scope.currentPageUsers = 1;
     $scope.currentPageProjects = 1;
 
-    $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess;
     $scope.createTeam = createTeam;
     $scope.assignUsersAndProjects = assignUsersAndProjects;
     $scope.removeUser = removeUser;
     $scope.removeProject = removeProject;
-
-
-    function hasError() {
-        return $scope.errorMessage != '';
-    }
-
-    function hasSuccess() {
-        return $scope.successMessage != '';
-    }
 
     function createTeam() {
         $scope.$broadcast('show-errors-check-validity');
@@ -169,7 +139,6 @@ function TeamCtrl($scope, $modal, teamApi, teamApiUrl) {
                 function (data) {
                     reset();
                     $scope.successMessage = 'Team added successfully';
-                    dismissMessages();
                 })
             .error(
                 function (errorInfo, status) {
@@ -225,14 +194,6 @@ function TeamCtrl($scope, $modal, teamApi, teamApiUrl) {
         $scope.model = {};
         $scope.users = [];
         $scope.projects = [];
-    }
-
-    function dismissMessages() {
-        setTimeout(function() {
-            $scope.successMessage = '';
-            $scope.errorMessage = '';
-            $scope.$apply();
-        }, 4000);
     }
 }
 

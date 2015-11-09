@@ -142,22 +142,7 @@
     <tab heading="Create new team">
         <div class="row" style="margin-top: 20px;"></div>
         <div ng-controller="teamCtrl">
-            <div ng-show="hasError()">
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{errorMessage}}</strong>
-                </div>
-            </div>
-            <div ng-show="hasSuccess()">
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{successMessage}}</strong>
-                </div>
-            </div>
+            <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
             <form name="teamForm" novalidate>
                 <div class="row">
                     <div class="col-xs-6 col-md-4">
@@ -272,22 +257,7 @@
     <tab heading="List teams">
         <div class="row" style="margin-top: 20px;"></div>
         <div ng-controller="teamListCtrl">
-            <div ng-show="hasError()">
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{errorMessage}}</strong>
-                </div>
-            </div>
-            <div ng-show="hasSuccess()">
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{successMessage}}</strong>
-                </div>
-            </div>
+            <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
             <div class="row">
                 <div class="col-sm-2">
                     <label for="search">Items per page:</label>

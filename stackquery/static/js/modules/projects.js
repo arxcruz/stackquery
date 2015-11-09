@@ -28,30 +28,12 @@ function ProjectCtrl($scope, projectApi) {
     $scope.users = [];
     $scope.projects = [];
 
-    $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess;
     $scope.createProject = createProject;
 
     reset();
 
-    function hasError() {
-        true; return $scope.errorMessage != '';
-    }
-
-    function hasSuccess() {
-        return $scope.successMessage != '';
-    }
-
     function reset() {
         $scope.model = {};
-    }
-
-    function dismissMessages() {
-        setTimeout(function() {
-            $scope.successMessage = '';
-            $scope.errorMessage = '';
-            $scope.$apply();
-        }, 4000);
     }
 
     function createProject() {
@@ -71,7 +53,6 @@ function ProjectCtrl($scope, projectApi) {
                 function (data) {
                     reset();
                     $scope.successMessage = 'Project added successfully';
-                    dismissMessages();
                 })
             .error(
                 function (errorInfo, status) {
@@ -97,8 +78,6 @@ function ProjectListCtrl($scope, projectApi) {
     $scope.startEdit = startEdit;
     $scope.save = save;
     $scope.removeProject = removeProject;
-    $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess;
     $scope.cancel = reset;
 
     refresh();
@@ -140,7 +119,6 @@ function ProjectListCtrl($scope, projectApi) {
         projectApi.updateProject(project)
             .success(function(data) {
                 $scope.successMessage = 'Project: ' + project.name + ' updated successfully';
-                dismissMessages();
             })
             .error(function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;
@@ -159,7 +137,6 @@ function ProjectListCtrl($scope, projectApi) {
                 }
                 $scope.projects.splice(idx, 1);
                 $scope.successMessage = 'Project ' + project.name + ' deleted successfully';
-                dismissMessages();
             })
             .error(function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;
@@ -169,24 +146,8 @@ function ProjectListCtrl($scope, projectApi) {
             });
     }
 
-    function hasError() {
-        return $scope.errorMessage != '';
-    }
-
-    function hasSuccess() {
-        return $scope.successMessage != '';
-    }
-
     function reset() {
         selectedId = -1;
         editFlag = false;
-    }
-
-    function dismissMessages() {
-        setTimeout(function() {
-            $scope.successMessage = '';
-            $scope.errorMessage = '';
-            $scope.$apply();
-        }, 4000);
     }
 }

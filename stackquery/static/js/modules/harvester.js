@@ -28,17 +28,7 @@ function HarvesterReportCtrl($scope, harvesterApi) {
     $scope.errorMessage = '';
     $scope.successMessage = '';
 
-    $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess;
     $scope.createHarvesterReport = createHarvesterReport;
-
-    function hasError() {
-        return $scope.errorMessage != '';
-    }
-
-    function hasSuccess() {
-        return $scope.successMessage != '';
-    }
 
     function createHarvesterReport() {
         $scope.$broadcast('show-errors-check-validity');
@@ -51,19 +41,10 @@ function HarvesterReportCtrl($scope, harvesterApi) {
             .success(function(data) {
                 $scope.model = {}
                 $scope.successMessage = 'Report added successfully';
-                dismissMessages();
             })
             .error(function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;
             })
-    }
-
-    function dismissMessages() {
-        setTimeout(function() {
-            $scope.successMessage = '';
-            $scope.errorMessage = '';
-            $scope.$apply();
-        }, 4000);
     }
 }
 
@@ -76,8 +57,6 @@ function HarvesterReportListCtrl($scope, harvesterApi) {
     $scope.errorMessage = '';
     $scope.successMessage = '';
 
-    $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess;
     $scope.refresh = refresh;
     $scope.isInReadMode = isInReadMode;
     $scope.isInEditMode = isInEditMode;
@@ -87,14 +66,6 @@ function HarvesterReportListCtrl($scope, harvesterApi) {
     $scope.removeReport = removeReport;
 
     refresh();
-
-    function hasError() {
-        return $scope.errorMessage != '';
-    }
-
-    function hasSuccess() {
-        return $scope.successMessage != '';
-    }
 
     function refresh() {
         $scope.loading = true;
@@ -152,7 +123,6 @@ function HarvesterReportListCtrl($scope, harvesterApi) {
                 }
                 $scope.harvesterReports.splice(idx, 1);
                 $scope.successMessage = 'Report ' + report.name + ' deleted successfully';
-                dismissMessages();
             })
             .error(function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;
@@ -160,14 +130,6 @@ function HarvesterReportListCtrl($scope, harvesterApi) {
             .finally(function() {
                 reset();
             });
-    }
-
-    function dismissMessages() {
-        setTimeout(function() {
-            $scope.successMessage = '';
-            $scope.errorMessage = '';
-            $scope.$apply();
-        }, 4000);
     }
 }
 

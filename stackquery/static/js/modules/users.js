@@ -28,8 +28,6 @@ function UserCtrl($scope, userApi) {
     $scope.successMessage = '';
     $scope.model = {};
     $scope.createUser = createUser;
-    $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess;
 
     reset();
 
@@ -51,7 +49,6 @@ function UserCtrl($scope, userApi) {
                 function (data) {
                     reset();
                     $scope.successMessage = 'User added successfully';
-                    dismissMessages();
                 })
             .error(
                 function (errorInfo, status) {
@@ -59,24 +56,8 @@ function UserCtrl($scope, userApi) {
                 });        
     }
 
-    function hasError() {
-        return $scope.errorMessage != '';
-    }
-
-    function hasSuccess() {
-        return $scope.successMessage != '';
-    }
-
     function reset() {
         $scope.model = {};
-    }
-
-    function dismissMessages() {
-        setTimeout(function() {
-            $scope.successMessage = '';
-            $scope.errorMessage = '';
-            $scope.$apply();
-        }, 4000);
     }
 }
 
@@ -91,8 +72,6 @@ function BulkUserCtrl($scope, userApi) {
     $scope.loadUsersFromText = loadUsersFromText;
     $scope.reset = reset;
     $scope.addBulkUsers = addBulkUsers;
-    $scope.hasError = hasError;
-    $scope.hasSuccess = hasSuccess;
 
     function loadUsersFromText() {
         var usersSplited = $scope.usersText.trim().split(";");
@@ -121,14 +100,6 @@ function BulkUserCtrl($scope, userApi) {
             }
         }
         $scope.users = [];
-    }
-
-    function hasError() {
-        return $scope.errorMessage != '';
-    }
-
-    function hasSuccess() {
-        return $scope.successMessage != '';
     }
 
     function addUserBackend(user) {
@@ -162,8 +133,6 @@ function UserListCtrl($scope, userApi) {
     $scope.save = save;
     $scope.cancel = reset;
     $scope.removeUser = removeUser;
-    $scope.hasSuccess = hasSuccess;
-    $scope.hasError = hasError;
 
     refresh();
 
@@ -228,7 +197,6 @@ function UserListCtrl($scope, userApi) {
                 }
                 $scope.users.splice(idx, 1);
                 $scope.successMessage = 'User ' + user.name + ' deleted successfully';
-                dismissMessages();
             })
             .error(function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;
@@ -244,13 +212,5 @@ function UserListCtrl($scope, userApi) {
 
     function hasSuccess() {
         return $scope.successMessage != '';
-    }
-
-    function dismissMessages() {
-        setTimeout(function() {
-            $scope.successMessage = '';
-            $scope.errorMessage = '';
-            $scope.$apply();
-        }, 4000);
     }
 }

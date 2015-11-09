@@ -3,22 +3,7 @@
     <tab heading="Create users">
         <div class="row" style="margin-top: 20px;"></div>
         <div ng-controller="userCtrl">
-            <div ng-show="hasError()">
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{errorMessage}}</strong>
-                </div>
-            </div>
-            <div ng-show="hasSuccess()">
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{successMessage}}</strong>
-                </div>
-            </div>
+            <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
             <form name="userForm" novalidate>
                 <div class="row">
                     <div class="col-xs-6 col-md-4">
@@ -54,22 +39,7 @@
     <tab heading="Export from stackalytics">
         <div class="row" style="margin-top: 20px;"></div>
         <div ng-controller="stackCtrl">
-            <div ng-show="hasError()">
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{errorMessage}}</strong>
-                </div>
-            </div>
-            <div ng-show="hasSuccess()">
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{successMessage}}</strong>
-                </div>
-            </div>
+            <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group">
@@ -147,22 +117,7 @@
     <tab heading="Export from bulk list">
         <div class="row" style="margin-top: 20px;"></div>
         <div ng-controller="bulkUserCtrl">
-            <div ng-show="hasError()">
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{errorMessage}}</strong>
-                </div>
-            </div>
-            <div ng-show="hasSuccess()">
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{successMessage}}</strong>
-                </div>
-            </div>
+            <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
             <div class="row">
                 <div class="col-sm-6">
                     <label for="textarea">Users separated by ;</label>
@@ -234,22 +189,7 @@
     <tab heading="List of users">
         <div class="row" style="margin-top: 20px;"></div>
         <div ng-controller="userListCtrl">
-            <div ng-show="hasError()">
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{errorMessage}}</strong>
-                </div>
-            </div>
-            <div ng-show="hasSuccess()">
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{successMessage}}</strong>
-                </div>
-            </div>
+            <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
             <div class="row">
                 <div class="col-sm-2">
                     <label for="search">Items per page:</label>

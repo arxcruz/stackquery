@@ -29,12 +29,16 @@ def get_users_by_team(team_id):
 
 
 def get_projects_being_used():
-    projects_used = []
-    teams = Team.query.all()
-    for team in teams:
-        for project in team.projects:
-            if project.name not in projects_used:
-                projects_used.append(project.name)
+    projects_used = Team.query(Team.projects).distinct()
+    print projects_used
+    # projects_used = []
+    # teams = Team.query.all()
+    # for team in teams:
+    #     for project in team.projects:
+    #         if project.name not in projects_used:
+    #             projects_used.append({'name': project.name,
+    #                                   'git_url': project.git_url,
+    #                                   'gerrit_server': project.gerrit_server})
 
     return projects_used
 
@@ -65,9 +69,10 @@ def get_repos(filename):
 
 
 def get_repos_by_module(filename, module):
-    LOG.debug('Getting repo by module %s and filename %s' % (filename, module))
+    LOG.debug('Getting repo by module %s and filename %s' %
+              (filename, module['name']))
     repos = get_repos(filename)
-    _module = module
+    _module = module['name']
     if '/' in _module:
         _module = _module.split('/')[-1]
     for repo in repos:
@@ -76,11 +81,11 @@ def get_repos_by_module(filename, module):
             return repo
 
     # Let's give a try and check if we will be able to download from git
-    uri = 'git://git.openstack.org/%s.git' % module
+    uri = module['git_url']
     LOG.debug('Repo not found, using %s' % uri)
     return {
         'uri': uri, 'module': _module,
-        'releases': [{'release_name': 'Kilo', 'tag_to': 'HEAD'}]}
+        'releases': [{'release_name': 'Mitaka', 'tag_to': 'HEAD'}]}
 
 
 def make_range(start, stop, step):

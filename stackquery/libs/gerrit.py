@@ -172,19 +172,31 @@ def get_all_gerrit_projects():
     return _gerrit_rest_api_call('https://review.openstack.org/projects/')
 
 
-def get_changes_by_filter(search_filter, size=300, sort_key=None):
+def get_changes_by_filter(search_filter, size=300,
+                          server='https://review.openstack.org',
+                          sort_key=None, n=None):
     LOG.debug('Getting the %s changes' % size)
+    server = server[:-2] if server[-1] == '/' else server
 
-    gerrit_url = GERRIT_URL % ('changes/?q=' + search_filter, size)
+    server = (server +
+              '/%s&o=CURRENT_REVISION&o=DETAILED_ACCOUNTS'
+              '&o=CURRENT_FILES&n=%d')
+
+    gerrit_url = server % ('changes/?q=' + search_filter, size)
 
     if sort_key:
-        gerrit_url = gerrit_url + '&N=%s' % sort_key
+        if not isinstance(sort_key, bool):
+            gerrit_url = gerrit_url + '&N=%s' % sort_key
+
+    if n and sort_key and isinstance(sort_key, bool):
+        actual = size * n
+        gerrit_url += '&S=%s' % actual
 
     gerrit_url = gerrit_url.replace(' ', '+')
     result = _gerrit_rest_api_call(gerrit_url)
 
     if result[-1].get('_more_changes', None):
-        _sortkey = result[-1]['_sortkey']
+        _sortkey = result[-1].get('_sortkey', True)
     else:
         _sortkey = None
         LOG.debug('There is no more changes, this is the last iteration')
@@ -254,12 +266,26 @@ def load_change_id_from_project_change(project, changes):
     values = ", ".join('\'' + str(c) + '\'' for c in changes)
     sql_query = ('select change_id from gerrit_review '
                  'where project = \'%s\' and change_id in (%s)'
-                 % (project, values))
+                 % (project['name'], values))
     select = text(sql_query)
 
     db_result = db_session.execute(select).fetchall()
     return list(zip(*db_result)[0]) if len(db_result) > 0 else []
 
+
+def get_projects_in_use():
+    sql_query = ('select distinct projects.name, projects.git_url, '
+                 'projects.gerrit_server from projects, '
+                 'project_team_association where '
+                 'project_team_association.project_id = projects.id')
+    select = text(sql_query)
+    db_result = db_session.execute(select).fetchall()
+    return [
+        {
+            'name': x[0], 
+            'git_url': x[1], 
+            'gerrit_server': x[2]
+        } for x in db_result]
 
 def update_gerrit_review(gerrit_review):
     LOG.debug('Updating review %s' % gerrit_review['change_id'])
@@ -308,7 +334,10 @@ def update_gerrit_review(gerrit_review):
 
 def process_reviews(project):
     LOG.debug('Processing changes for project %s' % project)
-    sort_key, gerrit_results = get_changes_by_filter('project:' + project)
+    counter = 1
+    sort_key, gerrit_results = get_changes_by_filter(
+        'project:' + project['name'], server=project['gerrit_server'],
+        n=counter)
 
     change_ids = [gerrit_result['change_id'] for
                   gerrit_result in gerrit_results]
@@ -349,13 +378,15 @@ def process_reviews(project):
 
         LOG.debug('Looking for more changes')
         if not sort_key and not gerrit_results[-1].get('_more_changes', None):
-            LOG.debug('No more changes for project %s' % project)
+            LOG.debug('No more changes for project %s' % project['name'])
             break
 
-        sort_key, gerrit_results = get_changes_by_filter('project:' + project,
-                                                         sort_key=sort_key)
+        sort_key, gerrit_results = get_changes_by_filter(
+            'project:' + project['name'], server=project['gerrit_server'],
+            sort_key=sort_key, n=counter)
         change_ids = [gerrit_result['change_id'] for
                       gerrit_result in gerrit_results]
+        counter += 1
         change_results = load_change_id_from_project_change(project,
                                                             change_ids)
-    LOG.debug('Ending processing project %s' % project)
+    LOG.debug('Ending processing project %s' % project['name'])

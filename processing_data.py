@@ -19,7 +19,8 @@ def main():
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
 
-    projects = utils.get_projects_being_used()
+    projects = gerrit.get_projects_in_use()
+
     LOG.debug('Projects being used: %s' % projects)
     for project in projects:
         gerrit.process_reviews(project)

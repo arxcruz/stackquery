@@ -24,7 +24,7 @@ function projectApi($http, restApi, projectApiUrl) {
 function ProjectCtrl($scope, projectApi) {
     $scope.errorMessage = '';
     $scope.successMessage = '';
-    $scope.model = {};
+    $scope.model = {gerritServer: 'https://review.openstack.org'};
     $scope.users = [];
     $scope.projects = [];
 
@@ -33,7 +33,7 @@ function ProjectCtrl($scope, projectApi) {
     reset();
 
     function reset() {
-        $scope.model = {};
+        $scope.model = {gerritServer: 'https://review.openstack.org'};
     }
 
     function createProject() {
@@ -45,7 +45,8 @@ function ProjectCtrl($scope, projectApi) {
 
         var project = {
             name: $scope.model.projectName,
-            git_url: $scope.model.projectUrl
+            git_url: $scope.model.projectUrl,
+            gerrit_server: $scope.model.gerritServer
         };
 
         projectApi.addProject(project)

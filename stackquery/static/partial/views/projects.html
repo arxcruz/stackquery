@@ -22,6 +22,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xs-6 col-md-4">
+                        <div class="form-group" show-errors>
+                            <label for="inputUrl" class="control-label">Gerrit server</label>
+                            <input type="url" class="form-control" name="gerrit_server" placeholder="Gerrit server" required ng-model="model.gerritServer">
+                            <div class="help-block with-errors"></div>
+                        </div>
+                    </div>
+                </div>
                 <button class="btn btn-primary" ng-click="createProject()">Create project</button>
             </form>
         </div>
@@ -53,28 +62,28 @@
             <div ng-show="projects.length > 0">
                 <div class="col-sm-12">
                     <div class="row">
-                        <div class="col-sm-1">
-                            <h4>Id</h4>
-                        </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <h4>Project name</h4>
                         </div>
-                        <div class="col-sm-5">
+                        <div class="col-sm-4">
                             <h4>Project url</h4>
+                        </div>
+                        <div class="col-sm-3">
+                            <h4>Gerrit server</h4>
                         </div>
                         <div class="col-sm-2">
                         </div>
                     </div>
                     <div class="row" dir-paginate="project in projects | filter:searchKey | itemsPerPage: pageSize" pagination-id="listProjects" current-page="currentPage" ng-class-odd="'oddRow'">
                         <div ng-show="isInReadMode(project.id)">
-                            <div class="col-sm-1">
-                                {{project.id}}
-                            </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 {{project.name}}
                             </div>
-                            <div class="col-sm-5">
+                            <div class="col-sm-4">
                                 {{project.git_url}}
+                            </div>
+                            <div class="col-sm-3">
+                                {{project.gerrit_server}}
                             </div>
                             <div class="col-sm-2">
                                 <div class="pull-right">
@@ -92,18 +101,20 @@
                             </div>
                         </div>
                         <div ng-show="isInEditMode(project.id)">
-                            <div class="col-sm-1">
-                                {{project.id}}
+                            <div class="col-sm-3">
+                                <input class="form-control" type="text"
+                                        placeholder="Project name"
+                                        ng-model="project.name" />
                             </div>
                             <div class="col-sm-4">
                                 <input class="form-control" type="text"
-                                        placeholder="location name"
-                                        ng-model="project.name" />
-                            </div>
-                            <div class="col-sm-5">
-                                <input class="form-control" type="text"
-                                        placeholder="location name"
+                                        placeholder="Git url"
                                         ng-model="project.git_url" />
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="form-control" type="url"
+                                        placeholder="Gerrit server"
+                                        ng-model="project.gerrit_server" />
                             </div>
                             <div class="col-sm-2">
                                 <div class="pull-right">

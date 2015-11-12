@@ -102,6 +102,10 @@ def _populate_release_table():
         db_session.add(release)
 
         release = Release()
+        release.name = 'Liberty'
+        db_session.add(release)
+
+        release = Release()
         release.name = 'Kilo'
         db_session.add(release)
 
@@ -160,6 +164,7 @@ def _populate_project_table():
         project.name = openstack_project
         repos = utils.get_repos_by_module(filename, openstack_project)
         project.git_url = repos['uri']
+        project.gerrit_server = 'https://review.openstack.org'
         db_session.add(project)
 
     db_session.commit()

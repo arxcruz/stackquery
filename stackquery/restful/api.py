@@ -107,12 +107,14 @@ project_fields = {
     'id': fields.Integer,
     'name': fields.String,
     'uri': fields.Url('project', absolute=True),
-    'git_url': fields.String
+    'git_url': fields.String,
+    'gerrit_server': fields.String
 }
 
 project_parser = reqparse.RequestParser()
 project_parser.add_argument('name')
 project_parser.add_argument('git_url')
+project_parser.add_argument('gerrit_server')
 
 
 class ProjectResource(Resource):
@@ -131,6 +133,7 @@ class ProjectResource(Resource):
         args = project_parser.parse_args()
         project.name = args['name']
         project.git_url = args['git_url']
+        project.gerrit_server = args['gerrit_server']
         db_session.commit()
 
         return project, 201
@@ -153,7 +156,8 @@ class ProjectListResource(Resource):
     @marshal_with(project_fields)
     def post(self):
         args = project_parser.parse_args()
-        project = Project(name=args['name'], git_url=args['git_url'])
+        project = Project(name=args['name'], git_url=args['git_url'],
+                          gerrit_server=args['gerrit_server'])
         db_session.add(project)
         db_session.commit()
         return project, 201

@@ -283,7 +283,8 @@ class StackalyticsListResource(Resource):
             users_ids = [user['user_id'] for user in args['users']]
 
         user_list = stackalytics.get_status_from_users(
-            users_ids, 'Red Hat', args['project_type'], args['release'])
+            users_ids, 'Red Hat', 'all', args['release'],
+            args['project_type'] if args['project_type'] != 'all' else None)
 
         metric = []
 

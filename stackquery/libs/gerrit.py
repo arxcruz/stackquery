@@ -273,11 +273,14 @@ def load_change_id_from_project_change(project, changes):
     return list(zip(*db_result)[0]) if len(db_result) > 0 else []
 
 
-def get_projects_in_use():
+def get_projects_in_use(project=None):
     sql_query = ('select distinct projects.name, projects.git_url, '
                  'projects.gerrit_server from projects, '
                  'project_team_association where '
                  'project_team_association.project_id = projects.id')
+    if project:
+        sql_query += ' and projects.name = \'%s\'' % project
+
     select = text(sql_query)
     db_result = db_session.execute(select).fetchall()
     return [

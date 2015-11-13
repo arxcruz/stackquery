@@ -11,6 +11,7 @@ def init_argparse():
     parser = argparse.ArgumentParser(description='Processing gerrit changes')
     parser.add_argument('--debug', action='store_true',
                         help='Show debug message', default=False)
+    parser.add_argument('--project', help='Run for an specific project', default=None)
     return parser.parse_args()
 
 
@@ -18,10 +19,12 @@ def main():
     args = init_argparse()
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
-
-    projects = gerrit.get_projects_in_use()
+    projects = gerrit.get_projects_in_use(args.project)
 
     LOG.debug('Projects being used: %s' % projects)
+    if len(projects) is 0:
+        print 'Project not found'
+
     for project in projects:
         gerrit.process_reviews(project)
 

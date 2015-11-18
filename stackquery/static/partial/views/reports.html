@@ -279,7 +279,8 @@
                                 {{metric.patch_set_count}}
                             </div>
                             <div class="col-sm-1 div-bigger">
-                                
+                                +1: {{metric.marks['1']}} +2: {{metric.marks['2']}}
+                                A: {{metric.marks['A']}}
                             </div>
                             <div class="col-sm-1 div-bigger">
                                 {{metric.drafted_blueprint_count}}
@@ -297,6 +298,18 @@
                                 {{metric.email_count}}
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div ng-show="results.groups.length == 0">
+                    <div class="row">
+                        <div class="col-sm-12 col-sm-offset-3">
+                            <h2>No results for this team</h2>   
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1">
+                        <button class="btn btn-primary" style="margin-top: 25px;" ng-click="saveAsDefault()" ng-disabled="isSaveEnabled()">Save as default</button>
                     </div>
                 </div>
             </div>          

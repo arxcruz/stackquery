@@ -44,7 +44,7 @@
                         <div class="col-sm-2">
                         </div>
                     </div>
-                    <div class="row" dir-paginate="user in loadedUsers | filter:searchKey | itemsPerPage: usersPageSize" pagination-id="listModalUsers" current-page="usersCurrentPage" ng-class-odd="'oddRow'">
+                    <div class="row" dir-paginate="user in loadedUsers | filter:searchKey | orderBy:userContains:true | itemsPerPage: usersPageSize" pagination-id="listModalUsers" current-page="usersCurrentPage" ng-class-odd="'oddRow'">
                         <div class="col-sm-2">
                             {{user.user_id}}
                         </div>
@@ -102,7 +102,7 @@
                         <div class="col-sm-2">
                         </div>
                     </div>
-                    <div class="row" dir-paginate="project in loadedProjects | filter:searchKey | itemsPerPage: projectsPageSize" pagination-id="listModalProjects" current-page="projectsCurrentPage" ng-class-odd="'oddRow'">
+                    <div class="row" dir-paginate="project in loadedProjects | filter:searchKey | orderBy:projectContains:true| itemsPerPage: projectsPageSize" pagination-id="listModalProjects" current-page="projectsCurrentPage" ng-class-odd="'oddRow'">
                         <div class="col-sm-6">
                             {{project.name}}
                         </div>

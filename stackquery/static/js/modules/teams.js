@@ -63,11 +63,9 @@ function TeamListCtrl($scope, $modal, teamApi, teamApiUrl) {
             team.users = result.users;
             team.name = result.teamName;
 
-            console.log(team);
             teamApi.updateTeam(team)
                 .success(function(data) {
                     $scope.successMessage = 'Team updated successfully';
-                    dismissMessages();
                 })
                 .error(function(errorInfo, status) {
                     $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;

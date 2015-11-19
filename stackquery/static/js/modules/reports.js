@@ -156,7 +156,7 @@ function StackReportsCtrl($scope, $cookies, $interval, releaseApi, teamApi, stac
         var _type = $cookies.get('type');
         var _project_type = $cookies.get('project_type');
 
-        return retorno = (team && team.id == _team && release && release.id == _release && type == _type && project_type == _project_type);
+        return (team && team.id == _team && release && release.id == _release && type == _type && project_type == _project_type);
     }
 
     function startSavedResult() {
@@ -208,6 +208,8 @@ function BugzillaReportsCtrl($scope, $cookies, $modal, bugzillaApi) {
     
     $scope.loadBugzilla = loadBugzilla;
     $scope.getResults = getResults;
+    $scope.saveAsDefault = saveAsDefault;
+    $scope.isSaveEnabled = isSaveEnabled;
 
     //$cookies.remove('username');
     //$cookies.remove('password');
@@ -218,6 +220,20 @@ function BugzillaReportsCtrl($scope, $cookies, $modal, bugzillaApi) {
         bugzillaApi.getBugzilla()
             .success(function(data) {
                 $scope.bugzillaReports = data;
+            })
+            .then(function(res) {
+                var report = $cookies.get('bz_report');
+                if(report) {
+                    for(i = 0; i < $scope.bugzillaReports.length; i++) {
+                        if($scope.bugzillaReports[i].id == report) {
+                            $scope.selectedBugzilla = $scope.bugzillaReports[i];
+                            if($cookies.get('username') && $cookies.get('password')) {
+                                getResults();
+                            }
+                            break;
+                        }
+                    }
+                }
             });
     }
 
@@ -258,9 +274,19 @@ function BugzillaReportsCtrl($scope, $cookies, $modal, bugzillaApi) {
                 $scope.loading = false;
             });
     }
+
+    function saveAsDefault() {
+        $cookies.put('bz_report', $scope.selectedBugzilla.id);
+    }
+
+    function isSaveEnabled() {
+        var _bz_report = $cookies.get('bz_report');
+        var bz_report = $scope.selectedBugzilla;
+        return (bz_report && bz_report.id == _bz_report);
+    }
 }
 
-function ScenarioCtrl($scope, $modal, teamApi, scenarioApi, filterApi) {
+function ScenarioCtrl($scope, $modal, $cookies, $interval, teamApi, scenarioApi, filterApi) {
     $scope.loading = false;
     $scope.selectedTeam = null;
     $scope.selectedFilter = null;
@@ -270,9 +296,14 @@ function ScenarioCtrl($scope, $modal, teamApi, scenarioApi, filterApi) {
 
     $scope.getResults = getResults;
     $scope.manageFilters = manageFilters;
+    $scope.saveAsDefault = saveAsDefault;
+    $scope.isSaveEnabled = isSaveEnabled;
+
+    var stop;
 
     loadTeam();
     loadFilters();
+    startSavedResult();
 
     function getResults() {
         
@@ -325,6 +356,17 @@ function ScenarioCtrl($scope, $modal, teamApi, scenarioApi, filterApi) {
             .success(function(data) {
                 $scope.teams = data;
             })
+            .then(function(res) {
+                var team = $cookies.get('scenario_team');
+                if(team) {
+                    for(i = 0; i < $scope.teams.length; i++) {
+                        if($scope.teams[i].id == team) {
+                            $scope.selectedTeam = $scope.teams[i];
+                            break;
+                        }
+                    }
+                }
+            })
     }
 
     function loadFilters() {
@@ -332,6 +374,54 @@ function ScenarioCtrl($scope, $modal, teamApi, scenarioApi, filterApi) {
             .success(function(data) {
                 $scope.filters = data;
             })
+            .then(function(res) {
+                var filter = $cookies.get('scenario_filter');
+                if(filter) {
+                    for(i = 0; i < $scope.filters.length; i++) {
+                        if($scope.filters[i].id == filter) {
+                            $scope.selectedFilter = $scope.filters[i];
+                            break;
+                        }
+                    }
+                }
+            });
+    }
+
+    function saveAsDefault() {
+        $cookies.put('scenario_team', $scope.selectedTeam.id);
+        $cookies.put('scenario_filter', $scope.selectedFilter.id);
+    }
+
+    function isSaveEnabled() {
+        var team = $scope.selectedTeam;
+        var filter = $scope.selectedFilter;
+        var _team = $cookies.get('scenario_team');
+        var _filter = $cookies.get('scenario_filter');
+
+        return (team && team.id == _team && filter && filter.id == _filter);
+    }
+
+    function startSavedResult() {
+        if(angular.isDefined(stop)) {
+            return;
+        }
+
+        stop = $interval(function() {
+            var team = $scope.selectedTeam;
+            var filter = $scope.selectedFilter;
+
+            if(team && filter) {
+                getResults();
+                stopSavedResult();
+            }    
+        }, 100);
+    }
+
+    function stopSavedResult() {
+        if(angular.isDefined(stop)) {
+            $interval.cancel(stop);
+            stop = undefined;
+        }
     }
 }
 

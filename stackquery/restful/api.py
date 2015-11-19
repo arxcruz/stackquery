@@ -421,7 +421,6 @@ class ScenarioContributionListResource(Resource):
         # filters += ' status:MERGED'
 
         search_filter = gerrit.get_filters(filters)
-        print search_filter
 
         try:
             users = utils.get_users_by_team(args['team'])

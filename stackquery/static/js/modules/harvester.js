@@ -141,6 +141,8 @@ function HarvesterCtrl($scope, harvesterApi) {
 
     $scope.loadReports = loadReports;
     $scope.loadReportInPage = loadReportInPage;
+    $scope.isSaveEnabled = isSaveEnabled;
+    $scope.saveAsDefault = saveAsDefault;
 
     loadReports();
 
@@ -156,11 +158,12 @@ function HarvesterCtrl($scope, harvesterApi) {
     }
 }
 
-function HarvesterReportsCtrl($scope, $sce, harvesterApi) {
+function HarvesterReportsCtrl($scope, $cookies, $sce, harvesterApi) {
     $scope.selectedHarvester = null;
     $scope.harvesterReports = [];
 
-    $scope.getResults = getResults;
+    $scope.saveAsDefault = saveAsDefault;
+    $scope.isSaveEnabled = isSaveEnabled;
 
     $scope.trustSrc = trustSrc;
 
@@ -175,9 +178,28 @@ function HarvesterReportsCtrl($scope, $sce, harvesterApi) {
             .success(function(data) {
                 $scope.harvesterReports = data;
             })
+            .then(function(res) {
+                var report = $cookies.get('hv_report');
+                if(report) {
+                    for(i = 0; i < $scope.harvesterReports.length; i++) {
+                        if($scope.harvesterReports[i].id == report) {
+                            $scope.selectedHarvester = $scope.harvesterReports[i];
+                            //trustSrc($scope.selectedHarvester.url);
+                            break;
+                        }
+                    }
+                }
+            });
     }
 
-    function getResults() {
+    function isSaveEnabled() {
+        var _report = $cookies.get('hv_report');
+        var report = $scope.selectedHarvester;
 
+        return (report && report.id == _report);
+    }
+
+    function saveAsDefault() {
+        $cookies.put('hv_report', $scope.selectedHarvester.id);
     }
 }

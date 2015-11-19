@@ -370,13 +370,25 @@
                         </div>
                     </div>
                 </div>
+                <div ng-show="results.users.length == 0">
+                    <div class="row">
+                        <div class="col-sm-12 col-sm-offset-3">
+                            <h2>No results for this filter/team</h2>   
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1">
+                        <button class="btn btn-primary" style="margin-top: 25px;" ng-click="saveAsDefault()" ng-disabled="isSaveEnabled()">Save as default</button>
+                    </div>
+                </div>
             </div>
         </tab>
         <tab heading="Red Hat Bugzilla report" active="tabs[2].active">
             <div class="row" style="margin-top: 20px;"></div>
             <div ng-controller="bugzillaReportsCtrl">
-                <div class="row">
-                    <form name="bzForm" novalidate>
+                <form name="bzForm" novalidate>
+                    <div class="row">
                         <div class="col-sm-12">
                             <div class="col-sm-8">
                                 <div class="form-group" show-errors>
@@ -390,8 +402,8 @@
                                 <button class="btn btn-primary" style="margin-top: 25px;" ng-click="getResults()">Go</button>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
                 <div class="row" style="margin-top: 20px;"></div>
                 <div class="row" ng-show="loading">
                     <div class="col-sm-12">
@@ -405,6 +417,18 @@
                             <h2 class="text-center">{{table.title}}</h2>
                             <div ui-grid="{ data: table.rows, columnDefs: table.headers, paginationPageSizes: [25, 50, 75, 100], paginationPageSize: 25}" ui-grid-pagination ui-grid-resize-columns class="grid">
                         </div>
+                    </div>
+                </div>
+                <div ng-show="results.tables.length == 0">
+                    <div class="row">
+                        <div class="col-sm-12 col-sm-offset-3">
+                            <h2>No results found</h2>   
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1">
+                        <button class="btn btn-primary" style="margin-top: 25px;" ng-click="saveAsDefault()" ng-disabled="isSaveEnabled()">Save as default</button>
                     </div>
                 </div>
             </div>
@@ -422,6 +446,9 @@
                                     </select>
                                     <div class="help-block with-errors"></div>
                                 </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-primary" style="margin-top: 25px;" ng-click="saveAsDefault()" ng-disabled="isSaveEnabled()">Save as default</button>
                             </div>
                         </div>
                     </form>

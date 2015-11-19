@@ -797,7 +797,7 @@
                 }
             ],
             "user_name": "Anant Patil",
-            "emails": ["anant.techie@gmail.com","anant.patil@hp.com"]
+            "emails": ["anant.techie@gmail.com","anant.patil@hp.com","anant.patil@hpe.com"]
         },
         {
             "launchpad_id": "anastasia-martynova",
@@ -1217,6 +1217,28 @@
                        "asalkeld@redhat.com", "angus.salkeld@rackspace.com"]
         },
         {
+            "launchpad_id": "ashish-singh7",
+            "companies": [
+                {
+                    "company_name": "Ericsson",
+                    "end_date": null
+                }
+            ],
+            "user_name": "Ashish Singh",
+            "emails": ["ashishsingh2k8@gmail.com"]
+        },
+        {
+            "launchpad_id": "ashlee-i",
+            "companies": [
+                {
+                    "company_name": "*independent",
+                    "end_date": null
+                }
+            ],
+            "user_name": "Ashlee Young",
+            "emails": ["ashlee@onosfw.com", "ashlee@wildernessvoice.com"]
+        },
+        {
             "launchpad_id": "ashleighfarnham-deactivatedaccount",
             "companies": [
                 {
@@ -1389,6 +1411,17 @@
             ],
             "user_name": "Basil Baby",
             "emails": ["basilbaby@gmail.com"]
+        },
+        {
+            "launchpad_id": "battu-amulya",
+            "companies": [
+                {
+                    "company_name": "Intel",
+                    "end_date": null
+                }
+            ],
+            "user_name": "AmulyaBattu",
+            "emails": ["battu.amulya@gmail.com", "akt827@my.utsa.edu"]
         },
         {
             "github_id": "bcoca",
@@ -1566,6 +1599,17 @@
             ],
             "user_name": "Bharath M",
             "emails": ["bharath.stacker@gmail.com", "bharath.m@hp.com"]
+        },
+        {
+            "launchpad_id": "biswajeeban",
+            "companies": [
+                {
+                    "company_name": "Ericsson",
+                    "end_date": null
+                }
+            ],
+            "user_name": "Biswajeeban Mishra",
+            "emails": ["mishra@inf.u-szeged.hu"]
         },
         {
             "launchpad_id": "blueboxjesse",
@@ -1974,7 +2018,7 @@
                 }
             ],
             "user_name": "Chuck Carlino",
-            "emails": ["ccarlino@hp.com", "chuckjcarlino@gmail.com"]
+            "emails": ["ccarlino@hpe.com", "ccarlino@hp.com", "chuckjcarlino@gmail.com"]
         },
         {
             "launchpad_id": "cdearbor",
@@ -2177,6 +2221,17 @@
             ],
             "user_name": "chetanpatige",
             "emails": ["chetan.p@hp.com","chetan6033@gmail.com"]
+        },
+        {
+            "launchpad_id": "chio-fai-sam-leong",
+            "companies": [
+                {
+                    "company_name": "HP",
+                    "end_date": null
+                }
+            ],
+            "user_name": "Sam Leong",
+            "emails": ["chio-fai-sam.leong@hpe.com", "chio-fai-sam.leong@hp.com"]
         },
         {
 
@@ -2861,6 +2916,17 @@
             "emails": ["davidh@il.ibm.com", "david.hadas@gmail.com"]
         },
         {
+            "launchpad_id": "david-j-hu",
+            "companies": [
+                {
+                    "company_name": "HP",
+                    "end_date": null
+                }
+            ],
+            "user_name": "David J Hu",
+            "emails": ["david.hu@hpe.com", "david.hu@hp.com"]
+        },
+        {
             "launchpad_id": "david-lyle",
             "companies": [
                 {
@@ -3101,6 +3167,10 @@
                 },
                 {
                     "company_name": "HP",
+                    "end_date": "2015-Sep-25"
+                },
+                {
+                    "company_name": "IBM",
                     "end_date": null
                 }
             ],
@@ -3189,6 +3259,17 @@
             ],
             "user_name": "Mandeep Dhami",
             "emails": ["dhami@noironetworks.com","mandeep.dhami@gmail.com"]
+        },
+        {
+            "launchpad_id": "diana-clarke",
+            "companies": [
+                {
+                    "company_name": "Red Hat",
+                    "end_date": null
+                }
+            ],
+            "user_name": "Diana Clarke",
+            "emails": ["diana.joan.clarke@gmail.com", "diana.clarke@redhat.com"]
         },
         {
             "launchpad_id": "diane-fleming",
@@ -4648,6 +4729,17 @@
             "emails": ["hzgaott@corp.netease.com", "gtt116@gmail.com", "gtt116@126.com"]
         },
         {
+            "launchpad_id": "guang-yee",
+            "companies": [
+                {
+                    "company_name": "HP",
+                    "end_date": null
+                }
+            ],
+            "user_name": "Guang Yee",
+            "emails": ["guang.yee@hpe.com", "guang.yee@hp.com"]
+        },
+        {
             "launchpad_id": "guilhem-fr",
             "companies": [
                 {
@@ -4790,7 +4882,23 @@
                 }
             ],
             "user_name": "Joshua Harlow",
-            "emails": ["harlowja@gmail.com", "harlowja@yahoo-inc.com", "harlowja@outlook.com"]
+            "emails": ["harlowja@gmail.com", "harlowja@yahoo-inc.com", "harlowja@outlook.com", "harlowja@fastmail.com"]
+        },
+        {
+            "launchpad_id": "harshada-kakad",
+            "gerrit_id": "harshada.kakad",
+            "companies": [
+                {
+                    "company_name": "Izel Technologies",
+                    "end_date": "2015-Jul-10"
+                },
+                {
+                    "company_name": "Metsi Technologies",
+                    "end_date": null
+                }
+            ],
+            "user_name": "Harshada Mangesh Kakad",
+            "emails": ["harshadak.openstack@gmail.com", "harshada.kakad@izeltech.com", "harshadak@metsi.co.uk"]
         },
         {
             "launchpad_id": "harshit-3",
@@ -4880,11 +4988,15 @@
                 },
                 {
                     "company_name": "Mirantis",
+                    "end_date": "2015-Nov-01"
+                },
+                {
+                    "company_name": "UMCloud",
                     "end_date": null
                 }
             ],
             "user_name": "Yaguang Tang",
-            "emails": ["yaguang.tang@canonical.com", "heut2008@gmail.com", "ytang@mirantis.com"]
+            "emails": ["yaguang.tang@canonical.com", "heut2008@gmail.com", "ytang@mirantis.com", "yaguang@umcloud.com"]
         },
         {
             "launchpad_id": "hfamily15",
@@ -5084,7 +5196,7 @@
                 }
             ],
             "user_name": "Diana Whitten",
-            "emails": ["hurgleburgler@gmail.com", "diana.whitten@hp.com"]
+            "emails": ["hurgleburgler@gmail.com", "diana.whitten@hpe.com", "diana.whitten@hp.com"]
         },
         {
             "launchpad_id": "huyujie",
@@ -5495,6 +5607,26 @@
            ]
         },
         {
+           "launchpad_id": "jamielennox",
+           "gerrit_id": "jamielennox",
+           "companies": [
+               {
+                   "company_name": "Red Hat",
+                   "end_date": "2015-Oct-23"
+               },
+               {
+                   "company_name": "IBM",
+                   "end_date": null
+               }
+           ],
+           "user_name": "Jamie Lennox",
+           "emails": [
+               "jamielennox@gmail.com",
+               "jamielennox@redhat.com",
+               "jlennox@redhat.com"
+           ]
+        },
+        {
             "github_id": "jamtur01",
             "companies": [
                 {
@@ -5860,7 +5992,7 @@
                 }
             ],
             "user_name": "Johnson koil raj",
-            "emails": ["johnson.raj@hp.com", "jjohnsonkoilraj@yahoo.co.in"]
+            "emails": ["johnson.raj@hp.com", "johnson.raj@hpe.com", "jjohnsonkoilraj@yahoo.co.in"]
         },
         {
             "launchpad_id": "jk0",
@@ -6346,7 +6478,7 @@
                 }
             ],
             "user_name": "Kanagaraj Manickam",
-            "emails": ["mkr1481@gmail.com", "kanagaraj.manickam@hp.com"]
+            "emails": ["mkr1481@gmail.com", "kanagaraj.manickam@hp.com", "kanagaraj.manickam@hpe.com"]
         },
         {
             "launchpad_id": "kannan",
@@ -6473,7 +6605,7 @@
                 }
             ],
             "user_name": "Kelly Domico",
-            "emails": [ "kelly.domico@hp.com" ]
+            "emails": [ "kelly.domico@hp.com", "kelly.domico@hpe.com" ]
         },
         {
             "launchpad_id": "ken-pepple",
@@ -6605,6 +6737,22 @@
             "emails": ["lakshman@aptira.com", "vit.lakshman@gmail.com"]
         },
         {
+            "launchpad_id": "kong",
+            "gerrit_id": "kong",
+            "companies": [
+                {
+                    "company_name": "Huawei",
+                    "end_date": "2015-Nov-17"
+                },
+                {
+                    "company_name": "*independent",
+                    "end_date": null
+                }
+            ],
+            "user_name": "Lingxian Kong",
+            "emails": ["anlin.kong@gmail.com", "lingxian.kong@qq.com"]
+        },
+        {
             "launchpad_id": "koti-kelam",
             "companies": [
                 {
@@ -6678,7 +6826,7 @@
                 }
             ],
             "user_name": "Michael Krotscheck",
-            "emails": ["michael.krotscheck@hp.com", "krotscheck@gmail.com"]
+            "emails": ["michael.krotscheck@hpe.com", "michael.krotscheck@hp.com", "krotscheck@gmail.com"]
         },
         {
             "launchpad_id": "krtaylor",
@@ -7003,7 +7151,7 @@
                 "end_date": null
             }],
             "user_name": "Liusheng",
-            "emails": ["liusheng1175@126.com", "liusheng@huawei.com"]
+            "emails": ["liusheng1175@126.com", "liusheng@huawei.com", "liusheng2048@gmail.com"]
         },
         {
             "launchpad_id": "liyingjun",
@@ -10204,6 +10352,22 @@
             "emails": ["sammiestoel@gmail.com", "sstoelinga@mirantis.com"]
         },
         {
+            "launchpad_id": "samueldmq",
+            "gerrit_id": "samueldmq",
+            "companies": [
+                {
+                    "company_name": "Universidade Federal de Campina Grande",
+                    "end_date": "2015-Aug-31"
+                },
+                {
+                    "company_name": "HP",
+                    "end_date": null
+                }
+            ],
+            "user_name": "Samuel de Medeiros Queiroz",
+            "emails": ["samueldmq@gmail.com"]
+        },
+        {
             "launchpad_id": "sandy-sandywalsh",
             "companies": [
                 {
@@ -10458,6 +10622,17 @@
             "emails": ["sean_mcginnis@dell.com", "sean.mcginnis@gmail.com", "sean.mcginnis@gmx.com"]
         },
         {
+            "launchpad_id": "sean-perry-a",
+            "companies": [
+                {
+                    "company_name": "HP",
+                    "end_date": null
+                }
+            ],
+            "user_name": "Sean Perry",
+            "emails": ["sean.perry@hp.com", "sean.perry@hpe.com"]
+        },
+        {
             "launchpad_id": "seif",
             "companies": [
                 {
@@ -10507,6 +10682,10 @@
             "companies": [
                 {
                     "company_name": "EMC",
+                    "end_date": "2015-Sep-28"
+                },
+                {
+                    "company_name": "IBM",
                     "end_date": null
                 }
             ],
@@ -11492,11 +11671,15 @@
             "companies": [
                 {
                     "company_name": "Universidade Federal de Campina Grande",
+                    "end_date": "2015-Nov-02"
+                },
+                {
+                    "company_name": "Red Hat",
                     "end_date": null
                 }
             ],
             "user_name": "Telles Mota Vidal Nóbrega",
-            "emails": ["tellesmvn@lsd.ufcg.edu.br", "tellesnobrega@gmail.com"]
+            "emails": ["tenobreg@redhat.com", "tellesnobrega@gmail.com", "tellesmvn@lsd.ufcg.edu.br"]
         },
         {
             "launchpad_id": "termie",
@@ -12441,6 +12624,17 @@
             "emails": ["wl3617@qq.com", "long.wang@bj.cs2c.com.cn", "wanglong@cse.buaa.edu.cn"]
         },
         {
+            "launchpad_id": "wangxf-s",
+            "companies": [
+                {
+                    "company_name": "Awcloud",
+                    "end_date": null
+                }
+            ],
+            "user_name": "wangxf",
+            "emails": ["wangxf@awcloud.com", "xiaofeix.wang@gmail.com"]
+        },
+        {
             "launchpad_id": "wangxiyuan",
             "companies": [
                 {
@@ -12736,7 +12930,7 @@
                     "end_date": null
                 }
             ],
-            "user_name": "yanheven",
+            "user_name": "Yan Haifeng",
             "emails": ["haifeng.yan@hp.com", "yanheven@gmail.com", "yanhf@chinanetcenter.com", "yanheven@qq.com"]
         },
         {
@@ -13004,6 +13198,17 @@
             ],
             "user_name": "ling-yun",
             "emails": ["yunlingzeng@hotmail.com", "zengyunling@huawei.com"]
+        },
+        {
+            "launchpad_id": "zerodivisible",
+            "companies": [
+                {
+                    "company_name": "Workday",
+                    "end_date": null
+                }
+            ],
+            "user_name": "Michal Stolarczyk",
+            "emails": ["zerodivisible@gmail.com"]
         },
         {
             "launchpad_id": "zhangjialong",
@@ -13809,7 +14014,7 @@
             "company_name": "Hortonworks"
         },
         {
-            "domains": ["hp.com"],
+            "domains": ["hp.com", "hpe.com"],
             "company_name": "HP",
             "aliases": ["HP Cloud", "HP ES GD China", "HP, IBM", "HP Software", "HP Storage Division", "Hewlett Packard",
               "Hewlett-Packard Company", "Hewlett-Packard", "Hewllet-Packard", "HP R and D", "HP Cloud OS", "HP Networking",
@@ -14040,6 +14245,10 @@
             "domains": ["metaswitch.com"],
             "company_name": "Metaswitch",
             "aliases": ["Metaswitch Networks"]
+        },
+        {
+            "domains": ["metsi.co.uk"],
+            "company_name": "Metsi Technologies"
         },
         {
             "domains": ["microsoft.com"],
@@ -14479,6 +14688,10 @@
         {
             "domains": ["ultimum.io", "ultimumtechnologies.com"],
             "company_name": "Ultimum Technologies"
+        },
+        {
+            "domains": [ "umcloud.com"],
+            "company_name": "UMCloud"
         },
         {
             "domains": ["umd.edu"],
@@ -15771,6 +15984,141 @@
             ]
         },
         {
+            "module": "releng",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/releng.git"
+        },
+        {
+            "module": "compass4nfv",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/compass4nfv.git"
+        },
+        {
+            "module": "onosfw",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/onosfw.git"
+        },
+        {
+            "module": "joid",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/joid.git"
+        },
+        {
+            "module": "yardstick",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/yardstick.git"
+        },
+        {
+            "module": "apex",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/apex.git"
+        },
+        {
+            "module": "moon",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/moon.git"
+        },
+        {
+            "module": "sfc",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/sfc.git"
+        },
+        {
+            "module": "copper",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/copper.git"
+        },
+        {
+            "module": "vswitchperf",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/vswitchperf.git"
+        },
+        {
+            "module": "functest",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/functest.git"
+        },
+        {
+            "module": "opnfvdocs",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/opnfvdocs.git"
+        },
+        {
+            "module": "genesisreq",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/genesisreq.git"
+        },
+        {
+            "module": "octopus",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/octopus.git"
+        },
+        {
+            "module": "lsoapi",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/lsoapi.git"
+        },
+        {
+            "module": "qtip",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/qtip.git"
+        },
+        {
+            "module": "escalator",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/escalator.git"
+        },
+        {
+            "module": "availability",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/availability.git"
+        },
+        {
+            "module": "storperf",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/storperf.git"
+        },
+        {
+            "module": "multisite",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/multisite.git"
+        },
+        {
+            "module": "parser",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/parser.git"
+        },
+        {
+            "module": "enfv",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/enfv.git"
+        },
+        {
+            "module": "conductor",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/conductor.git"
+        },
+        {
+            "module": "genesis",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/genesis.git"
+        },
+        {
+            "module": "promise",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/promise.git"
+        },
+        {
+            "module": "bottlenecks",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/bottlenecks.git"
+        },
+        {
+            "module": "doctor",
+            "organization": "opnfv",
+            "uri": "git://git.opnfv.org/doctor.git"
+        },
+        {
             "releases": [
                 {
                     "tag_to": "2fbb9d154d154deee13ba1875669d06a5dffc324",
@@ -15836,16 +16184,23 @@
               "fuel-docs",
               "fuel-library",
               "fuel-main",
+              "fuel-menu",
+              "fuel-mirror",
               "fuel-nailgun-agent",
+              "fuel-octane",
               "fuel-ostf",
               "fuel-ostf-plugin",
+              "fuel-plugins",
               "fuel-provision",
               "fuel-specs",
+              "fuel-stats",
               "fuel-tasklib",
               "fuel-upgrade",
               "fuel-web",
-              "fuel-plugins",
-              "python-fuelclient"
+              "fuel-qa",
+              "python-fuelclient",
+              "network-checker",
+              "shotgun"
             ]
         },
         {
@@ -15890,7 +16245,7 @@
         },
         {
             "module_group_name": "monasca-group",
-            "modules": ["monasca-agent", "cookbook-monasca-agent", "monasca-api", "cookbook-monasca-api", "monasca-notification", "cookbook-monasca-notification", "monasca-persister", "cookbook-monasca-persister", "cookbook-monasca-schema", "monasca-thresh", "cookbook-monasca-thresh", "monasca-agent", "monasca-ceilometer", "monasca-common", "monasca-ui", "monasca-vagrant", "monasca-statsd", "python-monascaclient", "stacktach-klugman", "stacktach-notification-utils", "stacktach-notigen", "stacktach-quince", "stacktach-quincy", "stacktach-sandbox", "stacktach-shoebox", "stacktach-simport", "stacktach-stackdistiller", "stacktach-timex", "stacktach-winchester"]
+            "modules": ["monasca-agent", "cookbook-monasca-agent", "monasca-api", "monasca-log-api", "cookbook-monasca-api", "monasca-notification", "cookbook-monasca-notification", "monasca-persister", "cookbook-monasca-persister", "cookbook-monasca-schema", "monasca-thresh", "cookbook-monasca-thresh", "monasca-agent", "monasca-ceilometer", "monasca-common", "monasca-ui", "monasca-vagrant", "monasca-statsd", "python-monascaclient", "stacktach-klugman", "stacktach-notification-utils", "stacktach-notigen", "stacktach-quince", "stacktach-quincy", "stacktach-sandbox", "stacktach-shoebox", "stacktach-simport", "stacktach-stackdistiller", "stacktach-timex", "stacktach-winchester"]
         },
         {
             "module_group_name": "rally-group",
@@ -15916,6 +16271,10 @@
         {
             "module_group_name": "fuel-plugins-group",
             "modules": ["fuel-plugin-contrail", "fuel-plugin-calico", "fuel-plugin-elasticsearch-kibana", "fuel-plugin-influxdb-grafana", "fuel-plugin-lma-collector", "fuel-plugin-lma-infrastructure-alerting", "fuel-plugin-mellanox", "fuel-plugin-zabbix-snmptrapd", "fuel-plugin-midonet", "fuel-plugin-opendaylight", "fuel-plugin-neutron-fwaas", "fuel-plugin-neutron-vpnaas", "fuel-plugin-cinder-netapp", "fuel-plugin-nova-nfs", "fuel-plugin-glance-nfs", "fuel-plugin-vmware-dvs", "fuel-plugin-vxlan", "fuel-plugin-external-zabbix", "fuel-plugin-cisco-aci", "fuel-plugin-solidfire-cinder", "fuel-plugin-zabbix-monitoring-emc", "fuel-plugin-zabbix-monitoring-extreme-networks", "fuel-plugin-external-emc", "fuel-plugin-saltstack", "fuel-plugin-calamari", "fuel-plugin-tls", "fuel-plugin-external-glusterfs", "fuel-plugin-ha-fencing", "fuel-plugin-neutron-lbaas"]
+        },
+        {
+            "module_group_name": "vitrage-group",
+            "modules": ["vitrage", "python-vitrageclient", "vitrage-dashboard", "vitrage-specs"]
         }
     ],
     "releases": [
@@ -16099,7 +16458,7 @@
         {
             "id": "complementary",
             "title": "Complementary",
-            "modules": ["ansible-group", "ceph", "docker-group", "kubernetes", "jclouds", "cloudfoundry", "ovs", "pypa-group"]
+            "modules": ["ansible-group", "ceph", "docker-group", "kubernetes", "jclouds", "cloudfoundry", "opnfv", "ovs", "pypa-group"]
         },
         {
             "id": "ansible-group",
@@ -16130,6 +16489,12 @@
             "title": "Kubernetes",
             "child": true,
             "modules": ["kubernetes"]
+        },
+        {
+            "id": "opnfv-group",
+            "title": "OPNFV",
+            "child": true,
+            "modules": ["opnfv"]
         },
         {
             "id": "ovs-group",

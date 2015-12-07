@@ -1,301 +1,308 @@
-<tabset>
-    <!-- Create user tab -->
-    <tab heading="Create users">
-        <div class="row" style="margin-top: 20px;"></div>
-        <div ng-controller="userCtrl">
-            <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
-            <form name="userForm" novalidate>
-                <div class="row">
-                    <div class="col-xs-6 col-md-4">
-                        <div class="form-group" show-errors>
-                            <label for="inputName" class="control-label">Name</label>
-                            <input type="text" class="form-control" name="name" placeholder="Contributor name" required ng-model="model.userName">
+<div ng-include="'static/partial/views/navbar.html'"></div>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="container">
+            <tabset>
+                <!-- Create user tab -->
+                <tab heading="Create users">
+                    <div class="row" style="margin-top: 20px;"></div>
+                    <div ng-controller="userCtrl">
+                        <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
+                        <form name="userForm" novalidate>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <div class="form-group" show-errors>
+                                        <label for="inputName" class="control-label">Name</label>
+                                        <input type="text" class="form-control" name="name" placeholder="Contributor name" required ng-model="model.userName">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 col-md-2">
+                                    <div class="form-group" show-errors>
+                                        <label for="inputId" class="control-label">User id</label>
+                                        <input type="text" class="form-control" name="user_id" placeholder="User Id" required ng-model="model.userId">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <div class="form-group" show-errors>
+                                        <label for="inputEmail" class="control-label">Email</label>
+                                        <input type="email" class="form-control" name="email" placeholder="Email" data-error="Email address is invalid" required ng-model="model.userEmail">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" ng-click="createUser()">Create user</button>
+                        </form>
+                    </div>
+                </tab>
+                <!-- Export from stackalytics -->
+                <tab heading="Export from stackalytics">
+                    <div class="row" style="margin-top: 20px;"></div>
+                    <div ng-controller="stackCtrl">
+                        <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="company">Company:</label>
+                                    <input name="company" id="company" class="form-control" ng-model="company">
+                                </div>
+                            </div>
+                            <div class="col-sm-4" style="margin-top: 25px;">
+                                <div class="form-group">
+                                    <button class="btn btn-primary" ng-click="search()">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="loading">
+                            <div class="col-sm-12">
+                                <img src="static/images/progressring.gif" />
+                                    Loading...
+                            </div>
+                        </div>
+                        <div ng-show="users.length > 0">
+                            <div class="row" style="margin-bottom: 10px;">
+                                <div class="col-sm-2">
+                                    <input type="submit" class="btn btn-primary" style="margin-top: 25px;" ng-click="addSelectedUsers()" value="Add selected users"/>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label for="search">Items per page:</label>
+                                    <input type="number" min="1" max="100" class="form-control" ng-model="pageSize">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="search">Search:</label>
+                                    <input class="form-control" placeholder="Search" ng-model="searchKey"></input>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                        <input type="checkbox" ng-checked="users.length == selected.length" ng-click="selectAll()"></input>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <h4>Name</h4>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <h4>Id</h4>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="row" dir-paginate="user in users | filter:searchKey | itemsPerPage: pageSize" pagination-id="stackUsers" current-page="currentPage" ng-class-odd="'oddRow'">
+                                    <div class="col-sm-1">
+                                        <input type="checkbox" ng-checked="selected.indexOf(user) > -1" ng-click="toggleSelection(user)" />
+                                    </div>
+                                    <div class="col-sm-5">
+                                        {{user.name}}
+                                    </div>
+                                    <div class="col-sm-2">
+                                        {{user.id}}
+                                    </div>
+                                    <div class="col-sm-4 button-space">
+                                        <div class="pull-right">
+                                            <button class="btn btn-success btn-sm" style="margin-bottom: 5px; margin-top: 5px" ng-click="addUser(user)">
+                                            Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <dir-pagination-controls boundary-links="true" pagination-id="stackUsers"></dir-pagination-controls>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-3 col-md-2">
-                        <div class="form-group" show-errors>
-                            <label for="inputId" class="control-label">User id</label>
-                            <input type="text" class="form-control" name="user_id" placeholder="User Id" required ng-model="model.userId">
-                            <div class="help-block with-errors"></div>
+                </tab>
+                <!-- Import from CSV -->
+                <tab heading="Export from bulk list">
+                    <div class="row" style="margin-top: 20px;"></div>
+                    <div ng-controller="bulkUserCtrl">
+                        <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="textarea">Users separated by ;</label>
+                                <textarea cols="100" rows="10" ng-model="usersText"></textarea>
+                                <div class="help-block with-errors">
+                                    Use the following format:
+                                    username,userid,email;username,userid,email
+                                    <br/>
+                                    For example:
+                                    Some user,someid,some@email.com;another user,anotherid,another@email.com
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6 col-md-4">
-                        <div class="form-group" show-errors>
-                            <label for="inputEmail" class="control-label">Email</label>
-                            <input type="email" class="form-control" name="email" placeholder="Email" data-error="Email address is invalid" required ng-model="model.userEmail">
-                            <div class="help-block with-errors"></div>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn btn-primary" ng-click="createUser()">Create user</button>
-            </form>
-        </div>
-    </tab>
-    <!-- Export from stackalytics -->
-    <tab heading="Export from stackalytics">
-        <div class="row" style="margin-top: 20px;"></div>
-        <div ng-controller="stackCtrl">
-            <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="company">Company:</label>
-                        <input name="company" id="company" class="form-control" ng-model="company">
-                    </div>
-                </div>
-                <div class="col-sm-4" style="margin-top: 25px;">
-                    <div class="form-group">
-                        <button class="btn btn-primary" ng-click="search()">Search</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row" ng-show="loading">
-                <div class="col-sm-12">
-                    <img src="static/images/progressring.gif" />
-                        Loading...
-                </div>
-            </div>
-            <div ng-show="users.length > 0">
-                <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-sm-2">
-                        <input type="submit" class="btn btn-primary" style="margin-top: 25px;" ng-click="addSelectedUsers()" value="Add selected users"/>
-                    </div>
-                    <div class="col-sm-2">
-                        <label for="search">Items per page:</label>
-                        <input type="number" min="1" max="100" class="form-control" ng-model="pageSize">
-                    </div>
-                    <div class="col-sm-4">
-                        <label for="search">Search:</label>
-                        <input class="form-control" placeholder="Search" ng-model="searchKey"></input>
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <input type="checkbox" ng-checked="users.length == selected.length" ng-click="selectAll()"></input>
-                        </div>
-                        <div class="col-sm-5">
-                            <h4>Name</h4>
-                        </div>
-                        <div class="col-sm-2">
-                            <h4>Id</h4>
-                        </div>
-                        <div class="col-sm-4">
-                            
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="row" dir-paginate="user in users | filter:searchKey | itemsPerPage: pageSize" pagination-id="stackUsers" current-page="currentPage" ng-class-odd="'oddRow'">
-                        <div class="col-sm-1">
-                            <input type="checkbox" ng-checked="selected.indexOf(user) > -1" ng-click="toggleSelection(user)" />
-                        </div>
-                        <div class="col-sm-5">
-                            {{user.name}}
-                        </div>
-                        <div class="col-sm-2">
-                            {{user.id}}
-                        </div>
-                        <div class="col-sm-4 button-space">
-                            <div class="pull-right">
-                                <button class="btn btn-success btn-sm" style="margin-bottom: 5px; margin-top: 5px" ng-click="addUser(user)">
-                                Add
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <button class="btn btn-primary" ng-click="loadUsersFromText()">
+                                    Load users
                                 </button>
                             </div>
-                        </div>
-                    </div>
-                    <dir-pagination-controls boundary-links="true" pagination-id="stackUsers"></dir-pagination-controls>
-                </div>
-            </div>
-        </div>
-    </tab>
-    <!-- Import from CSV -->
-    <tab heading="Export from bulk list">
-        <div class="row" style="margin-top: 20px;"></div>
-        <div ng-controller="bulkUserCtrl">
-            <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
-            <div class="row">
-                <div class="col-sm-6">
-                    <label for="textarea">Users separated by ;</label>
-                    <textarea cols="100" rows="10" ng-model="usersText"></textarea>
-                    <div class="help-block with-errors">
-                        Use the following format:
-                        username,userid,email;username,userid,email
-                        <br/>
-                        For example:
-                        Some user,someid,some@email.com;another user,anotherid,another@email.com
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-2">
-                    <button class="btn btn-primary" ng-click="loadUsersFromText()">
-                        Load users
-                    </button>
-                </div>
-                <div class="col-sm-2">
-                    <div class="pull-left">
-                    <button class="btn btn-success" ng-click="addBulkUsers()" ng-show="users.length > 0">
-                        Save in database
-                    </button>
-                    </div>
-                </div>
-                <div class="col-sm-2 pull-left">
-                <div class="pull-left">
-                    <button class="btn btn-warning pull-left" ng-click="reset()" ng-show="users.length > 0">
-                        Clear
-                    </button>
-                    </div>
-                </div>
-            </div>
-            <div ng-show="users.length > 0">
-                <div class="col-sm-12">
-                    <div class="row">
-                        <div class="col-sm-5">
-                            <h4>Name</h4>
-                        </div>
-                        <div class="col-sm-3">
-                            <h4>Id</h4>
-                        </div>
-                        <div class="col-sm-4">
-                            <h4>Email</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="row" dir-paginate="user in users | itemsPerPage: pageSize" pagination-id="bulkUsers" current-page="currentPage" ng-class-odd="'oddRow'">
-                        <div class="col-sm-5">
-                            {{user.name}}
-                        </div>
-                        <div class="col-sm-3">
-                            {{user.user_id}}
-                        </div>
-                        <div class="col-sm-4">
-                            {{user.email}}
-                        </div>
-                    </div>
-                    <div class="col-sm-12">
-                        <dir-pagination-controls boundary-links="true" pagination-id="bulkUsers"></dir-pagination-controls>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </tab>
-    <!-- List of users -->
-    <tab heading="List of users">
-        <div class="row" style="margin-top: 20px;"></div>
-        <div ng-controller="userListCtrl">
-            <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
-            <div class="row">
-                <div class="col-sm-2">
-                    <label for="search">Items per page:</label>
-                    <input type="number" min="1" max="100" class="form-control" ng-model="pageSize">
-                </div>
-                <div class="col-sm-4">
-                    <label for="search">Search:</label>
-                    <input class="form-control" placeholder="Search" ng-model="searchKey"></input>
-                </div>
-                <div class="col-sm-6">
-                    <button class="btn btn-success" style="margin-top: 25px;" ng-click="refresh()">Refresh</button>
-                </div>
-            </div>
-            <div class="row" ng-show="loading">
-                <div class="col-sm-12">
-                    <img src="static/images/progressring.gif" />
-                        Loading...
-                </div>
-            </div>
-            <div ng-show="users.length > 0">
-                <div class="col-sm-12">
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <h4>Id</h4>
-                        </div>
-                        <div class="col-sm-2">
-                            <h4>User id</h4>
-                        </div>
-                        <div class="col-sm-4">
-                            <h4>Name</h4>
-                        </div>
-                        <div class="col-sm-3">
-                            <h4>Email</h4>
-                        </div>
-                        <div class="col-sm-2">
-                        </div>
-                    </div>
-                    <div class="row" dir-paginate="user in users | filter:searchKey | itemsPerPage: pageSize" pagination-id="listUsers" current-page="currentPage" ng-class-odd="'oddRow'">
-                        <div ng-show="isInReadMode(user.id)">
-                            <div class="col-sm-1">
-                                {{user.id}}
-                            </div>
                             <div class="col-sm-2">
-                                {{user.user_id}}
+                                <div class="pull-left">
+                                <button class="btn btn-success" ng-click="addBulkUsers()" ng-show="users.length > 0">
+                                    Save in database
+                                </button>
+                                </div>
                             </div>
-                            <div class="col-sm-4">
-                                {{user.name}}
-                            </div>
-                            <div class="col-sm-3">
-                                {{user.email}}
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="pull-right">
-                                    <button class="btn btn-warning btn-sm"
-                                            style="margin-bottom: 5px; margin-top: 5px"
-                                            ng-click="startEdit(user.id)">
-                                            Edit
-                                    </button>
-                                    <button class="btn btn-danger btn-sm"
-                                            style="margin-bottom: 5px; margin-top: 5px"
-                                            ng-click="removeUser(user)">
-                                            Delete
-                                    </button>
+                            <div class="col-sm-2 pull-left">
+                            <div class="pull-left">
+                                <button class="btn btn-warning pull-left" ng-click="reset()" ng-show="users.length > 0">
+                                    Clear
+                                </button>
                                 </div>
                             </div>
                         </div>
-                        <div ng-show="isInEditMode(user.id)">
-                            <div class="col-sm-1">
-                                {{user.id}}
+                        <div ng-show="users.length > 0">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <h4>Name</h4>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <h4>Id</h4>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <h4>Email</h4>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-sm-2">
-                                <input class="form-control" type="text"
-                                        placeholder="location name"
-                                        ng-model="user.user_id" />
-                            </div>
-                            <div class="col-sm-4">
-                                <input class="form-control" type="text"
-                                        placeholder="location name"
-                                        ng-model="user.name" />
-                            </div>
-                            <div class="col-sm-3">
-                                <input class="form-control" type="email"
-                                        placeholder="location name"
-                                        ng-model="user.email"/>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="pull-right">
-                                    <button class="btn btn-success btn-sm"
-                                            style="margin-bottom: 5px; margin-top: 5px"
-                                            ng-click="save(user)">
-                                            Save
-                                    </button>
-                                    <button class="btn btn-danger btn-sm"
-                                            style="margin-bottom: 5px; margin-top: 5px"
-                                            ng-click="cancel()">
-                                            Cancel
-                                    </button>
+                            <div class="col-sm-12">
+                                <div class="row" dir-paginate="user in users | itemsPerPage: pageSize" pagination-id="bulkUsers" current-page="currentPage" ng-class-odd="'oddRow'">
+                                    <div class="col-sm-5">
+                                        {{user.name}}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        {{user.user_id}}
+                                    </div>
+                                    <div class="col-sm-4">
+                                        {{user.email}}
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <dir-pagination-controls boundary-links="true" pagination-id="bulkUsers"></dir-pagination-controls>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-12">
-                        <dir-pagination-controls boundary-links="true" pagination-id="listUsers"></dir-pagination-controls>
+                </tab>
+                <!-- List of users -->
+                <tab heading="List of users">
+                    <div class="row" style="margin-top: 20px;"></div>
+                    <div ng-controller="userListCtrl">
+                        <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="search">Items per page:</label>
+                                <input type="number" min="1" max="100" class="form-control" ng-model="pageSize">
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="search">Search:</label>
+                                <input class="form-control" placeholder="Search" ng-model="searchKey"></input>
+                            </div>
+                            <div class="col-sm-6">
+                                <button class="btn btn-success" style="margin-top: 25px;" ng-click="refresh()">Refresh</button>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="loading">
+                            <div class="col-sm-12">
+                                <img src="static/images/progressring.gif" />
+                                    Loading...
+                            </div>
+                        </div>
+                        <div ng-show="users.length > 0">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                        <h4>Id</h4>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <h4>User id</h4>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <h4>Name</h4>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <h4>Email</h4>
+                                    </div>
+                                    <div class="col-sm-2">
+                                    </div>
+                                </div>
+                                <div class="row" dir-paginate="user in users | filter:searchKey | itemsPerPage: pageSize" pagination-id="listUsers" current-page="currentPage" ng-class-odd="'oddRow'">
+                                    <div ng-show="isInReadMode(user.id)">
+                                        <div class="col-sm-1">
+                                            {{user.id}}
+                                        </div>
+                                        <div class="col-sm-2">
+                                            {{user.user_id}}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            {{user.name}}
+                                        </div>
+                                        <div class="col-sm-3">
+                                            {{user.email}}
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="pull-right">
+                                                <button class="btn btn-warning btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="startEdit(user.id)">
+                                                        Edit
+                                                </button>
+                                                <button class="btn btn-danger btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="removeUser(user)">
+                                                        Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-show="isInEditMode(user.id)">
+                                        <div class="col-sm-1">
+                                            {{user.id}}
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input class="form-control" type="text"
+                                                    placeholder="location name"
+                                                    ng-model="user.user_id" />
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input class="form-control" type="text"
+                                                    placeholder="location name"
+                                                    ng-model="user.name" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="email"
+                                                    placeholder="location name"
+                                                    ng-model="user.email"/>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="pull-right">
+                                                <button class="btn btn-success btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="save(user)">
+                                                        Save
+                                                </button>
+                                                <button class="btn btn-danger btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="cancel()">
+                                                        Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <dir-pagination-controls boundary-links="true" pagination-id="listUsers"></dir-pagination-controls>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </tab>
+            </tabset>
         </div>
-    </tab>
-</tabset>
+    </div>
+</div>

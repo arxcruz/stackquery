@@ -285,10 +285,11 @@ def get_projects_in_use(project=None):
     db_result = db_session.execute(select).fetchall()
     return [
         {
-            'name': x[0], 
-            'git_url': x[1], 
+            'name': x[0],
+            'git_url': x[1],
             'gerrit_server': x[2]
         } for x in db_result]
+
 
 def update_gerrit_review(gerrit_review):
     LOG.debug('Updating review %s' % gerrit_review['change_id'])

@@ -173,7 +173,6 @@ function UserListCtrl($scope, userApi) {
         userApi.updateUser(user)
             .success(function(data) {
                 $scope.successMessage = 'User: ' + user.name + ' updated successfully';
-                dismissMessages();
             })
             .error(function(errorInfo, status) {
                 $scope.errorMessage = 'An error ocurred: ' + errorInfo.message;

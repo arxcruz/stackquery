@@ -5,8 +5,14 @@ from flask_restful import reqparse
 from flask_restful import Api
 from flask_restful import Resource
 
+from flask import g
+from flask import request
+
+
 from stackquery import app
+from stackquery import auth
 from stackquery.database import db_session
+from stackquery.models.authuser import AuthUser
 from stackquery.models.harvester import Harvester
 from stackquery.models.project import Project
 from stackquery.models.report import RedHatBugzillaReport
@@ -36,6 +42,8 @@ user_parser.add_argument('email')
 
 
 class UserResource(Resource):
+    decorators = [auth.login_required]
+
     def get(self, id):
         user = User.query.get(id)
         if user:
@@ -65,6 +73,8 @@ class UserResource(Resource):
 
 
 class UserListResource(Resource):
+    decorators = [auth.login_required]
+
     @marshal_with(user_fields)
     def get(self):
         users = User.query.all()
@@ -96,6 +106,8 @@ release_parser.add_argument('name')
 
 
 class ReleaseListResource(Resource):
+    decorators = [auth.login_required]
+
     @marshal_with(release_fields)
     def get(self):
         releases = Release.query.all()
@@ -118,6 +130,8 @@ project_parser.add_argument('gerrit_server')
 
 
 class ProjectResource(Resource):
+    decorators = [auth.login_required]
+
     def get(self, id):
         project = Project.query.get(id)
         if project:
@@ -148,6 +162,8 @@ class ProjectResource(Resource):
 
 
 class ProjectListResource(Resource):
+    decorators = [auth.login_required]
+
     @marshal_with(project_fields)
     def get(self):
         projects = Project.query.all()
@@ -181,6 +197,8 @@ team_parser.add_argument('users', type=dict, action='append')
 
 
 class TeamResource(Resource):
+    decorators = [auth.login_required]
+
     @marshal_with(team_fields)
     def get(self, id):
         team = Team.query.get(id)
@@ -237,6 +255,8 @@ class TeamResource(Resource):
 
 
 class TeamListResource(Resource):
+    decorators = [auth.login_required]
+
     @marshal_with(team_fields)
     def get(self):
         teams = Team.query.all()
@@ -275,6 +295,8 @@ stack_parser.add_argument('type')
 
 
 class StackalyticsListResource(Resource):
+    decorators = [auth.login_required]
+
     def post(self):
         args = stack_parser.parse_args()
         users = args.get('users', None)
@@ -328,6 +350,8 @@ bz_fields = {
 
 
 class RHBugzillaListResource(Resource):
+    decorators = [auth.login_required]
+
     @marshal_with(bz_fields)
     def get(self):
         reports = RedHatBugzillaReport.query.all()
@@ -356,6 +380,8 @@ class RHBugzillaListResource(Resource):
 
 
 class RHBugzillaResource(Resource):
+    decorators = [auth.login_required]
+
     @marshal_with(bz_fields)
     def get(self, id):
         report = RedHatBugzillaReport.query.get(id)
@@ -398,6 +424,8 @@ rhbz_parser.add_argument('password', location='cookies')
 
 
 class RHBugzillaRealReportResource(Resource):
+    decorators = [auth.login_required]
+
     def post(self):
         args = rhbz_parser.parse_args()
         username = args['username']
@@ -414,6 +442,8 @@ scenario_parser.add_argument('team')
 
 
 class ScenarioContributionListResource(Resource):
+    decorators = [auth.login_required]
+
     def post(self):
         from stackquery.libs import gerrit
         args = scenario_parser.parse_args()
@@ -454,6 +484,8 @@ scenario_filter_fields = {
 
 
 class ScenarioFilterListResource(Resource):
+    decorators = [auth.login_required]
+
     def post(self):
         args = scenario_filter_parser.parse_args()
         _filter = ScenarioFilter()
@@ -471,6 +503,8 @@ class ScenarioFilterListResource(Resource):
 
 
 class ScenarioFilterResource(Resource):
+    decorators = [auth.login_required]
+
     def delete(self, id):
         filters = ScenarioFilter.query.get(id)
         if not filters:
@@ -504,6 +538,8 @@ harvester_fields = {
 
 
 class HarvesterListResource(Resource):
+    decorators = [auth.login_required]
+
     @marshal_with(harvester_fields)
     def post(self):
         args = harvester_parser.parse_args()
@@ -523,6 +559,8 @@ class HarvesterListResource(Resource):
 
 
 class HarvesterResource(Resource):
+    decorators = [auth.login_required]
+    
     @marshal_with(harvester_fields)
     def get(self, id):
         harvester = Harvester.query.get(id)
@@ -550,6 +588,34 @@ class HarvesterResource(Resource):
         db_session.delete(harvester)
         db_session.commit()
         return {'result': True}
+
+# AuthUser
+
+authuser_parser = reqparse.RequestParser()
+authuser_parser.add_argument('username')
+authuser_parser.add_argument('password')
+
+
+class AuthUserListResource(Resource):
+    def post(self):
+        args = authuser_parser.parse_args()
+        user = AuthUser.query.filter_by(username=args['username']).first()
+        print user.verify_password(args['password'])
+        if not user or not user.verify_password(args['password']):
+            abort(404, message='Username and/or password invalids')
+        return {'token': user.generate_auth_token(), 'success': True}
+
+
+class AuthUserResource(Resource):
+    def post(self):
+        args = authuser_parser.parse_args()
+        user = AuthUser()
+        user.username = args['username']
+        user.hash_password(args['password'])
+        print user.password_hash
+        db_session.add(user)
+        db_session.commit()
+        return True
 
 
 def setup_restful_api():
@@ -591,3 +657,6 @@ def setup_restful_api():
                      endpoint='harvester')
     api.add_resource(HarvesterListResource, '/api/v1.0/harvester',
                      endpoint='harvesters')
+
+    api.add_resource(AuthUserListResource, '/api/v1.0/login')
+    api.add_resource(AuthUserResource, '/api/v1.0/register')

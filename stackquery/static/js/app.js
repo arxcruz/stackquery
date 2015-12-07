@@ -1,4 +1,4 @@
-angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 'teams', 'reports', 'harvester', 'stackqueryDirectives'])
+angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 'teams', 'reports', 'harvester', 'stackqueryDirectives', 'login'])
     .config(function($interpolateProvider) {
         //$interpolateProvider.startSymbol('((');
         //$interpolateProvider.endSymbol('))');
@@ -22,9 +22,31 @@ angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 't
         $routeProvider.when('/harvester', {
             templateUrl: '/static/partial/views/harvester.html'
         });
+        $routeProvider.when('/login', {
+            templateUrl: '/static/partial/views/login.html'
+        });
         $routeProvider.otherwise({
             templateUrl: '/static/partial/views/reports.html'
         });
+    })
+    .run(function($rootScope, $location, $cookies, $http) {
+        $rootScope.globals = $cookies.get('globals') || {};
+        console.log('GLOBALS: ' + $rootScope.globals.username);
+        console.log('Cookie1: ' + $cookies.get('globals'));
+        if($rootScope.globals.currentUser) {
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
+        }
+        $rootScope.$on('$locationChangeStart', function(event, next, current) {
+            var restricted = ['/login']; //['/users', '/projects', '/reports', '/bugzilla', '/harvester'];
+            var restrictedPage = $.inArray($location.path(), restricted);
+            var loggedIn = $cookies.get('globals'); //$rootScope.globals.currentUser;
+            console.log('Cookie: ' + $cookies.get('globals'));
+            console.log('Restrict: ' + restrictedPage);
+            console.log('Logged: ' + loggedIn);
+            if (restrictedPage && !loggedIn) {
+                $location.path('/login');
+            }
+        })
     })
     .filter('sumByKey', function() {
         return function(data, key) {
@@ -64,6 +86,7 @@ angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 't
             }
     })
     .factory('restApi', restApi)
+    .factory('AuthenticationService', AuthenticationService)
     .directive('showErrors', function() {
         return {
             restrict: 'A',
@@ -87,7 +110,7 @@ angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 't
                 });
             }
         }
-    });
+    })
 
 function restApi($http) {
 
@@ -95,7 +118,7 @@ function restApi($http) {
         var req = {
             method: verb,
             url: url(param, apiUrl),
-            data: data
+            data: data,
         };
 
         return $http(req);
@@ -124,3 +147,32 @@ function restApi($http) {
     };
 }
 
+function AuthenticationService($http, $cookies, $rootScope, $timeout) {
+    return {
+        Login: function(username, password, callback) {
+            $http.post('/api/v1.0/login', {username: username, password: password})
+                .success(function(response) {
+                    callback(response);
+                })
+        },
+        setCredentials: function(username, password) {
+            var authdata = btoa(username + ':' + password);
+            $rootScope.globals = {
+                currentUser: {
+                    username: username,
+                    authdata: authdata
+                }
+            }
+
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
+            var expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() + 1);
+            $cookies.put('globals', $rootScope.globals, {'expires': expireDate});
+        },
+        clearCredentials: function() {
+            $rootScope.globals = {};
+            $cookies.remove('globals');
+            $http.defaults.headers.common['Authorization'] = 'Basic ';
+        }
+    }
+}

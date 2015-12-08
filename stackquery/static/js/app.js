@@ -30,19 +30,15 @@ angular.module('stackquery', ['ngRoute', 'users', 'stackalitics', 'projects', 't
         });
     })
     .run(function($rootScope, $location, $cookies, $http) {
-        $rootScope.globals = $cookies.get('globals') || {};
-        console.log('GLOBALS: ' + $rootScope.globals.username);
-        console.log('Cookie1: ' + $cookies.get('globals'));
+        $rootScope.globals = $cookies.getObject('globals') || {};
         if($rootScope.globals.currentUser) {
             $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
         }
         $rootScope.$on('$locationChangeStart', function(event, next, current) {
-            var restricted = ['/login']; //['/users', '/projects', '/reports', '/bugzilla', '/harvester'];
+            var restricted = ['/users', '/projects', '/reports', '/bugzilla', '/harvester'];
             var restrictedPage = $.inArray($location.path(), restricted);
-            var loggedIn = $cookies.get('globals'); //$rootScope.globals.currentUser;
-            console.log('Cookie: ' + $cookies.get('globals'));
-            console.log('Restrict: ' + restrictedPage);
-            console.log('Logged: ' + loggedIn);
+            var loggedIn = $rootScope.globals.currentUser;
+
             if (restrictedPage && !loggedIn) {
                 $location.path('/login');
             }
@@ -167,7 +163,7 @@ function AuthenticationService($http, $cookies, $rootScope, $timeout) {
             $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
             var expireDate = new Date();
             expireDate.setDate(expireDate.getDate() + 1);
-            $cookies.put('globals', $rootScope.globals, {'expires': expireDate});
+            $cookies.putObject('globals', $rootScope.globals, {'expires': expireDate});
         },
         clearCredentials: function() {
             $rootScope.globals = {};

@@ -168,8 +168,6 @@ def _populate_release_table():
 
 
 def _populate_project_table():
-    from stackquery.libs import utils
-    from stackquery.libs import gerrit
     from stackquery.models.project import Project
     _drop_and_recreate_tables('projects')
 
@@ -181,7 +179,7 @@ def _populate_project_table():
 
     project = Project()
     project.name = 'openstack/rally'
-    project.git_url = 'git.openstack.org/openstack/rally.git'
+    project.git_url = 'git://git.openstack.org/openstack/rally.git'
     project.gerrit_server = 'https://review.openstack.org'
     db_session.add(project)
 
@@ -210,6 +208,7 @@ def _populate_filters_table():
     db_session.add(filters)
 
     db_session.commit()
+
 
 def _drop_and_recreate_tables(table_name):
     table = Base.metadata.tables[table_name]

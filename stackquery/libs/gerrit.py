@@ -123,6 +123,7 @@ def get_reviews_by_filter(filters, users_ids):
         for key in users[user]:
             row[key] = users[user][key]
         result['users'].append(row)
+    print result
     return result
 
 
@@ -153,23 +154,6 @@ def calculate_reviews(gerrit_reviews, team_id, filters=None):
     reviews['_versions'].sort()
 
     return parse_to_json(reviews)
-
-
-def reviews_to_dict(gerrit_reviews):
-    if gerrit_reviews:
-        return [{'project': review.project,
-                 'current_revision': review.commit_id,
-                 'owner': {'username': review.user.user_id if review.user else
-                           None},
-                 'date_time': review.created,
-                 '_sortkey': review.sortkey,
-                 'in_database': True
-                 } for review in gerrit_reviews]
-    return []
-
-
-def get_all_gerrit_projects():
-    return _gerrit_rest_api_call('https://review.openstack.org/projects/')
 
 
 def get_changes_by_filter(search_filter, size=300,
@@ -246,27 +230,11 @@ def insert_gerrit_review(review):
     LOG.debug('Change %s inserted successfully' % review['change_id'])
 
 
-def get_all_reviews_from_database(filters, team_id):
-    files = None
-    # This is ugly, but I don't think a better solution for now
-    if 'file' in filters:
-        files = {'file': filters['file']}
-        del filters['file']
-    gerrit_reviews = utils.get_gerrit_reviews(filter=filters)
-    return calculate_reviews(gerrit_reviews, team_id, files)
-
-
-def load_change_id(project):
-    changes = utils.get_gerrit_reviews()
-    return {change.change_id: (change.modified, change.status)
-            for change in changes}
-
-
 def load_change_id_from_project_change(project, changes):
     values = ", ".join('\'' + str(c) + '\'' for c in changes)
     sql_query = ('select change_id from gerrit_review '
                  'where project = \'%s\' and change_id in (%s)'
-                 % (project['name'], values))
+                 % (project.name, values))
     select = text(sql_query)
 
     db_result = db_session.execute(select).fetchall()
@@ -337,10 +305,10 @@ def update_gerrit_review(gerrit_review):
 
 
 def process_reviews(project):
-    LOG.debug('Processing changes for project %s' % project)
+    LOG.debug('Processing changes for project %s' % project.name)
     counter = 1
     sort_key, gerrit_results = get_changes_by_filter(
-        'project:' + project['name'], server=project['gerrit_server'],
+        'project:' + project.name, server=project.gerrit_server,
         n=counter)
 
     change_ids = [gerrit_result['change_id'] for
@@ -382,15 +350,15 @@ def process_reviews(project):
 
         LOG.debug('Looking for more changes')
         if not sort_key and not gerrit_results[-1].get('_more_changes', None):
-            LOG.debug('No more changes for project %s' % project['name'])
+            LOG.debug('No more changes for project %s' % project.name)
             break
 
         sort_key, gerrit_results = get_changes_by_filter(
-            'project:' + project['name'], server=project['gerrit_server'],
+            'project:' + project.name, server=project.gerrit_server,
             sort_key=sort_key, n=counter)
         change_ids = [gerrit_result['change_id'] for
                       gerrit_result in gerrit_results]
         counter += 1
         change_results = load_change_id_from_project_change(project,
                                                             change_ids)
-    LOG.debug('Ending processing project %s' % project['name'])
+    LOG.debug('Ending processing project %s' % project.name)

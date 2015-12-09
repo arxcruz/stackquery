@@ -46,9 +46,6 @@ function TeamListCtrl($scope, $modal, teamApi, teamApiUrl) {
             windowClass: 'app-modal-window',
             size: 'lg',
             resolve: {
-                projects: function() {
-                    return $scope.projects;
-                },
                 users: function() {
                     return $scope.users;
                 },
@@ -59,7 +56,6 @@ function TeamListCtrl($scope, $modal, teamApi, teamApiUrl) {
         });
 
         modalInstance.result.then(function (result) {         
-            team.projects = result.projects;
             team.users = result.users;
             team.name = result.teamName;
 
@@ -105,19 +101,25 @@ function TeamListCtrl($scope, $modal, teamApi, teamApiUrl) {
     }
 }
 
-function TeamCtrl($scope, $modal, teamApi, teamApiUrl) {
+function TeamCtrl($scope, $modal, teamApi, userApi) {
     $scope.errorMessage = '';
     $scope.successMessage = '';
     $scope.model = {};
     $scope.users = [];
-    $scope.projects = [];
     $scope.currentPageUsers = 1;
-    $scope.currentPageProjects = 1;
+    $scope.loadedUsers = [];
+    $scope.usersPageSize = 10;
+    $scope.usersCurrentPage = 1;
+    $scope.loading = false;
 
     $scope.createTeam = createTeam;
-    $scope.assignUsersAndProjects = assignUsersAndProjects;
     $scope.removeUser = removeUser;
-    $scope.removeProject = removeProject;
+    $scope.refreshUser = refreshUser;
+    $scope.userContains = userContains;
+    $scope.addUser = addUser;
+    $scope.removeUser = removeUser;
+
+    refreshUser();
 
     function createTeam() {
         $scope.$broadcast('show-errors-check-validity');
@@ -129,7 +131,6 @@ function TeamCtrl($scope, $modal, teamApi, teamApiUrl) {
         var team = {
             name: $scope.model.teamName,
             users: $scope.users,
-            projects: $scope.projects
         };
 
         teamApi.addTeam(team)
@@ -144,34 +145,6 @@ function TeamCtrl($scope, $modal, teamApi, teamApiUrl) {
                 });  
     }
 
-    function assignUsersAndProjects() {
-
-        var modalInstance = $modal.open({
-            animation: true,
-            templateUrl: 'edit_team.html',
-            controller: 'teamProjectAndUsersCtrl',
-            windowClass: 'app-modal-window',
-            size: 'lg',
-            resolve: {
-                projects: function() {
-                    return $scope.projects;
-                },
-                users: function() {
-                    return $scope.users;
-                },
-                teamName: function() {
-                    return null;
-                }
-            }
-        });
-
-        modalInstance.result.then(function (result) {
-            
-            $scope.users = result.users;
-            $scope.projects = result.projects;
-        });
-    }
-
     function removeUser(user) {
         var idx = $scope.users.indexOf(user);
         if(idx < 0) {
@@ -180,49 +153,23 @@ function TeamCtrl($scope, $modal, teamApi, teamApiUrl) {
         $scope.users.splice(idx, 1);
     }
 
-    function removeProject(project) {
-        var idx = $scope.projects.indexOf(project);
-        if(idx < 0) {
-            return;
+    function refreshUser() {
+        if($scope.loadedUsers.length == 0) {
+            $scope.loading = true;
+            userApi.getUsers()
+                .success(
+                    function(data) {
+                        $scope.loadedUsers = data;
+                    })
+                .error(
+                    function(errorInfo, status) {
+
+                    })
+                .finally(function() {
+                    $scope.loading = false;
+                });
         }
-        $scope.projects.splice(idx, 1);
     }
-
-    function reset() {
-        $scope.model = {};
-        $scope.users = [];
-        $scope.projects = [];
-    }
-}
-
-function TeamProjectAndUsersCtrl($scope, $modalInstance, projects, users, teamName, userApi, projectApi) {
-    $scope.projects = projects;
-    $scope.loadedProjects = [];
-    $scope.users = users;
-    $scope.loadedUsers = [];
-    $scope.usersPageSize = 10;
-    $scope.usersCurrentPage = 1;
-    $scope.projectsPageSize = 10;
-    $scope.projectsCurrentPage = 1;
-
-    $scope.teamName = teamName;
-
-    $scope.addUser = addUser;
-    $scope.removeUser = removeUser;
-    $scope.refreshUser = refreshUser;
-
-    $scope.addProject = addProject;
-    $scope.removeProject = removeProject;
-    $scope.projectContains = projectContains;
-    $scope.userContains = userContains;
-
-    $scope.ok = ok;
-    $scope.cancel = cancel;
-    $scope.refreshProject = refreshProject;
-
-
-    refreshProject();
-    refreshUser();
 
     function userContains(user) {
         for(var i = 0; i < $scope.users.length; i++) {
@@ -234,44 +181,52 @@ function TeamProjectAndUsersCtrl($scope, $modalInstance, projects, users, teamNa
         return -1;
     }
 
-    function projectContains(project) {
-        for(var i = 0; i < $scope.projects.length; i++) {
-            var prj = $scope.projects[i];
-            if(prj.id == project.id) {
+    function addUser(user) {
+        $scope.users.push(user);
+    }
+
+    function removeUser(user) {
+        var idx = userContains(user);
+        if(idx < 0) {
+            return;
+        }
+        $scope.users.splice(idx, 1);
+    }
+
+    function reset() {
+        $scope.model = {};
+        $scope.users = [];
+        $scope.projects = [];
+    }
+}
+
+function TeamProjectAndUsersCtrl($scope, $modalInstance, users, teamName, userApi) {
+    $scope.loadedProjects = [];
+    $scope.users = users;
+    $scope.loadedUsers = [];
+    $scope.usersPageSize = 10;
+    $scope.usersCurrentPage = 1;
+
+    $scope.teamName = teamName;
+
+    $scope.addUser = addUser;
+    $scope.removeUser = removeUser;
+    $scope.refreshUser = refreshUser;
+    $scope.userContains = userContains;
+
+    $scope.ok = ok;
+    $scope.cancel = cancel;
+
+    refreshUser();
+
+    function userContains(user) {
+        for(var i = 0; i < $scope.users.length; i++) {
+            var usr = $scope.users[i];
+            if(usr.id == user.id) {
                 return i;
             }
         }
         return -1;
-    }
-
-    function addProject(project) {
-        $scope.projects.push(project);
-    }
-
-    function removeProject(project) {
-        var idx = projectContains(project);
-        if(idx < 0) {
-            return;
-        }
-        $scope.projects.splice(idx, 1);
-    }
-
-    function refreshProject() {
-        if($scope.loadedProjects.length == 0) {
-            $scope.loading = true;
-            projectApi.getProjects()
-                .success(
-                    function(data) {
-                        $scope.loadedProjects = data;
-                    })
-                .error(
-                    function(errorInfo, status) {
-
-                    })
-                .finally(function() {
-                    $scope.loading = false;
-                });
-        }
     }
 
     function addUser(user) {

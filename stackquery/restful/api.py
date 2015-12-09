@@ -5,10 +5,6 @@ from flask_restful import reqparse
 from flask_restful import Api
 from flask_restful import Resource
 
-from flask import g
-from flask import request
-
-
 from stackquery import app
 from stackquery import auth
 from stackquery.database import db_session
@@ -187,12 +183,10 @@ team_fields = {
     'modified': fields.DateTime(dt_format='iso8601'),
     'uri': fields.Url('team', absolute=True),
     'users': fields.List(fields.Nested(user_fields)),
-    'projects': fields.List(fields.Nested(project_fields))
 }
 
 team_parser = reqparse.RequestParser()
 team_parser.add_argument('name')
-team_parser.add_argument('projects', type=dict, action='append')
 team_parser.add_argument('users', type=dict, action='append')
 
 
@@ -235,21 +229,6 @@ class TeamResource(Resource):
                 if user not in team.users:
                     team.users.append(user)
 
-        if args.get('projects', None):
-            projects_ids = [project.get('id', None) for project
-                            in args.get('projects', [])]
-            projects = Project.query.filter(
-                Project.id.in_(projects_ids)).all() if projects_ids else []
-
-            projects_remove = [project for project in team.projects
-                               if project not in projects]
-
-            for project in projects_remove:
-                team.projects.remove(project)
-            for project in projects:
-                if project not in team.projects:
-                    team.projects.append(project)
-
         db_session.commit()
         return team, 201
 
@@ -273,13 +252,6 @@ class TeamListResource(Resource):
             for selected_user in selected_users:
                 team.users.append(selected_user)
 
-        projects = args.get('projects', None)
-        if projects:
-            project_ids = [project['id'] for project in projects]
-            selected_projects = Project.query.filter(
-                Project.id.in_(project_ids)).all()
-            for selected_project in selected_projects:
-                team.projects.append(selected_project)
         db_session.add(team)
         db_session.commit()
         return team, 201
@@ -456,10 +428,7 @@ class ScenarioContributionListResource(Resource):
             users = utils.get_users_by_team(args['team'])
             users_ids = [user.id for user in users]
 
-            # releases = gerrit.get_all_reviews_from_database(
-            #    search_filter, team)
             releases = gerrit.get_reviews_by_filter(search_filter, users_ids)
-            print releases
         except Exception:
             releases = None
 
@@ -560,7 +529,7 @@ class HarvesterListResource(Resource):
 
 class HarvesterResource(Resource):
     decorators = [auth.login_required]
-    
+
     @marshal_with(harvester_fields)
     def get(self, id):
         harvester = Harvester.query.get(id)

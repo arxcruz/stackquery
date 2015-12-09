@@ -1,12 +1,14 @@
 argparse>=1.2
 flask-restful
 Flask
+Flask-HTTPAuth
 Flask-Login
 Flask-Script
 Flask-SQLAlchemy
 Flask-WTF
 mechanize
 odict>=1.5
+passlib
 prettytable>=0.7.2
 PyYAML
 requests>=2.4

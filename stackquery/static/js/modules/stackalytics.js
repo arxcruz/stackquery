@@ -7,7 +7,7 @@ angular.module('stackalitics', ['angularUtils.directives.dirPagination'])
 function stackApi($http, restApi, stackApiUrl) {
     return {
         getUsersByCompany(company) {
-            return restApi.get('?company=' + company, stackApiUrl);
+            return restApi.get('?release=all&company=' + company, stackApiUrl);
         },
         getMetrics(metrics) {
             return restApi.post(metrics, '/api/v1.0/stackalytics');

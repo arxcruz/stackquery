@@ -38,8 +38,7 @@ user_parser.add_argument('email')
 
 
 class UserResource(Resource):
-    decorators = [auth.login_required]
-
+    # decorators = [auth.login_required]
     def get(self, id):
         user = User.query.get(id)
         if user:
@@ -69,8 +68,7 @@ class UserResource(Resource):
 
 
 class UserListResource(Resource):
-    decorators = [auth.login_required]
-
+    # decorators = [auth.login_required]
     @marshal_with(user_fields)
     def get(self):
         users = User.query.all()
@@ -102,7 +100,7 @@ release_parser.add_argument('name')
 
 
 class ReleaseListResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     @marshal_with(release_fields)
     def get(self):
@@ -126,7 +124,7 @@ project_parser.add_argument('gerrit_server')
 
 
 class ProjectResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     def get(self, id):
         project = Project.query.get(id)
@@ -158,7 +156,7 @@ class ProjectResource(Resource):
 
 
 class ProjectListResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     @marshal_with(project_fields)
     def get(self):
@@ -191,7 +189,7 @@ team_parser.add_argument('users', type=dict, action='append')
 
 
 class TeamResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     @marshal_with(team_fields)
     def get(self, id):
@@ -234,7 +232,7 @@ class TeamResource(Resource):
 
 
 class TeamListResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     @marshal_with(team_fields)
     def get(self):
@@ -267,7 +265,7 @@ stack_parser.add_argument('type')
 
 
 class StackalyticsListResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     def post(self):
         args = stack_parser.parse_args()
@@ -322,7 +320,7 @@ bz_fields = {
 
 
 class RHBugzillaListResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     @marshal_with(bz_fields)
     def get(self):
@@ -352,7 +350,7 @@ class RHBugzillaListResource(Resource):
 
 
 class RHBugzillaResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     @marshal_with(bz_fields)
     def get(self, id):
@@ -396,7 +394,7 @@ rhbz_parser.add_argument('password', location='cookies')
 
 
 class RHBugzillaRealReportResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     def post(self):
         args = rhbz_parser.parse_args()
@@ -414,7 +412,7 @@ scenario_parser.add_argument('team')
 
 
 class ScenarioContributionListResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     def post(self):
         from stackquery.libs import gerrit
@@ -453,7 +451,7 @@ scenario_filter_fields = {
 
 
 class ScenarioFilterListResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     def post(self):
         args = scenario_filter_parser.parse_args()
@@ -472,7 +470,7 @@ class ScenarioFilterListResource(Resource):
 
 
 class ScenarioFilterResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     def delete(self, id):
         filters = ScenarioFilter.query.get(id)
@@ -507,7 +505,7 @@ harvester_fields = {
 
 
 class HarvesterListResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     @marshal_with(harvester_fields)
     def post(self):
@@ -528,7 +526,7 @@ class HarvesterListResource(Resource):
 
 
 class HarvesterResource(Resource):
-    decorators = [auth.login_required]
+    # decorators = [auth.login_required]
 
     @marshal_with(harvester_fields)
     def get(self, id):

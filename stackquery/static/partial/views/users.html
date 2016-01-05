@@ -234,7 +234,7 @@
                                 <div class="row" dir-paginate="user in users | filter:searchKey | itemsPerPage: pageSize" pagination-id="listUsers" current-page="currentPage" ng-class-odd="'oddRow'">
                                     <div ng-show="isInReadMode(user.id)">
                                         <div class="col-sm-1">
-                                            {{user.id}}
+                                            {{$index + 1}}
                                         </div>
                                         <div class="col-sm-2">
                                             {{user.user_id}}
@@ -262,7 +262,7 @@
                                     </div>
                                     <div ng-show="isInEditMode(user.id)">
                                         <div class="col-sm-1">
-                                            {{user.id}}
+                                            {{$index + 1}}
                                         </div>
                                         <div class="col-sm-2">
                                             <input class="form-control" type="text"

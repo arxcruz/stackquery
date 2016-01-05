@@ -209,7 +209,7 @@
                                 </div>
                                 <div class="row" dir-paginate="team in teams | filter:searchKey | itemsPerPage: pageSize" pagination-id="listTeams" current-page="currentPage" ng-class-odd="'oddRow'">
                                     <div class="col-sm-1">
-                                        {{team.id}}
+                                        {{$index + 1}}
                                     </div>
                                     <div class="col-sm-9">
                                         {{team.name}}

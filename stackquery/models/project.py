@@ -10,3 +10,4 @@ class Project(Base, DictSerializable):
     id = Column(Integer, primary_key=True)
     name = Column('name', String(200))
     git_url = Column('git_url', String(400))
+    gerrit_server = Column('gerrit_server', String(400))

@@ -30,10 +30,18 @@ def init_db(args=None):
             _populate_team_table()
         if args.all or args.report:
             _populate_report_table()
+        if args.all or args.filters:
+            _populate_filters_table()
 
 
 def _populate_team_table():
     from stackquery.models.team import Team
+    _drop_and_recreate_tables('user_team_association')
+    _drop_and_recreate_tables('project_team_association')
+    _drop_and_recreate_tables('team')
+
+    _populate_user_table()
+
     team = Team()
     team.name = 'Demo team 1'
     if user1 and user2:
@@ -54,12 +62,16 @@ def _populate_team_table():
 def _populate_user_table():
     from stackquery.models.user import User
 
+    _drop_and_recreate_tables('user')
+
+    global user1
     user1 = User()
     user1.name = 'Arx Cruz'
     user1.email = 'arxcruz@test.com'
     user1.user_id = 'arxcruz'
     db_session.add(user1)
 
+    global user2
     user2 = User()
     user2.name = 'David Kranz'
     user2.email = 'david@test.com'
@@ -76,6 +88,9 @@ def _populate_user_table():
 
 def _populate_report_table():
     from stackquery.models.report import RedHatBugzillaReport
+
+    _drop_and_recreate_tables('redhat_bugzilla_report')
+
     report = RedHatBugzillaReport()
     report.name = 'Test'
     report.description = 'Test description'
@@ -95,8 +110,14 @@ def _populate_release_table():
         # Populating Release table
         from stackquery.models.release import Release
 
+        _drop_and_recreate_tables('releases')
+
         release = Release()
         release.name = 'All'
+        db_session.add(release)
+
+        release = Release()
+        release.name = 'Liberty'
         db_session.add(release)
 
         release = Release()
@@ -147,20 +168,52 @@ def _populate_release_table():
 
 
 def _populate_project_table():
-    from stackquery.libs import utils
-    from stackquery.libs import gerrit
     from stackquery.models.project import Project
+    _drop_and_recreate_tables('projects')
 
-    filename = app.config['DATA_JSON']
-    openstack_projects = gerrit.get_all_gerrit_projects()
-    for openstack_project in openstack_projects.keys():
-        project = Project()
-        project.name = openstack_project
-        repos = utils.get_repos_by_module(filename, openstack_project)
-        project.git_url = repos['uri']
-        db_session.add(project)
+    project = Project()
+    project.name = 'openstack/tempest'
+    project.git_url = 'git.openstack.org/openstack/tempest.git'
+    project.gerrit_server = 'https://review.openstack.org'
+    db_session.add(project)
+
+    project = Project()
+    project.name = 'openstack/rally'
+    project.git_url = 'git://git.openstack.org/openstack/rally.git'
+    project.gerrit_server = 'https://review.openstack.org'
+    db_session.add(project)
+
+    project = Project()
+    project.name = 'redhat-openstack/khaleesi'
+    project.git_url = 'git@github.com:redhat-openstack/khaleesi.git'
+    project.gerrit_server = 'https://review.gerrithub.io'
+    db_session.add(project)
 
     db_session.commit()
+
+
+def _populate_filters_table():
+    from stackquery.models.filter import ScenarioFilter
+
+    _drop_and_recreate_tables('scenario_filter')
+
+    filters = ScenarioFilter()
+    filters.name = 'Tempest scenario'
+    filters.filter_desc = 'file:tempest/scenario.*'
+    db_session.add(filters)
+
+    filters = ScenarioFilter()
+    filters.name = 'Rally scenario'
+    filters.filter_desc = 'file:rally/benchmark/scenarios.*'
+    db_session.add(filters)
+
+    db_session.commit()
+
+
+def _drop_and_recreate_tables(table_name):
+    table = Base.metadata.tables[table_name]
+    Base.metadata.drop_all(bind=engine, tables=[table])
+    Base.metadata.create_all(bind=engine)
 
 Base = declarative_base(name='Base')
 Base.query = db_session.query_property()

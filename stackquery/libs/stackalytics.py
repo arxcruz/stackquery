@@ -26,7 +26,8 @@ STACKALYTICS_URL = 'http://stackalytics.com/'
 
 def get_stats(params):
     """Query Stackalytics 'contribution' module with `params`.
-    :param params: a dictionary of data passed to the 'contribution' module,
+        :param params: a dictionary of data passed to the 'contribution'
+        module,
         e.g. 'user_id', 'release', 'company'.  The values can contain more
         items seprated by commas, e.g.  `{'user_id': 'user1,user2,user3'}`.
     """
@@ -35,7 +36,26 @@ def get_stats(params):
     LOG.info("Using parameters: %s", params)
     r = requests.get(STACKALYTICS_URL + MODULE, params=params)
     LOG.info(r.url)
-    r.raise_for_status()
+    try:
+        r.raise_for_status()
+    except requests.HTTPError:
+        # return {
+        #     u'contribution':
+        #     {
+        #         u'loc': 0, u'email_count': 0, u'commit_count': 0,
+        #         u'drafted_blueprint_count': 0,
+        #         u'abandoned_change_requests_count': 0,
+        #         u'filed_bug_count': 0, u'patch_set_count': 0,
+        #         u'completed_blueprint_count': 0, u'marks':
+        #             {
+        #                 u'A': 0, u'WIP': 0, u'1': 0, u'0': 0, u's': 0,
+        #                 u'2': 0, u'-1': 0, u'-2': 0, u'x': 0
+        #             },
+        #         u'resolved_bug_count': 0, u'change_request_count': 0
+        #     }
+        # }
+        return None
+
     return r.json()
 
 

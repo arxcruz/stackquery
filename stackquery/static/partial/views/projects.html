@@ -1,0 +1,149 @@
+<div ng-include="'static/partial/views/navbar.html'"></div>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="container">
+            <tabset>
+                <!-- Create new project tab -->
+                <tab heading="Create new project">
+                    <div class="row" style="margin-top: 20px;"></div>
+                    <div ng-controller="projectCtrl">
+                        <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
+                        <form name="projectForm" novalidate>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <div class="form-group" show-errors>
+                                        <label for="inputName" class="control-label">Project Name</label>
+                                        <input type="text" class="form-control" name="name" placeholder="Project name" required ng-model="model.projectName">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <div class="form-group" show-errors>
+                                        <label for="inputUrl" class="control-label">Git url</label>
+                                        <input type="text" class="form-control" name="git_url" placeholder="Git url" required ng-model="model.projectUrl">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <div class="form-group" show-errors>
+                                        <label for="inputUrl" class="control-label">Gerrit server</label>
+                                        <input type="url" class="form-control" name="gerrit_server" placeholder="Gerrit server" required ng-model="model.gerritServer">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" ng-click="createProject()">Create project</button>
+                        </form>
+                    </div>
+                </tab>
+                <!-- List all projects tab -->
+                <tab heading="List projects">
+                    <div class="row" style="margin-top: 20px;"></div>
+                    <div ng-controller="projectListCtrl">
+                        <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="search">Items per page:</label>
+                                <input type="number" min="1" max="100" class="form-control" ng-model="pageSize">
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="search">Search:</label>
+                                <input class="form-control" placeholder="Search" ng-model="searchKey"></input>
+                            </div>
+                            <div class="col-sm-6">
+                                <button class="btn btn-success" style="margin-top: 25px;" ng-click="refresh()">Refresh</button>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="loading">
+                            <div class="col-sm-12">
+                                <img src="static/images/progressring.gif" />
+                                    Loading...
+                            </div>
+                        </div>
+                        <div ng-show="projects.length > 0">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <h4>Project name</h4>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <h4>Project url</h4>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <h4>Gerrit server</h4>
+                                    </div>
+                                    <div class="col-sm-2">
+                                    </div>
+                                </div>
+                                <div class="row" dir-paginate="project in projects | filter:searchKey | itemsPerPage: pageSize" pagination-id="listProjects" current-page="currentPage" ng-class-odd="'oddRow'">
+                                    <div ng-show="isInReadMode(project.id)">
+                                        <div class="col-sm-3">
+                                            {{project.name}}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            {{project.git_url}}
+                                        </div>
+                                        <div class="col-sm-3">
+                                            {{project.gerrit_server}}
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="pull-right">
+                                                <button class="btn btn-warning btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="startEdit(project.id)">
+                                                        Edit
+                                                </button>
+                                                <button class="btn btn-danger btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="removeProject(project)">
+                                                        Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-show="isInEditMode(project.id)">
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="text"
+                                                    placeholder="Project name"
+                                                    ng-model="project.name" />
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input class="form-control" type="text"
+                                                    placeholder="Git url"
+                                                    ng-model="project.git_url" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="url"
+                                                    placeholder="Gerrit server"
+                                                    ng-model="project.gerrit_server" />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="pull-right">
+                                                <button class="btn btn-success btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="save(project)">
+                                                        Save
+                                                </button>
+                                                <button class="btn btn-danger btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="cancel()">
+                                                        Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <dir-pagination-controls boundary-links="true" pagination-id="listProjects"></dir-pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>

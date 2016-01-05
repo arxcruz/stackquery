@@ -17,6 +17,8 @@ def init_argparse():
                         help='Populate team table', default=False)
     parser.add_argument('--report', action='store_true',
                         help='Populate report table')
+    parser.add_argument('--filters', action='store_true',
+                        help='Populate filters table')
 
     args = parser.parse_args()
     return args

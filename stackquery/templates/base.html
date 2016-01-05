@@ -1,84 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-    <title>{% block title %}{% endblock title %}</title>
-    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}"/>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
-    <!-- DataTables -->
-    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
+    <title>Stackquery</title>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/jquery-1.11.3.min.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/angular.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/angular-route.min.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/angular-cookies.min.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/angular-ui.min.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/dirPagination.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/bootstrap.min.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/ui-grid.min.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/lib/jquery.dataTables.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/app.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/users.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/stackalytics.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/projects.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/reports.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/releases.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/teams.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/filters.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/harvester.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/message.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/modules/login.js') }}></script>
+        <link rel="stylesheet" href={{ url_for('static', filename='css/lib/bootstrap.min.css') }} />
+        <link rel="stylesheet" href={{ url_for('static', filename='css/lib/bootstrap-theme.min.css') }} />
+        <link rel="stylesheet" href="https://cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.css" />
     <style>
     body { padding-top: 70px; }
+    .oddRow {
+        background-color: #DDDDDD;
+    }
+    .div-bigger {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
     </style>
-    {% block java_script %}{% endblock %}
-{% block extra_head %}{% endblock extra_head %}
-</head
-<body>
+</head>
+<body ng-app="stackquery">
 <div id="wrapper">
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{{ url_for('dashboard.dashboard_index')}}">Stackquery</a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ url_for('dashboard.dashboard_index')}}">Default report</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('dashboard.gerrit_report_index') }}">Scenario contribution</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('dashboard.redhat_bugzilla_report_create') }}">Create Red Hat Bugzilla report</a></li>
-                            <li><a href="{{ url_for('dashboard.redhat_bugzilla_report_index') }}">List all Red Hat Bugzilla reports</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('dashboard.harvester_report_create') }}">Create harvester report</a></li>
-                            <li><a href="{{ url_for('dashboard.harvester_report_index') }}">List all harvester reports</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Teams<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ url_for('dashboard.dashboard_teams') }}">List</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('dashboard.dashboard_create_team') }}">Create new Team</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Users<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ url_for('dashboard.dashboard_users') }}">List</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('dashboard.dashboard_create_user') }}">Create new User</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('dashboard.dashboard_export_users') }}">Export from stackalytics</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Projects<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ url_for('dashboard.dashboard_projects') }}">List</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ url_for('dashboard.dashboard_create_project') }}">Create new Project</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <div class="container">{% block main %}{% endblock main %}</div>
-    </div>
+    <div ng-view></div>
+</div>
 </body>
 </html>

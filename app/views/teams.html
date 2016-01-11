@@ -1,0 +1,242 @@
+<div ng-include="'/views/navbar.html'"></div>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="container">
+            <script type="text/ng-template" id="edit_team.html">
+                <div class="modal-header">
+                    <h3 class="modal-title">List of users and projects available</h3>
+                </div>
+                <div class="modal-body">
+                    <div ng-show="teamName">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label for="search">Team name</label>
+                                <input class="form-control" placeholder="Search" ng-model="teamName"></input>
+                            </div>
+                            <div class="row" style="margin-bottom: 20px;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label for="search">Search:</label>
+                            <input class="form-control" placeholder="Search" ng-model="searchKey"></input>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-success" style="margin-top: 25px;" ng-click="refreshUser()">Refresh</button>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="loading">
+                        <div class="col-sm-12">
+                            <img src="/images/progressring.gif" />
+                                Loading...
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="row" style="margin-top: 20px;"></div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <h4>User id</h4>
+                            </div>
+                            <div class="col-sm-4">
+                                <h4>Name</h4>
+                            </div>
+                            <div class="col-sm-4">
+                                <h4>Email</h4>
+                            </div>
+                            <div class="col-sm-2">
+                            </div>
+                        </div>
+                        <div class="row" dir-paginate="user in loadedUsers | filter:searchKey | orderBy:userContains:true | itemsPerPage: usersPageSize" pagination-id="listModalUsers" current-page="usersCurrentPage" ng-class-odd="'oddRow'">
+                            <div class="col-sm-2">
+                                {{user.user_id}}
+                            </div>
+                            <div class="col-sm-4">
+                                {{user.name}}
+                            </div>
+                            <div class="col-sm-4">
+                                {{user.email}}
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="pull-right">
+                                    <button class="btn btn-success btn-sm pull-right"
+                                            style="margin-bottom: 5px; margin-top: 5px"
+                                            ng-click="addUser(user)" ng-show="userContains(user) < 0">
+                                            Add
+                                    </button>
+                                    <button class="btn btn-danger btn-sm pull-right"
+                                            style="margin-bottom: 5px; margin-top: 5px"
+                                            ng-click="removeUser(user)" ng-show="userContains(user) > -1">
+                                            Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <dir-pagination-controls boundary-links="true" pagination-id="listModalUsers"></dir-pagination-controls>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row" style="margin-bottom: 20px;"></div>
+                    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+                    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+                </div>
+            </script>
+            <tabset>
+                <!-- Create new team tab -->
+                <tab heading="Create new team">
+                    <div class="row" style="margin-top: 20px;"></div>
+                    <div ng-controller="teamCtrl">
+                        <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
+                        <form name="teamForm" novalidate>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <div class="form-group" show-errors>
+                                        <label for="inputName" class="control-label">Team Name</label>
+                                        <input type="text" class="form-control" name="name" placeholder="Team name" required ng-model="model.teamName">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h4>Users assigned:</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="search">Search:</label>
+                                    <input class="form-control" placeholder="Search" ng-model="searchKey"></input>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button class="btn btn-success" style="margin-top: 25px;" ng-click="refreshUser()">Refresh</button>
+                                </div>
+                            </div>
+                            <div class="row" ng-show="loading">
+                                <div class="col-sm-12">
+                                    <img src="/images/progressring.gif" />
+                                        Loading...
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="row" style="margin-top: 20px;"></div>
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <h4>User id</h4>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <h4>Name</h4>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <h4>Email</h4>
+                                    </div>
+                                    <div class="col-sm-2">
+                                    </div>
+                                </div>
+                                <div class="row" dir-paginate="user in loadedUsers | filter:searchKey | orderBy:userContains:true | itemsPerPage: usersPageSize" pagination-id="listModalUsers" current-page="usersCurrentPage" ng-class-odd="'oddRow'">
+                                    <div class="col-sm-2">
+                                        {{user.user_id}}
+                                    </div>
+                                    <div class="col-sm-4">
+                                        {{user.name}}
+                                    </div>
+                                    <div class="col-sm-4">
+                                        {{user.email}}
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="pull-right">
+                                            <button class="btn btn-success btn-sm pull-right"
+                                                    style="margin-bottom: 5px; margin-top: 5px"
+                                                    ng-click="addUser(user)" ng-show="userContains(user) < 0">
+                                                    Add
+                                            </button>
+                                            <button class="btn btn-danger btn-sm pull-right"
+                                                    style="margin-bottom: 5px; margin-top: 5px"
+                                                    ng-click="removeUser(user)" ng-show="userContains(user) > -1">
+                                                    Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <dir-pagination-controls boundary-links="true" pagination-id="listModalUsers"></dir-pagination-controls>
+                                </div>
+                            </div>
+                            
+                            <div class="row" style="margin-bottom: 20px;"></div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <button class="btn btn-primary" ng-click="createTeam()">Create team</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </tab>
+                <!-- List of teams -->
+                <tab heading="List teams">
+                    <div class="row" style="margin-top: 20px;"></div>
+                    <div ng-controller="teamListCtrl">
+                        <sq-message error-message="errorMessage" success-message="successMessage"></sq-message>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="search">Items per page:</label>
+                                <input type="number" min="1" max="100" class="form-control" ng-model="pageSize">
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="search">Search:</label>
+                                <input class="form-control" placeholder="Search" ng-model="searchKey"></input>
+                            </div>
+                            <div class="col-sm-6">
+                                <button class="btn btn-success" style="margin-top: 25px;" ng-click="refresh()">Refresh</button>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="loading">
+                            <div class="col-sm-12">
+                                <img src="/images/progressring.gif" />
+                                    Loading...
+                            </div>
+                        </div>
+                        <div ng-show="teams.length > 0">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                        <h4>Id</h4>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <h4>Team name</h4>
+                                    </div>
+                                    <div class="col-sm-2">
+                                    </div>
+                                </div>
+                                <div class="row" dir-paginate="team in teams | filter:searchKey | itemsPerPage: pageSize" pagination-id="listTeams" current-page="currentPage" ng-class-odd="'oddRow'">
+                                    <div class="col-sm-1">
+                                        {{$index + 1}}
+                                    </div>
+                                    <div class="col-sm-9">
+                                        {{team.name}}
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="pull-right">
+                                            <button class="btn btn-warning btn-sm"
+                                                    style="margin-bottom: 5px; margin-top: 5px"
+                                                    ng-click="editTeam(team)">
+                                                    Edit
+                                            </button>
+                                            <button class="btn btn-danger btn-sm"
+                                                    style="margin-bottom: 5px; margin-top: 5px"
+                                                    ng-click="removeTeam(team)">
+                                                    Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <dir-pagination-controls boundary-links="true" pagination-id="listTeams"></dir-pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,189 @@
+<div ng-include="'/views/navbar.html'"></div>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="container">
+            <tabset>
+                <!-- Create new team tab -->
+                <tab heading="Create new Red Hat Bugzilla report">
+                    <div class="row" style="margin-top: 20px;"></div>
+                    <div ng-controller="redHatBugzillaReportCtrl">
+                        <div ng-show="hasError()">
+                            <div class="alert alert-danger alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>{{errorMessage}}</strong>
+                            </div>
+                        </div>
+                        <div ng-show="hasSuccess()">
+                            <div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>{{successMessage}}</strong>
+                            </div>
+                        </div>
+                        <form name="reportForm" novalidate>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <div class="form-group" show-errors>
+                                        <label for="inputName" class="control-label">Name</label>
+                                        <input type="text" class="form-control" name="name" required ng-model="model.name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <div class="form-group" show-errors>
+                                        <label for="inputUrl" class="control-label">Url</label>
+                                        <input type="url" class="form-control" name="url" required ng-model="model.url">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <div class="form-group" show-errors>
+                                        <label for="inputDescription" class="control-label">Description</label>
+                                        <textarea cols="100" name="description" rows="10" ng-model="model.description"></textarea>
+                                    </div>
+                                </div>
+                            </div>                
+                            <div class="row" style="margin-top: 20px;"></div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <button class="btn btn-primary" ng-click="createBugzillaReport()">Create report</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </tab>
+                <!-- List of teams -->
+                <tab heading="List all Red Hat Bugzilla Reports">
+                    <div class="row" style="margin-top: 20px;"></div>
+                    <div ng-controller="redHatBugzillaReportListCtrl">
+                        <div ng-show="hasError()">
+                            <div class="alert alert-danger alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>{{errorMessage}}</strong>
+                            </div>
+                        </div>
+                        <div ng-show="hasSuccess()">
+                            <div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <strong>{{successMessage}}</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="search">Items per page:</label>
+                                <input type="number" min="1" max="100" class="form-control" ng-model="pageSize">
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="search">Search:</label>
+                                <input class="form-control" placeholder="Search" ng-model="searchKey"></input>
+                            </div>
+                            <div class="col-sm-6">
+                                <button class="btn btn-success" style="margin-top: 25px;" ng-click="refresh()">Refresh</button>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="loading">
+                            <div class="col-sm-12">
+                                <img src="/images/progressring.gif" />
+                                    Loading...
+                            </div>
+                        </div>
+                        <div ng-show="bugzillaReports.length > 0">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                        <h4>Id</h4>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <h4>Name</h4>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <h4>Url</h4>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <h4>Description</h4>
+                                    </div>
+                                    <div class="col-sm-2">
+                                    </div>
+                                </div>
+                                <div class="row" dir-paginate="report in bugzillaReports | filter:searchKey | itemsPerPage: pageSize" pagination-id="listBugzillaReports" current-page="currentPage" ng-class-odd="'oddRow'">
+                                    <div ng-show="isInReadMode(report.id)">
+                                        <div class="col-sm-1">
+                                            {{$index+1}}
+                                        </div>
+                                        <div class="col-sm-2">
+                                            {{report.name}}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            {{report.url | truncate:50}}
+                                        </div>
+                                        <div class="col-sm-3">
+                                            {{report.description | truncate:50}}
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="pull-right">
+                                                <button class="btn btn-warning btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="startEdit(report.id)">
+                                                        Edit
+                                                </button>
+                                                <button class="btn btn-danger btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="removeReport(report)">
+                                                        Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-show="isInEditMode(report.id)">
+                                        <div class="col-sm-1">
+                                            {{$index+1}}
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input class="form-control" type="text"
+                                                    placeholder="location name"
+                                                    ng-model="report.name" />
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input class="form-control" type="text"
+                                                    ng-model="report.url" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="text"
+                                                    ng-model="report.description"/>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="pull-right">
+                                                <button class="btn btn-success btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="save(report)">
+                                                        Save
+                                                </button>
+                                                <button class="btn btn-danger btn-sm"
+                                                        style="margin-bottom: 5px; margin-top: 5px"
+                                                        ng-click="cancel()">
+                                                        Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <dir-pagination-controls boundary-links="true" pagination-id="listBugzillaReports"></dir-pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>

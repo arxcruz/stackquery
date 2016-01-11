@@ -389,8 +389,8 @@ class RHBugzillaResource(Resource):
 
 rhbz_parser = reqparse.RequestParser()
 rhbz_parser.add_argument('report', type=dict)
-rhbz_parser.add_argument('username', location='cookies')
-rhbz_parser.add_argument('password', location='cookies')
+rhbz_parser.add_argument('username')
+rhbz_parser.add_argument('password')
 
 
 class RHBugzillaRealReportResource(Resource):
